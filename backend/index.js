@@ -1,35 +1,30 @@
 const http = require('http');
 const express = require('express');
 const bodyParser = require('body-parser');
-const knex = require('knex');
 const app = express();
-
-//const login = require('./controllers/login);
-
+const mongoose = require('mongoose');
+const config = require('config');
 
 const hostname = '127.0.0.1';
 const port = 3000;
 
 
+
+if (!config.secret) {
+    console.error('FATAL ERROR: secret is not defined.');
+    process.exit(1);
+}
+
+// Connect to MongoDB 
+mongoose.connect('mongodb://localhost:27017/TagAlong', {useNewUrlParser: true})
+	.then(() => console.log("Successfully connected to TagAlong MongoDB"))
+	.catch(err => console.log("Error connecting to database", err));
+
 app.use(bodyParser.json());
 
+const users = require('./User/routes/users');
 
-app.get('/', (req, res) => {
-  return res.send('Received a GET HTTP method');
-});
-app.post('/', (req, res) => {
-  return res.send('Received a POST HTTP method');
-});
-app.put('/', (req, res) => {
-  return res.send('Received a PUT HTTP method');
-});
-app.delete('/', (req, res) => {
-  return res.send('Received a DELETE HTTP method');
-});
-
-/*
-app.post('/login', login.handleSignin(db, bcrypt));
-*/
+app.use('/users', users);
 
 
 app.listen(port, () =>
