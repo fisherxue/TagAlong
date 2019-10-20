@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "Successful Login");
-                getUserData();
+                handleFacebookLogin();
                 //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                 //startActivity(intent);
                 //MainActivity.this.finish();
@@ -122,6 +122,9 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private void handleFacebookLogin(){
+        getUserData();
+    }
     private void getUserData(){
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {

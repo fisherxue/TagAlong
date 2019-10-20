@@ -1,7 +1,11 @@
 package com.example.tagalong;
 
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 public class HomeActivity extends AppCompatActivity {
 
@@ -9,5 +13,38 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
+
+        BottomNavigationView btv = findViewById(R.id.bottom_navigation);
+        btv.setOnNavigationItemReselectedListener(lister);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Signup1_Fragment()).commit();
     }
+
+    private BottomNavigationView.OnNavigationItemReselectedListener lister =
+            new BottomNavigationView.OnNavigationItemReselectedListener() {
+                @Override
+                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                    Fragment frag = null;
+
+                    switch (menuItem.getItemId()){
+                        case R.id.nav_home:
+                            frag = new Signup1_Fragment();
+                            break;
+
+                        case R.id.nav_maps:
+                            frag = new Signup2_Fragment();
+                            break;
+
+                        case R.id.nav_chat:
+                            frag = new Chat_Fragment();
+                            break;
+
+                        case R.id.nav_profile:
+                            frag = new Signup1_Fragment();
+                            break;
+                    }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
+                }
+            };
 }
