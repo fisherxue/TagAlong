@@ -32,7 +32,6 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
     private CallbackManager callbackManager;
-    //private static final String EMAIL = "email";
     private LoginButton fbloginButton;
     private Button loginButton;
     private  Button signupButton;
@@ -48,18 +47,18 @@ public class MainActivity extends AppCompatActivity {
 
         callbackManager = CallbackManager.Factory.create();
 
-        fbloginButton = (LoginButton) findViewById(R.id.login_button);
+        fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
         signupButton = (Button) findViewById(R.id.signup_button);
-        //loginButton.setReadPermissions(Arrays.asList(EMAIL));
+        loginButton = (Button) findViewById(R.id.login_button);
 
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "Successful Login");
                 getUserData();
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-                MainActivity.this.finish();
+                //Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                //startActivity(intent);
+                //MainActivity.this.finish();
             }
 
             @Override
@@ -82,6 +81,16 @@ public class MainActivity extends AppCompatActivity {
                 MainActivity.this.finish();
             }
         });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                startActivity(intent);
+                MainActivity.this.finish();
+            }
+        });
+
         /*
         RequestQueue queue = Volley.newRequestQueue(this);
         String url ="http://ec2-50-17-82-63.compute-1.amazonaws.com/";
