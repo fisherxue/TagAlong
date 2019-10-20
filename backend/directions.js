@@ -1,4 +1,4 @@
-
+const googleMapsKey = require('./keys.js').GoogleDirectionsAPIKey;
 // initialize maps client
 const googleMapsClient = require('@google/maps').createClient({
     key: 'AIzaSyB3bmJtSMJbdacuIwj6W--i35gUoDTv0f8'
@@ -25,3 +25,4 @@ var inputs = {
     mode: "driving",
 }
 
+console.log(googleMapsKey)
