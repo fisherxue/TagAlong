@@ -1,8 +1,9 @@
 const googleMapsKey = require('./keys.js').GoogleDirectionsAPIKey;
 // initialize maps client
 const googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyB3bmJtSMJbdacuIwj6W--i35gUoDTv0f8'
+    key: googleMapsKey
 });
+const fs = require('fs')
 
 /* 
  * TODO: figure out what datetime object it takes
@@ -18,11 +19,17 @@ function getDirections(req, callback) {
     });
 };
 
-// sample input
+// sample usage
+/*
 var inputs = {
     origin: 'Indigo, 2505 Granville St, Vancouver, BC V6H 3G7',
     destination: 'AMS Student Nest, 6133 University Blvd, Vancouver, BC V6T 1Z1',
+    //destination: '3939 W 16th Ave, Vancouver, BC V6R 2C9',
     mode: "driving",
 }
 
-console.log(googleMapsKey)
+getDirections(inputs, function(err, response) {
+	var json = JSON.stringify(response.json, null, 2);
+	fs.writeFile('data.json', json, 'utf8', function(err) {});
+});
+*/
