@@ -17,7 +17,7 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemReselectedListener(lister);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Signup1_Fragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home_Fragment()).commit();
     }
 
     private BottomNavigationView.OnNavigationItemReselectedListener lister =
@@ -28,11 +28,11 @@ public class HomeActivity extends AppCompatActivity {
 
                     switch (menuItem.getItemId()){
                         case R.id.nav_home:
-                            frag = new Signup1_Fragment();
+                            frag = new Home_Fragment();
                             break;
 
                         case R.id.nav_maps:
-                            frag = new Signup2_Fragment();
+                            frag = new Maps_Fragment();
                             break;
 
                         case R.id.nav_chat:
@@ -40,7 +40,7 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_profile:
-                            frag = new Signup1_Fragment();
+                            frag = new Profile_Fragment();
                             break;
                     }
 
