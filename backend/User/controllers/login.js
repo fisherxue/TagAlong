@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
+const config = require('config');
 
 const handleLogin = async (req, res) => {
 	
@@ -9,7 +10,14 @@ const handleLogin = async (req, res) => {
 	const user = await User.findOne({ username });
 
 	if (user && bcrypt.compareSync(password, user.password)) {
-		res.send(true);
+		res.json({
+			token: jwt.sign({
+				email: user.email,
+				_id: user._id,
+				firstName: user.firstName,
+				lastName: user.lastName
+			}, config.get('PrivateKey'))
+		});
 	}
 	else {
 		return res.status(400).send("Incorrect email or password");
