@@ -14,12 +14,13 @@ public class Signup extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
-        BottomNavigationView btv = findViewById(R.id.menu_signup);
-        btv.setOnNavigationItemReselectedListener(lister);
+        //BottomNavigationView btv = findViewById(R.id.menu_signup);
+        //btv.setOnNavigationItemReselectedListener(lister);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_signup_container, new Signup1_Fragment()).commit();
     }
 
+    /*
     private BottomNavigationView.OnNavigationItemReselectedListener lister =
             new BottomNavigationView.OnNavigationItemReselectedListener() {
                 @Override
@@ -42,5 +43,5 @@ public class Signup extends AppCompatActivity {
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_signup_container, frag).commit();
                 }
-            };
+            }; */
 }
