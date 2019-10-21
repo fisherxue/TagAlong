@@ -47,6 +47,8 @@ public class Signup1_Fragment extends Fragment {
 
                 fragmentTransaction.replace(R.id.fragment_signup_container, frag);
                 fragmentTransaction.commit();
+
+
             }
         });
 

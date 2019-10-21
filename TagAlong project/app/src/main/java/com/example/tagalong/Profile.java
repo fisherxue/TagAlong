@@ -13,6 +13,20 @@ public class Profile implements Serializable {
     private int age;
     private String interest;
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public int getCarCapacity() {
+        return carCapacity;
+    }
+
+    public void setCarCapacity(int carCapacity) {
+        this.carCapacity = carCapacity;
+    }
+
+    private int carCapacity;
+
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
