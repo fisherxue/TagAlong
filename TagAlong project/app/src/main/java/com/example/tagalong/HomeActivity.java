@@ -1,19 +1,22 @@
 package com.example.tagalong;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
 public class HomeActivity extends AppCompatActivity {
-
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
-
+        context = this;
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemReselectedListener(lister);
 
@@ -32,7 +35,8 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_maps:
-                            frag = new Maps_Fragment();
+                            Intent intent = new Intent(context, Maps_Fragment.class);
+                            startActivity(intent);
                             break;
 
                         case R.id.nav_chat:
@@ -44,7 +48,9 @@ public class HomeActivity extends AppCompatActivity {
                             break;
                     }
 
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
+                    if (frag != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
+                    }
                 }
             };
 }
