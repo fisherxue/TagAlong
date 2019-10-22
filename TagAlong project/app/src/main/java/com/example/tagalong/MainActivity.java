@@ -1,12 +1,15 @@
 package com.example.tagalong;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -35,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private LoginButton fbloginButton;
     private Button loginButton;
     private  Button signupButton;
-
+    private EditText loginUser, loginPassword;
+    private Context context;
     AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
 
@@ -44,12 +48,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        context = getApplicationContext();
         callbackManager = CallbackManager.Factory.create();
 
         fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
         signupButton = (Button) findViewById(R.id.signup_button);
         loginButton = (Button) findViewById(R.id.login_button);
+        loginPassword = (EditText) findViewById(R.id.passwordLogin);
+        loginUser = (EditText) findViewById(R.id.username);
 
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -85,9 +91,34 @@ public class MainActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                startActivity(intent);
-                MainActivity.this.finish();
+                Profile loginProfile = new Profile();
+                boolean allSet = true;
+                if (!loginPassword.getText().toString().isEmpty()){
+                    loginProfile.setPassword(loginPassword.getText().toString());
+                }
+                else {
+                    Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
+                    allSet = false;
+                }
+                if (!loginUser.getText().toString().isEmpty()){
+                    loginProfile.setUserName(loginUser.getText().toString());
+                }
+                else {
+                    Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
+                    allSet = false;
+                }
+
+                if (allSet) {
+                    loginProfile = varifyUser(loginProfile);
+
+                    if(loginProfile != null){
+                        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                        intent.putExtra("profile", loginProfile);
+                        startActivity(intent);
+                        MainActivity.this.finish();
+                    }
+                }
+
             }
         });
 
@@ -124,6 +155,11 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean  varifyUser(){
         return false;
+    }
+    private Profile varifyUser(Profile profile){
+
+
+        return profile;
     }
 
     private void handleFacebookLogin(){
