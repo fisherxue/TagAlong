@@ -36,7 +36,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import static com.facebook.internal.FeatureManager.Feature.Places;
 
 public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallback
-        , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        , GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener
+        , GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     private GoogleMap mMap;
     private Button back;
     private GoogleApiClient client;
@@ -44,6 +45,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
     private Location lastLocation;
     private Marker currentLocationMarker;
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 99;
+    double latitude, longitude;
+    double end_latitude, end_longitude;
+    Button searchRoute;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,11 +64,26 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this);
 
         back = (Button) findViewById(R.id.back);
+        searchRoute = (Button) findViewById(R.id.To);
 
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Maps_Fragment.this.finish();
+            }
+        });
+
+        searchRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Object dataTransfer[] = new Object[3];
+                String url = getDirectionsURL();
+                GetDirectionsData getDirectionsData = new GetDirectionsData();
+                dataTransfer[0] = mMap;
+                dataTransfer[1] = url;
+                dataTransfer[2] = new LatLng(end_latitude, end_longitude);
+                getDirectionsData.execute(dataTransfer);
+
             }
         });
     }
@@ -107,6 +126,17 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
             mMap.setMyLocationEnabled(true);
         }
 
+        mMap.setOnMarkerDragListener(this);
+        mMap.setOnMarkerClickListener(this);
+    }
+
+    private String getDirectionsURL(){
+        StringBuilder googleDirectionsURL = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
+        googleDirectionsURL.append("origin="+latitude+","+longitude);
+        googleDirectionsURL.append("&destination="+end_latitude+","+end_longitude);
+        googleDirectionsURL.append("&key="+"AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ");
+
+        return googleDirectionsURL.toString();
     }
 
     protected synchronized void buildGoogleMapClient(){
@@ -121,6 +151,8 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
     @Override
     public void onLocationChanged(Location location) {
+        latitude = location.getLatitude();
+        longitude = location.getLongitude();
         lastLocation = location;
 
         if (currentLocationMarker != null){
@@ -183,5 +215,27 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        marker.setDraggable(true);
+        return false;
+    }
+
+    @Override
+    public void onMarkerDragStart(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDrag(Marker marker) {
+
+    }
+
+    @Override
+    public void onMarkerDragEnd(Marker marker) {
+        end_latitude = marker.getPosition().latitude;
+        end_longitude = marker.getPosition().longitude;
     }
 }
