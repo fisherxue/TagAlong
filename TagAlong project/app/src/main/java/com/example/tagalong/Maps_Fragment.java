@@ -169,7 +169,7 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
         currentLocationMarker = mMap.addMarker(markerOptions);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.zoomBy(20));
+        mMap.animateCamera(CameraUpdateFactory.zoomBy(10));
 
         if(client != null){
             LocationServices.FusedLocationApi.removeLocationUpdates(client,this);

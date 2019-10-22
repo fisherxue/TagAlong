@@ -40,14 +40,16 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         String[] directionsList = null;
         DataParser parser = new DataParser();
         directionsList = parser.parseDirections(s);
-        displayDirections(directionsList);
-        /*
+
         mMap.clear();
         MarkerOptions markerOptions = new MarkerOptions();
         markerOptions.position(latLng);
         markerOptions.draggable(true);
+        markerOptions.title("Destination");
 
-        mMap.addMarker(markerOptions);*/
+        displayDirections(directionsList);
+
+        mMap.addMarker(markerOptions);
     }
 
     public void displayDirections(String[] directionsList){
