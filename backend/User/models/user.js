@@ -37,6 +37,10 @@ const UserSchema = mongoose.Schema({
 	interests: {
 		type: Array,
 		required: true
+	},
+	isDriver: {
+		type: Boolean,
+		required: true
 	}
 
 });

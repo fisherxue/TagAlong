@@ -10,14 +10,15 @@ const handleLogin = async (req, res) => {
 	const user = await User.findOne({ username });
 
 	if (user && bcrypt.compareSync(password, user.password)) {
-		res.json({
-			token: jwt.sign({
-				email: user.email,
-				_id: user._id,
-				firstName: user.firstName,
-				lastName: user.lastName
-			}, config.get('PrivateKey'))
-		});
+		// res.json({
+		// 	token: jwt.sign({
+		// 		email: user.email,
+		// 		_id: user._id,
+		// 		firstName: user.firstName,
+		// 		lastName: user.lastName
+		// 	}, config.get('PrivateKey'))
+		// });
+		res.json(user);
 	}
 	else {
 		return res.status(400).send("Incorrect email or password");
