@@ -12,6 +12,16 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
+
 public class Signup2_Fragment extends Fragment {
     private EditText age,gen,interest,email,carcap;
     private Button submit;
@@ -48,9 +58,12 @@ public class Signup2_Fragment extends Fragment {
                 if(isDriver.isChecked()){
                     newUserProfile.setDriver(true);
                     if (!carcap.getText().toString().equals("")){
-                        newUserProfile.setAge(Integer.parseInt(carcap.getText().toString()));
+                        newUserProfile.setCarCapacity(Integer.parseInt(carcap.getText().toString()));
                     }
                 }
+
+                //sendProfile(newUserProfile);
+
 
                 Intent intent = new Intent(getActivity(), HomeActivity.class);
                 intent.putExtra("profile", newUserProfile);
@@ -60,5 +73,34 @@ public class Signup2_Fragment extends Fragment {
         });
         return view;
     }
+    /*
+    void sendProfile(Profile profile){
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url ="http://ec2-50-17-82-63.compute-1.amazonaws.com/";
+
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(profile);
+
+    */
+        /*
+    // Request a string response from the provided URL.
+        StringRequest postRequest = new StringRequest(Request.POST.GET, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // Display the first 500 characters of the response string.
+                        textView.setText("Response is: "+ response.substring(0,20));
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                textView.setText("That didn't work!");
+            }
+        });
+
+    // Add the request to the RequestQueue.
+        queue.add(stringRequest); */
+    //}
 }
 

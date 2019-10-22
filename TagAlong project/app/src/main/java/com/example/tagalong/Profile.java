@@ -5,13 +5,14 @@ import java.io.Serializable;
 public class Profile implements Serializable {
     private String firstName;
     private String lastName;
-    private String userName;
+    private String username;
     private String password;
     private String email;
     private Boolean isDriver;
     private String gender;
     private int age;
-    private String interest;
+    private String interests;
+    private int carCapacity;
 
     public String getFirstName() {
         return firstName;
@@ -25,8 +26,6 @@ public class Profile implements Serializable {
         this.carCapacity = carCapacity;
     }
 
-    private int carCapacity;
-
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
@@ -36,7 +35,7 @@ public class Profile implements Serializable {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        this.username = userName;
     }
 
     public void setPassword(String password) {
@@ -60,7 +59,7 @@ public class Profile implements Serializable {
     }
 
     public void setInterest(String interest) {
-        this.interest = interest;
+        this.interests = interest;
     }
 
     public String getLastName() {
@@ -68,7 +67,7 @@ public class Profile implements Serializable {
     }
 
     public String getUserName() {
-        return userName;
+        return username;
     }
 
     public String getPassword() {
@@ -92,7 +91,7 @@ public class Profile implements Serializable {
     }
 
     public String getInterest() {
-        return interest;
+        return interests;
     }
 
 }

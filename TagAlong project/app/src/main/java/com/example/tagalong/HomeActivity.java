@@ -12,21 +12,26 @@ import android.view.MenuItem;
 
 public class HomeActivity extends AppCompatActivity {
     private Context context;
+    private Profile userProfile;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
+
         context = this;
+        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
+
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
-        btv.setOnNavigationItemReselectedListener(lister);
+        btv.setOnNavigationItemSelectedListener(lister);
 
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home_Fragment()).commit();
     }
 
-    private BottomNavigationView.OnNavigationItemReselectedListener lister =
-            new BottomNavigationView.OnNavigationItemReselectedListener() {
+    private BottomNavigationView.OnNavigationItemSelectedListener lister =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
-                public void onNavigationItemReselected(@NonNull MenuItem menuItem) {
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     Fragment frag = null;
 
                     switch (menuItem.getItemId()){
@@ -45,12 +50,16 @@ public class HomeActivity extends AppCompatActivity {
 
                         case R.id.nav_profile:
                             frag = new Profile_Fragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("profile", userProfile);
+                            frag.setArguments(bundle);
                             break;
                     }
 
                     if (frag != null) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
                     }
+                    return true;
                 }
             };
 }
