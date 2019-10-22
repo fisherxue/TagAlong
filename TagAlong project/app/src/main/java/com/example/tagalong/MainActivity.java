@@ -122,8 +122,23 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    private boolean  varifyUser(){
+        return false;
+    }
+
     private void handleFacebookLogin(){
         getUserData();
+        boolean isNew = varifyUser();
+
+        if (isNew){
+            Intent intent = new Intent(MainActivity.this, Signup.class);
+            startActivity(intent);
+            MainActivity.this.finish();
+        } else {
+            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+            startActivity(intent);
+            MainActivity.this.finish();
+        }
     }
     private void getUserData(){
         accessToken = AccessToken.getCurrentAccessToken();
