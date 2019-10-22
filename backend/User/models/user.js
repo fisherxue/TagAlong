@@ -16,15 +16,15 @@ const UserSchema = mongoose.Schema({
 	},
 	age: {
 		type: Number,
-		required: true
+		required: false
 	},
 	gender: {
 		type: String,
-		required: true
+		required: false
 	},
 	email: { 
 		type: String, 
-		required: true
+		required: false
 	},
 	joinedDate: {
 		type: Date, 
@@ -36,7 +36,7 @@ const UserSchema = mongoose.Schema({
 	},
 	interests: {
 		type: Array,
-		required: true
+		required: false
 	},
 	isDriver: {
 		type: Boolean,
