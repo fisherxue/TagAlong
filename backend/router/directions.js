@@ -14,11 +14,9 @@ function getDirections(req, callback) {
     googleMapsClient.directions({
         origin: req.origin,
         destination: req.destination,
-        mode: req.mode,
     }, function(err, response) {
         if (err) throw err;
-        console.log(response);  
-        callback(err, response);
+        callback(response);
     });
 };
 
@@ -29,7 +27,7 @@ function getDirectionsWithWaypoints(req, callback) {
         waypoints: req.waypoints,
     }, function(err, response) {
         if (err) throw err;
-        callback(err, response);
+        callback(response);
     });
 };
 
@@ -46,7 +44,6 @@ var inputs = {
     //destination: 'Indigo, 2505 Granville St, Vancouver, BC V6H 3G7',
     destination: 'AMS Student Nest, 6133 University Blvd, Vancouver, BC V6T 1Z1',
     origin: '3939 W 16th Ave, Vancouver, BC V6R 2C9',
-    mode: "driving",
 }
 
 getDirections(inputs, function(err, response) {

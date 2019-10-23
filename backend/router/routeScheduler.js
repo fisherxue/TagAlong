@@ -8,6 +8,9 @@ const getDirectionsWithWaypoints = Directions.getDirectionsWithWaypoints;
 
 const fs = require('fs')
 
+// database
+const TripStore = require('../Trip/models/Trip');
+
 const MaxDriverBearingDiff = 20; // 20 deg
 const MaxDriverDistanceDiff = 1000; // 1km
 
@@ -15,10 +18,9 @@ const MaxDriverDistanceDiff = 1000; // 1km
  * Trip wrapper object: extract the relevant data from trip
  *
  */ 
-function Trip(arrivalTime, userID, tripID, startLat, startLng, endLat, endLng, distance, duration) {
+function Trip(arrivalTime, userID, startLat, startLng, endLat, endLng, distance, duration) {
     this.arrivalTime = arrivalTime;
     this.userID = userID;   
-    this.tripID = tripID;
     this.startLat = startLat;
     this.startLng = startLng;
     this.endLat = endLat;
@@ -31,44 +33,52 @@ function Trip(arrivalTime, userID, tripID, startLat, startLng, endLat, endLng, d
  * Gets all rider trips: highly suboptimal, but works for now
  */ 
 function getAvailableRiderTrips(driverTrip, callback) {
-    /*
-     * DB communication
-     */
+    TripStore.find({}, (err, trips) => {
+        if (err) throw err;
+        riderTrips = trips.filter(trip => {
+            return !trip.isDriverTrip;
+        });
 
-    let trips = new Array();
-    let tripTimes = new Array();
+        let trips = new Array();
+        let tripTimes = new Array();
 
-    tripTimes[0] = new Date("2019-10-05T15:00:00.000Z");
-    tripTimes[1] = new Date("2019-10-05T14:48:00.000Z");
-    tripTimes[2] = new Date("2019-10-05T15:00:00.000Z");
-    trips.push(JSON.parse(fs.readFileSync('indigotonest.json', 'utf8')));
-    trips.push(JSON.parse(fs.readFileSync('indigotobyng.json', 'utf8')));
-    trips.push(JSON.parse(fs.readFileSync('byngtonest.json', 'utf8')));    
+        for (let i = 0; i < riderTrips.length; i++) {
+            trips.push(riderTrips[i].triproute);
+            trips.push(riderTrips[i].arrivalTime);
+        }
+/*
+        tripTimes[0] = new Date("2019-10-05T15:00:00.000Z");
+        tripTimes[1] = new Date("2019-10-05T14:48:00.000Z");
+        tripTimes[2] = new Date("2019-10-05T15:00:00.000Z");
+        trips.push(JSON.parse(fs.readFileSync('indigotonest.json', 'utf8')));
+        trips.push(JSON.parse(fs.readFileSync('indigotobyng.json', 'utf8')));
+        trips.push(JSON.parse(fs.readFileSync('byngtonest.json', 'utf8')));
+*/
+        for (let i = 0; i < trips.length; i++) {
+            trips[i] = getTripFromDirectionsJSON(trips[i], tripTimes[i], i, i);
+        }
 
-    for (let i = 0; i < trips.length; i++) {
-        trips[i] = getTripFromDirectionsJSON(trips[i], tripTimes[i], i, i);
-    }
-
-    callback(trips);
+        callback(trips);
+    });
 }
 
-function getTripFromDirectionsJSON(json, arrivalTime, userID=0, tripID=0) {
+function getTripFromDirectionsJSON(json, arrivalTime, userID=0) {
     let startLat = json.routes[0].legs[0].start_location.lat;
     let startLng = json.routes[0].legs[0].start_location.lng;
     let endLat = json.routes[0].legs[0].end_location.lat;
     let endLng = json.routes[0].legs[0].end_location.lng;
     let distance = json.routes[0].legs[0].distance.value;
     let duration = json.routes[0].legs[0].duration.value;
-    let trip = new Trip(arrivalTime, userID, tripID, startLat, startLng, endLat, endLng, distance, duration);
+    let trip = new Trip(arrivalTime, userID, startLat, startLng, endLat, endLng, distance, duration);
     return trip;
 }   
 
 
 function routeSchedulerRequestHandler(driverTrip, callback) {
     getAvailableRiderTrips(driverTrip, function(trips) {
-        let driverTripJSON = JSON.parse(fs.readFileSync('indigotonest.json', 'utf8'));
-        let driverTripTime = new Date("2019-10-05T15:00:00.000Z");
-        let driverTrip = getTripFromDirectionsJSON(driverTripJSON, driverTripTime, 42, 42);
+        let driverTripJSON = driverTrip.triproute;
+        let driverTripTime = driverTrip.arrivalTime;
+        let driverTrip = getTripFromDirectionsJSON(driverTripJSON, driverTripTime, 0);
         let optimalTrip = findOptimalTrip(driverTrip, trips);
         console.log(optimalTrip);
         let waypoints = [];
@@ -89,21 +99,13 @@ function routeSchedulerRequestHandler(driverTrip, callback) {
             destination: driverEndPoint,
             waypoints: waypoints
         };
-
-        let userIDs = [];
-
-        for (let i = 0; i < optimalTrip.length; i++) {
-            userIDs.push(optimalTrip[i].userID);
-        }
         
         getDirectionsWithWaypoints(req, function(err, response) {
             if (err) throw err;
-            callback(response, driverTrip, userIDs);
+            callback(response, optimalTrip);
         });
     });
 }
-
-routeSchedulerRequestHandler(null, null);
 
 /*
  * Define a trip object as
