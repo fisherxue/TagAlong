@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "853397852257",
+    "firebase_url": "https://swift-citadel-256401.firebaseio.com",
+    "project_id": "swift-citadel-256401",
+    "storage_bucket": "swift-citadel-256401.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:853397852257:android:ee6483f33206179c479a20",
+        "android_client_info": {
+          "package_name": "com.example.tagalong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "853397852257-d5ob0260pd88sc4lpetgluiqferq3esp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tagalong",
+            "certificate_hash": "b900f5ea8fb8d2ceca14bc847c64bd103eacbb77"
+          }
+        },
+        {
+          "client_id": "853397852257-liqjij3m9v2qjaua0hgfdfgb2p6gqbl3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqA4wt2hUStS8LC4n-7IIFV28WKtLVeu8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "853397852257-liqjij3m9v2qjaua0hgfdfgb2p6gqbl3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
