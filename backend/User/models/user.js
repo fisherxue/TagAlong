@@ -41,6 +41,10 @@ const UserSchema = mongoose.Schema({
 	isDriver: {
 		type: Boolean,
 		required: true
+	},
+	fb_token: {
+		type: String,
+		required: true
 	}
 
 });
