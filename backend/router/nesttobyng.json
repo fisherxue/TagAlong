@@ -1,0 +1,284 @@
+{
+  "geocoded_waypoints": [
+    {
+      "geocoder_status": "OK",
+      "place_id": "ChIJnYTawwJzhlQRgJ6P6ibId5E",
+      "types": [
+        "street_address"
+      ]
+    },
+    {
+      "geocoder_status": "OK",
+      "place_id": "ChIJVTbKnMdzhlQR6apgXBkqTHw",
+      "types": [
+        "book_store",
+        "establishment",
+        "point_of_interest",
+        "store"
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "bounds": {
+        "northeast": {
+          "lat": 49.2633676,
+          "lng": -123.1385974
+        },
+        "southwest": {
+          "lat": 49.2571739,
+          "lng": -123.193542
+        }
+      },
+      "copyrights": "Map data ©2019 Google",
+      "legs": [
+        {
+          "distance": {
+            "text": "4.9 km",
+            "value": 4912
+          },
+          "duration": {
+            "text": "11 mins",
+            "value": 661
+          },
+          "end_address": "2505 Granville St, Vancouver, BC V6H 3G7, Canada",
+          "end_location": {
+            "lat": 49.2633676,
+            "lng": -123.1385974
+          },
+          "start_address": "3939 W 16th Ave, Vancouver, BC V6R 3C9, Canada",
+          "start_location": {
+            "lat": 49.2581269,
+            "lng": -123.1921067
+          },
+          "steps": [
+            {
+              "distance": {
+                "text": "0.1 km",
+                "value": 104
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 9
+              },
+              "end_location": {
+                "lat": 49.2581429,
+                "lng": -123.19354
+              },
+              "html_instructions": "Head <b>west</b> on <b>W 16th Ave</b> toward <b>Crown St</b>",
+              "polyline": {
+                "points": "ivskHt}{nV?^AnE?l@"
+              },
+              "start_location": {
+                "lat": 49.2581269,
+                "lng": -123.1921067
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "73 m",
+                "value": 73
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 17
+              },
+              "end_location": {
+                "lat": 49.257488,
+                "lng": -123.193542
+              },
+              "html_instructions": "Turn <b>left</b> onto <b>Crown St</b>",
+              "maneuver": "turn-left",
+              "polyline": {
+                "points": "kvskHrf|nV`@?V?fA?"
+              },
+              "start_location": {
+                "lat": 49.2581429,
+                "lng": -123.19354
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "0.2 km",
+                "value": 200
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 46
+              },
+              "end_location": {
+                "lat": 49.25744400000001,
+                "lng": -123.190792
+              },
+              "html_instructions": "Turn <b>left</b> at the 1st cross street onto <b>W 17th Ave</b>",
+              "maneuver": "turn-left",
+              "polyline": {
+                "points": "irskHrf|nVBsGDqG"
+              },
+              "start_location": {
+                "lat": 49.257488,
+                "lng": -123.193542
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "53 m",
+                "value": 53
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 18
+              },
+              "end_location": {
+                "lat": 49.25791900000001,
+                "lng": -123.1908
+              },
+              "html_instructions": "Turn <b>left</b> at the 1st cross street onto <b>Wallace St</b>",
+              "maneuver": "turn-left",
+              "polyline": {
+                "points": "_rskHlu{nV_B@"
+              },
+              "start_location": {
+                "lat": 49.25744400000001,
+                "lng": -123.190792
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "1.6 km",
+                "value": 1625
+              },
+              "duration": {
+                "text": "3 mins",
+                "value": 195
+              },
+              "end_location": {
+                "lat": 49.257588,
+                "lng": -123.1684114
+              },
+              "html_instructions": "Turn <b>right</b> at the 1st cross street onto <b>W 16th Ave</b>",
+              "maneuver": "turn-right",
+              "polyline": {
+                "points": "_uskHnu{nVBqI?oB@mBBiEBsD?m@@mB?i@BwE@{E@a@?k@?wC@iD@gA@sBByE@mB@u@?oBBsGFeJBsG?OBwBBaK?}C@sA@qC"
+              },
+              "start_location": {
+                "lat": 49.25791900000001,
+                "lng": -123.1908
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "1.6 km",
+                "value": 1628
+              },
+              "duration": {
+                "text": "3 mins",
+                "value": 178
+              },
+              "end_location": {
+                "lat": 49.2571739,
+                "lng": -123.1460015
+              },
+              "html_instructions": "Continue straight to stay on <b>W 16th Ave</b>",
+              "maneuver": "straight",
+              "polyline": {
+                "points": "}rskHpiwnVBcCB}FDuHJaC?GAECWB[?W@]@_@?_A@w@?u@DyMBeD@mBBgE@mB@mB?mBBmC@eD@w@?iB@_A?]?I@mA?[?m@?k@B}B@gEFaNFwM"
+              },
+              "start_location": {
+                "lat": 49.257588,
+                "lng": -123.1684114
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "0.4 km",
+                "value": 414
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 54
+              },
+              "end_location": {
+                "lat": 49.2608943,
+                "lng": -123.1458714
+              },
+              "html_instructions": "Turn <b>left</b> onto <b>Burrard St</b>",
+              "maneuver": "turn-left",
+              "polyline": {
+                "points": "ipskHn}rnV_@?Y?C?a@A[AaAAG?qAA}AAc@Aw@AwAC}AC_BC"
+              },
+              "start_location": {
+                "lat": 49.2571739,
+                "lng": -123.1460015
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "0.5 km",
+                "value": 523
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 75
+              },
+              "end_location": {
+                "lat": 49.2607461,
+                "lng": -123.1386671
+              },
+              "html_instructions": "Turn <b>right</b> onto <b>W 12th Ave</b>",
+              "maneuver": "turn-right",
+              "polyline": {
+                "points": "qgtkHt|rnV?mBDkJBaFBY@W@gA?IBqA?c@@sF@cB@qC"
+              },
+              "start_location": {
+                "lat": 49.2608943,
+                "lng": -123.1458714
+              },
+              "travel_mode": "DRIVING"
+            },
+            {
+              "distance": {
+                "text": "0.3 km",
+                "value": 292
+              },
+              "duration": {
+                "text": "1 min",
+                "value": 69
+              },
+              "end_location": {
+                "lat": 49.2633676,
+                "lng": -123.1385974
+              },
+              "html_instructions": "Turn <b>left</b> onto <b>Granville St</b>/<wbr/><b>BC-99 N</b><div style=\"font-size:0.9em\">Destination will be on the left</div>",
+              "maneuver": "turn-left",
+              "polyline": {
+                "points": "uftkHtoqnVQAoDEuDEsC?"
+              },
+              "start_location": {
+                "lat": 49.2607461,
+                "lng": -123.1386671
+              },
+              "travel_mode": "DRIVING"
+            }
+          ],
+          "traffic_speed_entry": [],
+          "via_waypoint": []
+        }
+      ],
+      "overview_polyline": {
+        "points": "ivskHt}{nVAnF?l@`@?~A?HeP_B@BqI@}EHyOJu\\HqNBcKJyRFgTJgRDuHJaCAMCWB[@u@BmENu\\L_ZFqPNy\\y@?cCEiPSDyMBaFBYB_BB{ADmOaEGiIE"
+      },
+      "summary": "W 16th Ave",
+      "warnings": [],
+      "waypoint_order": []
+    }
+  ],
+  "status": "OK"
+}

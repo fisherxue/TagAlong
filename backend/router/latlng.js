@@ -4,18 +4,27 @@ Number.prototype.toRadians = function () { return this * Math.PI / 180; }
 Number.prototype.toDegrees = function() { return this / Math.PI * 180; }
 
 /*
+ * Latitude Longitude wrapper object
+ * Need to actually use this: not for MVP
+ */
+function LatLng(lat, lng) {
+    this.lat = lat;
+    this.lng = lng;
+}
+
+/*
  * Given latitude and longitude in degrees,
  * returns distance between them in meters
  */ 
 function getLatLngDistance(lat1, lng1, lat2, lng2) {
-    var llat1 = lat1.toRadians();
-    var llat2 = lat2.toRadians();
-    var dlat = (lat2-lat1).toRadians();
-    var dlng = (lng2-lng1).toRadians();
-    var a = Math.sin(dlat/2) * Math.sin(dlat/2) +
+    let llat1 = lat1.toRadians();
+    let llat2 = lat2.toRadians();
+    let dlat = (lat2-lat1).toRadians();
+    let dlng = (lng2-lng1).toRadians();
+    let a = Math.sin(dlat/2) * Math.sin(dlat/2) +
             Math.cos(llat1) * Math.cos(llat2) *
             Math.sin(dlng/2) * Math.sin(dlng/2);
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
 }
 
@@ -24,13 +33,13 @@ function getLatLngDistance(lat1, lng1, lat2, lng2) {
  * returns angle between them in degrees
  */
 function getLatLngBearing(lat1, lng1, lat2, lng2) {
-    var llat1 = lat1.toRadians();
-    var llat2 = lat2.toRadians();
-    var llng1 = lng1.toRadians();
-    var llng2 = lng2.toRadians();
+    let llat1 = lat1.toRadians();
+    let llat2 = lat2.toRadians();
+    let llng1 = lng1.toRadians();
+    let llng2 = lng2.toRadians();
 
-    var y = Math.sin(llng2-llng1) * Math.cos(llat2);
-    var x = Math.cos(llat1) * Math.sin(llat2) -
+    let y = Math.sin(llng2-llng1) * Math.cos(llat2);
+    let x = Math.cos(llat1) * Math.sin(llat2) -
             Math.sin(llat1) * Math.cos(llat2) * Math.cos(llng2-llng1);
     return Math.atan2(y, x).toDegrees();
 }
@@ -44,14 +53,14 @@ function getLatLngBearing(lat1, lng1, lat2, lng2) {
  * lat3, lng3: C
  */ 
 function getLatLngShortestDistanceLinePoint(lat1, lng1, lat2, lng2, lat3, lng3) {
-    var bearingAB = getLatLngBearing(lat1, lng1, lat2, lng2).toRadians();
-    var bearingAC = getLatLngBearing(lat1, lng1, lat3, lng3).toRadians();
-    var distanceAC = getLatLngDistance(lat1, lng1, lat3, lng3);
+    let bearingAB = getLatLngBearing(lat1, lng1, lat2, lng2).toRadians();
+    let bearingAC = getLatLngBearing(lat1, lng1, lat3, lng3).toRadians();
+    let distanceAC = getLatLngDistance(lat1, lng1, lat3, lng3);
 
-    return Math.asin(Math.sin(distanceAC/R) * Math.sin(bearingAC-bearingAB)) * R;
+    return Math.abs(Math.asin(Math.sin(distanceAC/R) * Math.sin(bearingAC-bearingAB)) * R);
 }
 
-export {
+module.exports = {
     getLatLngDistance, 
     getLatLngBearing, 
     getLatLngShortestDistanceLinePoint

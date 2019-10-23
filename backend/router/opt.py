@@ -22,8 +22,6 @@ def main():
     list.append(Trip(0, 12, 1))
 
     list.sort(key=lambda x: x.arrivalTime)
-    for trip in list:
-        print(trip)
     
     table = [0 for i in range(len(list))]
 
@@ -32,16 +30,23 @@ def main():
     for i in range(1, len(list)):
         weight = list[i].weight
         latest = -1
-        for j in range(0, i): 
+        for j in range(0, i): # find latest trip that does not conflict with current trip
             if (list[j].arrivalTime > list[i].arrivalTime - list[i].length):
                 latest = latest
             else:
                 latest = j
         if (latest != -1):
             weight += table[latest]
-        table[i] = max(weight, table[i-1])
+        table[i] = max(weight, table[i-1]) # compare current weight with weight if we took the previous trip instead
         print(table)
 
     print(table[len(list)-1])
+
+    set = []
+
+    for i in range(len(list) - 1, 0, -1):
+        if (table[i] > table[i-1]):
+            set.append(list[i])
+            print(list[i])
 
 main()
