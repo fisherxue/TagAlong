@@ -10,7 +10,7 @@ const delTrip = require('../controllers/delTrip');
 const acceptTrip = require('../controllers/acceptTrip')
 
 // router.get('/getTrip', createTrip.handleCreateTrip);
-// router.post('/newTrip', createTrip.handleCreateTrip);
+router.post('/newTrip', createTrip.handleCreateTrip);
 // router.put('/updateTrip', )
 router.delete('/delTrip', delTrip.handleDelTrip);
 router.post('/acceptTrip', acceptTrip.handleAcceptTrip);
