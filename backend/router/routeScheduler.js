@@ -1,12 +1,10 @@
-const googleMapsKey = require('./keys.js').GoogleMapsJavascriptAPIKey;
-// initialize maps client
-const googleMapsClient = require('@google/maps').createClient({
-    key: googleMapsKey
-});
 const LatLng = require('./latlng.js');
 const getLatLngDistance = LatLng.getLatLngDistance;
 const getLatLngBearing = LatLng.getLatLngBearing;
 const getLatLngShortestDistanceLinePoint = LatLng.getLatLngShortestDistanceLinePoint;
+
+const Directions = require('./directions.js');
+const getDirectionsWithWaypoints = Directions.getDirectionsWithWaypoints;
 
 const fs = require('fs')
 
@@ -56,7 +54,7 @@ function getAvailableRiderTrips(driverTrip, callback) {
     callback(trips);
 }
 
-function getTripFromDirectionsJSON(json, arrivalTime=Date.now(), userID=0, tripID=0) {
+function getTripFromDirectionsJSON(json, arrivalTime, userID=0, tripID=0) {
     let startLat = json.routes[0].legs[0].start_location.lat;
     let startLng = json.routes[0].legs[0].start_location.lng;
     let endLat = json.routes[0].legs[0].end_location.lat;
@@ -67,9 +65,37 @@ function getTripFromDirectionsJSON(json, arrivalTime=Date.now(), userID=0, tripI
     return trip;
 }   
 
+
+
 getAvailableRiderTrips(null, function(trips) {
-    let optimalTrip = findOptimalTrip(trips[0], trips);
+    let driverTripJSON = JSON.parse(fs.readFileSync('indigotonest.json', 'utf8'));
+    let driverTripTime = new Date("2019-10-05T15:00:00.000Z");
+    let driverTrip = getTripFromDirectionsJSON(driverTripJSON, driverTripTime, 42, 42);
+    let optimalTrip = findOptimalTrip(driverTrip, trips);
     console.log(optimalTrip);
+    let waypoints = [];
+    
+    let driverStartPoint = driverTrip.startLat + ',' + driverTrip.startLng;
+    let driverEndPoint = driverTrip.endLat + ',' + driverTrip.endLng;
+
+    for (let i = 0; i < optimalTrip.length; i++) {
+        let startPoint = optimalTrip[i].startLat + ',' + optimalTrip[i].startLng;
+        let endPoint = optimalTrip[i].endLat + ',' + optimalTrip[i].endLng
+        if (!waypoints.includes(startPoint) & driverStartPoint != startPoint) waypoints.push(startPoint);
+        if (!waypoints.includes(startPoint) & driverEndPoint != endPoint) waypoints.push(endPoint);
+    }
+    console.log(waypoints)
+
+    let req = {
+        origin: driverStartPoint,
+        destination: driverEndPoint,
+        waypoints: waypoints
+    };
+    
+    getDirectionsWithWaypoints(req, function(err, response) {
+        console.log(JSON.stringify(response, null, 2));
+    });
+
 });
 
 /*
@@ -130,7 +156,7 @@ function findOptimalTrip(driverTrip, riderTrips) {
         }
     }
 
-    return optimalTrip;
+    return optimalTrip.reverse();
 }
 
 /* TODO: port to functional programming with map-filter-reduce

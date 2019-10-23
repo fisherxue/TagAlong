@@ -22,8 +22,24 @@ function getDirections(req, callback) {
     });
 };
 
-// sample usage
+function getDirectionsWithWaypoints(req, callback) {
+    googleMapsClient.directions({
+        origin: req.origin,
+        destination: req.destination,
+        waypoints: req.waypoints,
+    }, function(err, response) {
+        if (err) console.log(err);
+        callback(err, response);
+    });
+};
 
+module.exports = {
+    getDirectionsWithWaypoints,
+    getDirections
+}
+
+/*
+// sample usage
 var inputs = {
     //origin: '4175 W 29th Ave, Vancouver, BC V6S 1V1',
     //destination: '4125 W 8th Ave, Vancouver, BC V6R 4P9',
@@ -39,3 +55,4 @@ getDirections(inputs, function(err, response) {
         if (err) throw err;
     });
 });
+*/
