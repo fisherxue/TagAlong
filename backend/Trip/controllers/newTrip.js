@@ -1,8 +1,7 @@
 const TripStore = require('../models/Trip');
 const User = require('../../User/models/user');
 
-const tripScheduler = require('../../router/routeScheduler');
-const directions = require('../../router/directions');
+const tripRecommender = require('../../triprecommender/recommender');
 
 const handleCreateTrip = async (req, res) => {
 		
@@ -16,65 +15,44 @@ const handleCreateTrip = async (req, res) => {
 
 	if (user) {
 
-		let bigboijson;
-
-		await directions.getDirections(tripRoute, res => {
-			bigboijson = res;
-		})
-
 		trip = new TripStore({
 			username: username,
 			arrivaltime: arrivaltime,
-			tripRoute: bigboijson,
+			tripRoute: JSON.stringify(tripRoute),
 			isDriverTrip: isDriverTrip
 		})
 
-		// await trip.save(err => {
-		// 	if(err)
-		// 		res.status(400).send("ERROR MISSING FIELD")
-		// 	else
-		// 		res.send(trip);
-		// });
+		console.log(trip, "17")
 
-		if (isDriverTrip) {
-			await tripScheduler.routeSchedulerRequestHandler(trip.tripRoute, (res, usertrips) => {
+		tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
+			console.log(typeof resp, "12")
+			trip.tripRoute = JSON.stringify(resp.json)
+			console.log(resp.json)
 
-				users = [];
-				usertrips.forEach(usertrip => {
-					users.push(usertrip.username);
-				})
-
-				optimizedTrip = new TripStore({
-					username: username,
-					arrivaltime: arrivaltime,
-					tripRoute: res,
-					isDriverTrip: true,
-					ass_user: users
-				})
-
-				optimizedTrip.save(err => {
-					if(err)
-						res.status(400).send("ERROR MISSING FIELD");
-					else
-						res.send(trip);
-				})
-
-
-
-			})
-		}
-		else {
 			trip.save(err => {
-					if(err)
-						res.status(400).send("ERROR MISSING FIELD");
-					else
-						res.send(trip);
-				})
-		}
+				console.log(err);
+			});
 
-	}
-	else {
-		return res.status(400).send("Incorrect email or password");
+			console.log("77")
+
+			if (isDriverTrip) {
+				const riderTrips = tripRecommender.driverTripHandler(trip)
+				console.log("121")
+				console.log(riderTrips)
+				if (typeof riderTrips === "undefined") {
+					console.log("101")
+					res.status(300).send("NOTHING");
+					console.log("102")
+				} else {
+					console.log("202")
+					res.send(riderTrips)
+				}
+			} else {
+				res.send(trip)
+			}
+		})
+	} else {
+		res.status(400).send("USER NOT FOUND")
 	}
 
 }

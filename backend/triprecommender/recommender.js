@@ -3,7 +3,7 @@ const LatLng = require('./latlng.js');
 
 // database
 const TripStore = require('../Trip/models/Trip');
-const UserStore = require('../User/models/User');
+const UserStore = require('../User/models/user');
 
 /* Google Maps */
 // initialize maps client
@@ -29,31 +29,38 @@ function getDirectionsWithWaypoints(req, callback) {
     });
 };
 function getDirections(req, callback) {
+    console.log(req, "921")
     googleMapsClient.directions({
         origin: req.origin,
         destination: req.destination,
     }, function(err, response) {
-        if (err) throw err;
+        if (err) console.log(err);
         callback(response);
     });
 };
 
 function driverTripHandler(driverTrip) {
+    console.log("83")
     let riderTrips = getRiderTrips(driverTrip);
+    console.log("93")
     riderTrips = getRiderTripSimilarity(driverTrip, riderTrips);
+    console.log("103")
     return riderTrips;
 }
 
-function riderTripHandler(riderTrip, callback) {
-    let startPoint = riderTrip.startLat + ',' + riderTrip.startLng;
-    let endPoint = riderTrip.endLat + ',' + riderTrip.endLng
+function tripHandler(trip, callback) {
+    let startPoint = trip.origin;
+    let endPoint = trip.destination
+    console.log(trip, "10")
     let req = {
         origin: startPoint,
         destination: endPoint
     }
-    callback(getDirections(req, function(res) {
+    console.log(req, "88")
+    getDirections(req, function(res) {
+        console.log(res, "1")
         callback(res);
-    }));
+    });
 }
 
 /*
@@ -89,14 +96,17 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  * 
  */
 function getRiderTripSimilarity(driverTrip, riderTrips) {
+
+    if (typeof riderTrips === "undefined") {
+        return undefined
+    }
     /* get the driver user matching the username */
     let driverUser;
     UserStore.find({}, (err, users) => {
         if (err) throw err;
         driverUser = users.filter(user => {
             return user.username == driverTrip.username;
-        })
-    });
+        })});
 
     for (let i = 0; i < riderTrips.length; i++) {
         /* get the rider user matching the username */
@@ -105,11 +115,20 @@ function getRiderTripSimilarity(driverTrip, riderTrips) {
             if (err) throw err;
             riderUser = users.filter(user => {
                 return user.username == riderTrips[i].username;
-            })
-        });
+            })});
 
         riderTrips[i].similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
     }
+
+    riderTrips = riderTrips.sort(function (a, b) {
+        return b.similarityWithDriver - a.similarityWithDriver
+    })
+
+    riderTrips = riderTrips.slice(0, 4)
+
+    return riderTrips
+
+
 }
 
 /*
@@ -145,14 +164,19 @@ function getRiderTrips(driverTrip) {
     let riderTrips;
 
     TripStore.find({}, (err, trips) => {
-        if (err) throw err;
+        if (err) console.log(err);
         riderTrips = trips.filter(trip => {
             return !trip.isDriverTrip;
-        });
+        })});
 
-    riderTrips = cutTripsByTime(driverTrip, riderTrips);
-    riderTrips = cutTripsByBearing(driverTrip, riderTrips);
-    riderTrips = cutTripsByDistance(driverTrip, riderTrips);
+    console.log("113")
+
+    //riderTrips = cutTripsByTime(driverTrip, riderTrips);
+    console.log("123")
+    //riderTrips = cutTripsByBearing(driverTrip, riderTrips);
+    console.log("133")
+    //riderTrips = cutTripsByDistance(driverTrip, riderTrips);
+    console.log("143")
 
     return riderTrips;
 }
@@ -163,6 +187,12 @@ function getRiderTrips(driverTrip) {
  */
 function cutTripsByTime(driverTrip, riderTrips) {
     let riderTripsTime = [];
+
+    console.log("104")
+
+    if (typeof riderTrips === "undefined") {
+        return undefined
+    }
 
     riderTrips.forEach(function(riderTrip, index) {
         if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
@@ -179,13 +209,23 @@ function cutTripsByTime(driverTrip, riderTrips) {
  * TESTED WORKING NO EDGE CASE TESTS DONE
  */
 function cutTripsByBearing(driverTrip, riderTrips) {
-    let driverBearing = getLatLngBearing(driverTrip.startLat, 
-            driverTrip.startLng, driverTrip.endLat, driverTrip.endLng);
+        if (typeof riderTrips === "undefined") {
+        return undefined
+    }
+
+    let driverBearing = getLatLngBearing(driverTrip.routes[0].legs[0].start_location.lat, 
+            driverTrip.routes[0].legs[0].start_location.lng, 
+            driverTrip.routes[0].legs[0].end_location.lat, 
+            driverTrip.routes[0].legs[0].end_location.lng);
     let riderTripsBearing = [];
 
+
+
     riderTrips.forEach(function(riderTrip, index) {
-        var riderBearing = getLatLngBearing(riderTrip.startLat, riderTrip.startLng, 
-            riderTrip.endLat, riderTrip.endLng);
+        var riderBearing = getLatLngBearing(riderTrip.routes[0].legs[0].start_location.lat, 
+                riderTrip.routes[0].legs[0].start_location.lng, 
+                riderTrip.routes[0].legs[0].end_location.lat, 
+                riderTrip.routes[0].legs[0].end_location.lng);
         if (Math.abs(driverBearing - riderBearing) < MaxDriverBearingDiff) {
             riderTripsBearing.push(riderTrip);
         }
@@ -204,14 +244,26 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 function cutTripsByDistance(driverTrip, riderTrips) {
     let riderTripsDistance = [];
 
+        if (typeof riderTrips === "undefined") {
+        return undefined
+    }
+
     riderTrips.forEach(function(riderTrip, index) {
         let riderDistanceStart = LatLng.getLatLngShortestDistanceLinePoint(
-            driverTrip.startLat, driverTrip.startLng, driverTrip.endLat,
-            driverTrip.endLng, riderTrip.startLat, riderTrip.startLng
+            driverTrip.routes[0].legs[0].start_location.lat, 
+            driverTrip.routes[0].legs[0].start_location.lng, 
+            driverTrip.routes[0].legs[0].end_location.lat, 
+            driverTrip.routes[0].legs[0].end_location.lng, 
+            riderTrip.routes[0].legs[0].start_location.lat, 
+            riderTrip.routes[0].legs[0].start_location.lng
         );
         let riderDistanceEnd = LatLng.getLatLngShortestDistanceLinePoint(
-            driverTrip.startLat, driverTrip.startLng, driverTrip.endLat,
-            driverTrip.endLng, riderTrip.endLat, riderTrip.endLng
+            driverTrip.routes[0].legs[0].start_location.lat, 
+            driverTrip.routes[0].legs[0].start_location.lng, 
+            driverTrip.routes[0].legs[0].end_location.lat, 
+            driverTrip.routes[0].legs[0].end_location.lng, 
+            riderTrip.routes[0].legs[0].end_location.lat, 
+            riderTrip.routes[0].legs[0].end_location.lng
         );
 
         if (riderDistanceStart + riderDistanceEnd < MaxDriverDistanceDiff) {
@@ -220,4 +272,9 @@ function cutTripsByDistance(driverTrip, riderTrips) {
     });
 
     return riderTripsDistance;
+}
+
+module.exports = {
+    driverTripHandler,
+    tripHandler
 }

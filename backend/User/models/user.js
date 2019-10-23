@@ -43,8 +43,7 @@ const UserSchema = mongoose.Schema({
 		required: true
 	},
 	fb_token: {
-		type: String,
-		required: true
+		type: String
 	}
 
 });

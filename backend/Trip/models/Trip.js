@@ -16,7 +16,7 @@ const TripSchema = mongoose.Schema({
 	}],
 	username: {
 		type: String,
-		required:true
+		required: true
 	},
 	isDriverTrip: {
 		type: Boolean,

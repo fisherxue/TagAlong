@@ -10,11 +10,11 @@ const handleAcceptTrip = async (req, res) => {
 
 	if (user) {
 
-		const firebaseToken = String(user._id);
+		const firebaseToken = user.fb_token;
 		const payload = {
 		    notification: {
-		    	title: 'Notification Title',
-		    	body: 'This is an example notification',
+		    	title: 'Trip Accepted',
+		    	body: 'You have been matched with a driver and other riders for the requested trip',
 		    }
 		};
 	 
@@ -23,7 +23,15 @@ const handleAcceptTrip = async (req, res) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 	 
-	 	firebase.messaging().sendToDevice(firebaseToken, payload, options);
+	 	console.log(firebaseToken);
+	 	firebase.messaging().sendToDevice(firebaseToken, payload, options)
+	 	.then(res => {
+	 		console.log(res.results);
+	 	})
+	 	.catch(err => {
+	 		console.log(err);
+	 	});
+	 	res.json("Sent");
 	}
 	else {
 		return res.status(400).send("Incorrect email or password");

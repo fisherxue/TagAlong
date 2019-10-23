@@ -1,6 +1,8 @@
 const User = require('../models/user');
 
 const handleFBtokenUpdate = async (req, res) => {
+
+	console.log('/updateFBtoken hit');
 	
 	const { username, fb_token} = req.body;
 

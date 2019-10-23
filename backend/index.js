@@ -5,7 +5,7 @@ const app = express();
 const mongoose = require('mongoose');
 const config = require('config');
 const firebase = require('firebase-admin');
-const serviceAccount = require('./serviceAcc');
+const serviceAccount = require('./serviceAcc.json');
 
 const hostname = '127.0.0.1';
 const port = 3000;
