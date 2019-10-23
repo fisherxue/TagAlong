@@ -15,6 +15,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
@@ -26,10 +27,14 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.SQLOutput;
 import java.util.Arrays;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
@@ -40,6 +45,9 @@ public class MainActivity extends AppCompatActivity {
     private  Button signupButton;
     private EditText loginUser, loginPassword;
     private Context context;
+    private boolean successLogin;
+    Profile recieved_profile;
+    Profile facebook_login;
     AccessTokenTracker accessTokenTracker;
     AccessToken accessToken;
 
@@ -55,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         signupButton = (Button) findViewById(R.id.signup_button);
         loginButton = (Button) findViewById(R.id.login_button);
         loginPassword = (EditText) findViewById(R.id.passwordLogin);
-        loginUser = (EditText) findViewById(R.id.username);
+        loginUser = (EditText) findViewById(R.id.userNameLogin);
 
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
@@ -97,26 +105,25 @@ public class MainActivity extends AppCompatActivity {
                     loginProfile.setPassword(loginPassword.getText().toString());
                 }
                 else {
-                    Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please Enter Username", Toast.LENGTH_LONG).show();
                     allSet = false;
                 }
                 if (!loginUser.getText().toString().isEmpty()){
                     loginProfile.setUserName(loginUser.getText().toString());
                 }
                 else {
-                    Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please Enter password", Toast.LENGTH_LONG).show();
                     allSet = false;
                 }
 
                 if (allSet) {
-                    loginProfile = varifyUser(loginProfile);
-
-                    if(loginProfile != null){
+                    varifyUser(loginProfile); /*
+                    if(varifyUser(loginProfile)){
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                        intent.putExtra("profile", loginProfile);
+                        intent.putExtra("profile", recieved_profile);
                         startActivity(intent);
                         MainActivity.this.finish();
-                    }
+                    } */
                 }
 
             }
@@ -153,18 +160,65 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private boolean  varifyUser(){
-        return false;
-    }
-    private Profile varifyUser(Profile profile){
+    private boolean varifyUser( final Profile profile){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://206.87.96.130:3000/users/login";
+        final Gson gson = new Gson();
+        String profileJson = gson.toJson(profile);
+        JSONObject profileJsonObject;
+        successLogin = false;
+        try {
+            profileJsonObject = new JSONObject((profileJson));
+            System.out.println(profileJson.toString());
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    System.out.println(response.toString());
+                    try {
+                        recieved_profile = new Profile();
+                        recieved_profile.setUserName(response.getString("username"));
+                        recieved_profile.setInterest(response.getString("interests"));
+                        recieved_profile.setFirstName(response.getString("firstName"));
+                        recieved_profile.setLastName(response.getString("lastName"));
+                        recieved_profile.setAge(response.getInt("age"));
+                        recieved_profile.setGender(response.getString("gender"));
+                        recieved_profile.setEmail(response.getString("email"));
+                        recieved_profile.setPassword(response.getString("password"));
+                        recieved_profile.setDriver(response.getBoolean("isDriver"));
+                        recieved_profile.set_id(response.getString("_id"));
+                        recieved_profile.setJoinedDate(response.getString("joinedDate"));
 
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+                    successLogin = true;
+                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                    intent.putExtra("profile", recieved_profile);
+                    startActivity(intent);
+                    MainActivity.this.finish();
+                }
 
-        return profile;
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, "UserName or Incorrect Password", Toast.LENGTH_LONG).show();
+                    successLogin = false;
+                }
+            });
+
+            queue.add(jsonObjectRequest);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return successLogin;
     }
 
     private void handleFacebookLogin(){
         getUserData();
-        boolean isNew = varifyUser();
+        boolean isNew = false;
 
         if (isNew){
             Intent intent = new Intent(MainActivity.this, Signup.class);
@@ -176,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
             MainActivity.this.finish();
         }
     }
+
     private void getUserData(){
         accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {
@@ -185,12 +240,12 @@ public class MainActivity extends AppCompatActivity {
             GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
-                    System.out.println(object);
+                    //facebook_login.setUserName(object.);
                 }
             });
 
             Bundle parameters = new Bundle();
-            parameters.putString("fields", "id,email,first_name");
+            parameters.putString("fields", "id,email,first_name,last_name");
             graphRequest.setParameters(parameters);
             graphRequest.executeAsync();
         }

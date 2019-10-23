@@ -1,6 +1,7 @@
 package com.example.tagalong;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 public class Profile implements Serializable {
     private String firstName;
@@ -13,6 +14,8 @@ public class Profile implements Serializable {
     private int age;
     private String interests;
     private int carCapacity;
+    private String _id;
+    private String joinedDate;
 
     public String getFirstName() {
         return firstName;
@@ -94,4 +97,19 @@ public class Profile implements Serializable {
         return interests;
     }
 
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
+    public void setJoinedDate(String joinedDate) {
+        this.joinedDate = joinedDate;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public String getJoinedDate() {
+        return joinedDate;
+    }
 }
