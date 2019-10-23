@@ -12,6 +12,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -146,7 +148,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
-                    Frag
+                    Intent intent = new Intent(Maps_Fragment.this, HomeActivity.class);
+                    startActivity(intent);
+                    Maps_Fragment.this.finish();
                     /*mMap.clear();
 
                     Object dataTransfer[] = new Object[3];
