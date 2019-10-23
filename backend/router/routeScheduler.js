@@ -37,15 +37,13 @@ function getAvailableRiderTrips(driverTrip, callback) {
 
     let trips = new Array();
     let tripTimes = new Array();
+
     tripTimes[0] = new Date("2019-10-05T15:00:00.000Z");
     tripTimes[1] = new Date("2019-10-05T14:48:00.000Z");
     tripTimes[2] = new Date("2019-10-05T15:00:00.000Z");
     trips.push(JSON.parse(fs.readFileSync('indigotonest.json', 'utf8')));
     trips.push(JSON.parse(fs.readFileSync('indigotobyng.json', 'utf8')));
     trips.push(JSON.parse(fs.readFileSync('byngtonest.json', 'utf8')));    
-    //trips.push(JSON.parse(fs.readFileSync('nesttoindigo.json', 'utf8')));
-    //trips.push(JSON.parse(fs.readFileSync('nesttobyng.json', 'utf8')));
-    //trips.push(JSON.parse(fs.readFileSync('stgeorgestowestpointgrey.json', 'utf8')));
 
     for (let i = 0; i < trips.length; i++) {
         trips[i] = getTripFromDirectionsJSON(trips[i], tripTimes[i], i, i);
@@ -66,37 +64,46 @@ function getTripFromDirectionsJSON(json, arrivalTime, userID=0, tripID=0) {
 }   
 
 
+function routeSchedulerRequestHandler(driverTrip, callback) {
+    getAvailableRiderTrips(driverTrip, function(trips) {
+        let driverTripJSON = JSON.parse(fs.readFileSync('indigotonest.json', 'utf8'));
+        let driverTripTime = new Date("2019-10-05T15:00:00.000Z");
+        let driverTrip = getTripFromDirectionsJSON(driverTripJSON, driverTripTime, 42, 42);
+        let optimalTrip = findOptimalTrip(driverTrip, trips);
+        console.log(optimalTrip);
+        let waypoints = [];
+        
+        let driverStartPoint = driverTrip.startLat + ',' + driverTrip.startLng;
+        let driverEndPoint = driverTrip.endLat + ',' + driverTrip.endLng;
 
-getAvailableRiderTrips(null, function(trips) {
-    let driverTripJSON = JSON.parse(fs.readFileSync('indigotonest.json', 'utf8'));
-    let driverTripTime = new Date("2019-10-05T15:00:00.000Z");
-    let driverTrip = getTripFromDirectionsJSON(driverTripJSON, driverTripTime, 42, 42);
-    let optimalTrip = findOptimalTrip(driverTrip, trips);
-    console.log(optimalTrip);
-    let waypoints = [];
-    
-    let driverStartPoint = driverTrip.startLat + ',' + driverTrip.startLng;
-    let driverEndPoint = driverTrip.endLat + ',' + driverTrip.endLng;
+        for (let i = 0; i < optimalTrip.length; i++) {
+            let startPoint = optimalTrip[i].startLat + ',' + optimalTrip[i].startLng;
+            let endPoint = optimalTrip[i].endLat + ',' + optimalTrip[i].endLng
+            if (!waypoints.includes(startPoint) & driverStartPoint != startPoint) waypoints.push(startPoint);
+            if (!waypoints.includes(startPoint) & driverEndPoint != endPoint) waypoints.push(endPoint);
+        }
+        console.log(waypoints)
 
-    for (let i = 0; i < optimalTrip.length; i++) {
-        let startPoint = optimalTrip[i].startLat + ',' + optimalTrip[i].startLng;
-        let endPoint = optimalTrip[i].endLat + ',' + optimalTrip[i].endLng
-        if (!waypoints.includes(startPoint) & driverStartPoint != startPoint) waypoints.push(startPoint);
-        if (!waypoints.includes(startPoint) & driverEndPoint != endPoint) waypoints.push(endPoint);
-    }
-    console.log(waypoints)
+        let req = {
+            origin: driverStartPoint,
+            destination: driverEndPoint,
+            waypoints: waypoints
+        };
 
-    let req = {
-        origin: driverStartPoint,
-        destination: driverEndPoint,
-        waypoints: waypoints
-    };
-    
-    getDirectionsWithWaypoints(req, function(err, response) {
-        console.log(JSON.stringify(response, null, 2));
+        let userIDs = [];
+
+        for (let i = 0; i < optimalTrip.length; i++) {
+            userIDs.push(optimalTrip[i].userID);
+        }
+        
+        getDirectionsWithWaypoints(req, function(err, response) {
+            if (err) throw err;
+            callback(response, driverTrip, userIDs);
+        });
     });
+}
 
-});
+routeSchedulerRequestHandler(null, null);
 
 /*
  * Define a trip object as
