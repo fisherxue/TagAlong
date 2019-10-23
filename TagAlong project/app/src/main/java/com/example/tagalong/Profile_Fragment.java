@@ -1,5 +1,7 @@
 package com.example.tagalong;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,19 +9,22 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
 public class Profile_Fragment extends Fragment {
 
     TextView name, username, age, email, interests, carCap, registeredAs, gender;
+    Button edit, logout;
+    Context context;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         Bundle inputBundle = getArguments();
-
+        context = getActivity();
         Profile userProfile = (Profile) inputBundle.getSerializable("profile");
 
         name = (TextView) view.findViewById(R.id.name);
@@ -30,6 +35,9 @@ public class Profile_Fragment extends Fragment {
         carCap = (TextView) view.findViewById(R.id.carCapacity);
         registeredAs = (TextView) view.findViewById(R.id.registeredAs);
         gender = (TextView) view.findViewById(R.id.gender);
+        edit = (Button) view.findViewById(R.id.edit);
+        logout = (Button) view.findViewById(R.id.logout);
+
 
         if (userProfile != null){
             name.setText("Name : " + userProfile.getFirstName()+ " " + userProfile.getLastName());
@@ -45,6 +53,16 @@ public class Profile_Fragment extends Fragment {
                 registeredAs.setText("Registered as Rider");
             }
         }
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, MainActivity.class);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
+
 
         return view;
     }

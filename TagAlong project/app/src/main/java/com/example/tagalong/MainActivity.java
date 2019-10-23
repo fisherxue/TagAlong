@@ -25,9 +25,11 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -117,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (allSet) {
-                    varifyUser(loginProfile); /*
+                    varifyUser(loginProfile, false); /*
                     if(varifyUser(loginProfile)){
                         Intent intent = new Intent(MainActivity.this, HomeActivity.class);
                         intent.putExtra("profile", recieved_profile);
@@ -128,30 +130,6 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-
-        /*
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url ="http://ec2-50-17-82-63.compute-1.amazonaws.com/";
-
-        final TextView textView = (TextView) findViewById(R.id.text);
-
-    // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        // Display the first 500 characters of the response string.
-                        textView.setText("Response is: "+ response.substring(0,20));
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                textView.setText("That didn't work!");
-            }
-        });
-
-    // Add the request to the RequestQueue.
-        queue.add(stringRequest); */
     }
 
     @Override
@@ -160,11 +138,11 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private boolean varifyUser( final Profile profile){
+    private boolean varifyUser(final Profile profile, final boolean isExternal){
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = "http://206.87.96.130:3000/users/login";
         final Gson gson = new Gson();
-        String profileJson = gson.toJson(profile);
+        final String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
         successLogin = false;
         try {
@@ -202,8 +180,23 @@ public class MainActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, "UserName or Incorrect Password", Toast.LENGTH_LONG).show();
-                    successLogin = false;
+                    if (isExternal) {
+                        recieved_profile = new Profile();
+                        recieved_profile.setUserName(profile.getUserName());
+                        recieved_profile.setPassword(profile.get_id());
+                        recieved_profile.setFirstName(profile.getFirstName());
+                        recieved_profile.setLastName(profile.getLastName());
+
+                        Intent intent = new Intent(MainActivity.this, Signup.class);
+                        intent.putExtra("profile", recieved_profile);
+                        startActivity(intent);
+                        MainActivity.this.finish();
+                        LoginManager.getInstance().logOut();
+                    }
+                    else {
+                        Toast.makeText(context, "UserName or Incorrect Password", Toast.LENGTH_LONG).show();
+                        successLogin = false;
+                    }
                 }
             });
 
@@ -240,7 +233,17 @@ public class MainActivity extends AppCompatActivity {
             GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
-                    //facebook_login.setUserName(object.);
+                    Profile facebookProfile = new Profile();
+                    try {
+                        facebookProfile.setUserName(object.getString("first_name") + " " + object.getString("last_name"));
+                        facebookProfile.setPassword(object.getString("id"));
+                        facebookProfile.setFirstName(object.getString("first_name"));
+                        facebookProfile.setLastName(object.getString("last_name"));
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    varifyUser(facebookProfile, true);
                 }
             });
 

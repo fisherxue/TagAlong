@@ -61,8 +61,8 @@ public class Profile implements Serializable {
         this.age = age;
     }
 
-    public void setInterest(String interest) {
-        this.interests = interest;
+    public void setInterest(String interests) {
+        this.interests = interests;
     }
 
     public String getLastName() {
