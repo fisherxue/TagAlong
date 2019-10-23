@@ -34,7 +34,6 @@ public class Signup2_Fragment extends Fragment {
     private Button submit;
     private Switch isDriver;
     private Context context;
-    private boolean success;
     private boolean allSet;
 
     @Nullable
@@ -101,12 +100,7 @@ public class Signup2_Fragment extends Fragment {
                 }
 
                 if (allSet) {
-                    if (sendProfile(newUserProfile)){
-                        Intent intent = new Intent(getActivity(), HomeActivity.class);
-                        intent.putExtra("profile", newUserProfile);
-                        startActivity(intent);
-                        getActivity().finish();
-                    }
+                    sendProfile(newUserProfile);
                 }
 
             }
@@ -114,7 +108,7 @@ public class Signup2_Fragment extends Fragment {
         return view;
     }
 
-    boolean sendProfile(Profile profile) {
+    void sendProfile(Profile profile) {
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
         String url = "http://206.87.96.130:3000/users/register";
@@ -131,7 +125,28 @@ public class Signup2_Fragment extends Fragment {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully signed up", Toast.LENGTH_LONG).show();
-                    success = true;
+                    final Profile recieved_profile = new Profile();
+                    try {
+                        recieved_profile.setUserName(response.getString("username"));
+                        recieved_profile.setInterest(response.getString("interests"));
+                        recieved_profile.setFirstName(response.getString("firstName"));
+                        recieved_profile.setLastName(response.getString("lastName"));
+                        recieved_profile.setAge(response.getInt("age"));
+                        recieved_profile.setGender(response.getString("gender"));
+                        recieved_profile.setEmail(response.getString("email"));
+                        recieved_profile.setPassword(response.getString("password"));
+                        recieved_profile.setDriver(response.getBoolean("isDriver"));
+                        recieved_profile.set_id(response.getString("_id"));
+                        recieved_profile.setJoinedDate(response.getString("joinedDate"));
+                    }
+                    catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    Intent intent = new Intent(getActivity(), HomeActivity.class);
+                    intent.putExtra("profile", recieved_profile);
+                    startActivity(intent);
+                    getActivity().finish();
+
                 }
 
             }, new Response.ErrorListener() {
@@ -139,7 +154,6 @@ public class Signup2_Fragment extends Fragment {
                 public void onErrorResponse(VolleyError error) {
                     System.out.println(error.toString());
                     Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
-                    success = false;
                 }
             });
 
@@ -149,7 +163,6 @@ public class Signup2_Fragment extends Fragment {
             e.printStackTrace();
         }
 
-        return success;
     }
 
         /*
