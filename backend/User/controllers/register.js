@@ -3,7 +3,9 @@ const bcrypt = require('bcryptjs');
 
 const handleRegister = async (req, res) => {
 
-	const { username, firstName, lastName, email, joinedDate, password } = req.body;
+	console.log("/register hit");
+
+	const { username, firstName, lastName, age, gender, email, interests, isDriver, password } = req.body;
 
 	let user = await User.findOne({ email });
 
@@ -15,18 +17,20 @@ const handleRegister = async (req, res) => {
 			username: username,
 			firstName: firstName,
 			lastName: lastName,
+			age: age,
+			gender: gender,
 			email: email,
 			joinedDate: new Date(),
-			password: bcrypt.hashSync(password, 10)
+			password: bcrypt.hashSync(password, 10),
+			isDriver: isDriver
 
 		});
-		await user.save()
-			.then(user => {
+		await user.save(err => {
+			if(err)
+				res.status(400).send("ERROR MISSING FIELD")
+			else
 				res.send(user);
-			})
-			.catch( err => {
-				res.status(400).send(err);
-			});
+		})
 	}
 }
 
