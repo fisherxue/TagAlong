@@ -1,6 +1,8 @@
 package com.example.tagalong;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
@@ -17,6 +19,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -32,6 +40,15 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Calendar;
+import java.util.Date;
 
 import static com.facebook.internal.FeatureManager.Feature.Places;
 
@@ -47,12 +64,16 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 99;
     double latitude, longitude;
     double end_latitude, end_longitude;
+    private Profile userProfile;
     Button searchRoute;
+    private Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_map);
+        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
             checkLocationPermission();
@@ -76,16 +97,66 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Trip trip = new Trip();
                 Object dataTransfer[] = new Object[3];
                 String url = getDirectionsURL();
                 GetDirectionsData getDirectionsData = new GetDirectionsData();
+                LatLng origin = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                LatLng destination = new LatLng(end_latitude, end_longitude);
+                Calendar cal = Calendar.getInstance(); // creates calendar
+                cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+
                 dataTransfer[0] = mMap;
                 dataTransfer[1] = url;
                 dataTransfer[2] = new LatLng(end_latitude, end_longitude);
                 getDirectionsData.execute(dataTransfer);
 
+                trip.setTripRoute(origin, destination);
+                trip.setUsername(userProfile.getUserName());
+                trip.setDriver(userProfile.getDriver());
+                trip.setArrivaltime(cal.getTime());
+                generateTrip(trip);
+
+
             }
         });
+    }
+
+    private void generateTrip(Trip trip){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "http://206.87.96.130:3000/trips/newTrip";
+        Gson gson = new Gson();
+        String tripJson = gson.toJson(trip);
+        JSONObject tripJSONObject;
+
+        System.out.println(tripJson);
+
+        try {
+            tripJSONObject = new JSONObject(tripJson);
+
+
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, tripJSONObject, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
+                }
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    System.out.println(error.toString());
+                    Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            queue.add(jsonObjectRequest);
+
+            } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -130,6 +201,7 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
         mMap.setOnMarkerClickListener(this);
     }
 
+
     private String getDirectionsURL(){
         StringBuilder googleDirectionsURL = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsURL.append("origin="+latitude+","+longitude);
@@ -138,6 +210,8 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
         return googleDirectionsURL.toString();
     }
+
+
 
     protected synchronized void buildGoogleMapClient(){
         client = new GoogleApiClient.Builder(this)
