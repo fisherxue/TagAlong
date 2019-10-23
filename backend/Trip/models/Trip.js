@@ -6,14 +6,22 @@ const TripSchema = mongoose.Schema({
 		type: Date,
 		required: true
 	},
-	triproute: {
+	tripRoute: {
 		type: String,
 		required: true
 	},
 	ass_user: [{
 		type: String,
 		required: true
-	}]
+	}],
+	username: {
+		type: String,
+		required:true
+	},
+	isDriverTrip: {
+		type: Boolean,
+		required: true
+	}
 	
 
 });
