@@ -10,8 +10,10 @@
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="418dp"
+        android:layout_height="675dp"
+        map:layout_constraintBottom_toBottomOf="parent"
+        map:layout_constraintEnd_toEndOf="parent"
         tools:context=".Maps_Fragment" />
 
     <Button
@@ -25,10 +27,10 @@
         android:text="BACK"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.026"
+        map:layout_constraintHorizontal_bias="0.0"
         map:layout_constraintStart_toStartOf="parent"
         map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.011" />
+        map:layout_constraintVertical_bias="0.0" />
 
     <Button
         android:id="@+id/To"
@@ -41,10 +43,11 @@
         android:text="Find Route"
         map:layout_constraintBottom_toBottomOf="parent"
         map:layout_constraintEnd_toEndOf="parent"
-        map:layout_constraintHorizontal_bias="0.613"
+        map:layout_constraintHorizontal_bias="1.0"
         map:layout_constraintStart_toEndOf="@+id/back"
         map:layout_constraintTop_toTopOf="parent"
-        map:layout_constraintVertical_bias="0.011" />
+        map:layout_constraintVertical_bias="0.0" />
+
 
 
 </android.support.constraint.ConstraintLayout>

@@ -21,7 +21,7 @@ import java.util.Date;
 public class Trip implements Serializable {
 
     private String username;
-    private boolean isDriver;
+    private boolean isDriverTrip;
     private JSONObject tripRoute;
     private Date arrivaltime;
 
@@ -49,12 +49,12 @@ public class Trip implements Serializable {
         return username;
     }
 
-    public void setDriver(boolean isDriver) {
-        this.isDriver = isDriver;
+    public void setDriverTrip(boolean isDriverTrip) {
+        this.isDriverTrip = isDriverTrip;
     }
 
-    public boolean isDriver() {
-        return isDriver;
+    public boolean isDriverTrip() {
+        return isDriverTrip;
     }
 
     public void setArrivaltime(Date arrivaltime) {

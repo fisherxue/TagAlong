@@ -117,7 +117,7 @@ public class Signup2_Fragment extends Fragment {
     boolean sendProfile(Profile profile) {
 
         RequestQueue queue = Volley.newRequestQueue(getContext());
-        String url = "http://192.168.43.39:3000/users/register";
+        String url = "http://206.87.96.130:3000/users/register";
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
