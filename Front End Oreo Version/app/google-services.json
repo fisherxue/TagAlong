@@ -1,0 +1,159 @@
+{
+  "project_info": {
+    "project_number": "292845112877",
+    "firebase_url": "https://tagalong-187e6.firebaseio.com",
+    "project_id": "tagalong-187e6",
+    "storage_bucket": "tagalong-187e6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292845112877:android:36206f917d693bcde372a4",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292845112877-vkfrvuaemthqsgi71m20lvimlk4g5b6b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.myapplication",
+            "certificate_hash": "b900f5ea8fb8d2ceca14bc847c64bd103eacbb77"
+          }
+        },
+        {
+          "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL91Ya6-JuKIhs30bjr01bTVwBnveTsVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292845112877:android:5d25c71afcc3356ee372a4",
+        "android_client_info": {
+          "package_name": "com.example.notification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292845112877-7d6a0usnoeqv3oh1bood9bf6mcsmi2ce.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.notification",
+            "certificate_hash": "1c6c988ca3b6a47694d363bc101510c1c146d5e5"
+          }
+        },
+        {
+          "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL91Ya6-JuKIhs30bjr01bTVwBnveTsVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292845112877:android:4cc9e30b0cf1d2b2e372a4",
+        "android_client_info": {
+          "package_name": "com.example.tagalong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292845112877-pfg76nso2ft0dfv22v2eviaffimjk16o.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tagalong",
+            "certificate_hash": "1c6c988ca3b6a47694d363bc101510c1c146d5e5"
+          }
+        },
+        {
+          "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL91Ya6-JuKIhs30bjr01bTVwBnveTsVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:292845112877:android:4e957072e19ec267e372a4",
+        "android_client_info": {
+          "package_name": "com.tagalong.tagalong"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "292845112877-iln761bhsmrsdtc3u9skl0h36eng02rq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tagalong.tagalong",
+            "certificate_hash": "b900f5ea8fb8d2ceca14bc847c64bd103eacbb77"
+          }
+        },
+        {
+          "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCL91Ya6-JuKIhs30bjr01bTVwBnveTsVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "292845112877-6r5b3pi2a83hrcbjtv7ivb9ojf9jha6g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
