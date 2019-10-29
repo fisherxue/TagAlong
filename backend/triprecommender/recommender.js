@@ -12,9 +12,9 @@ const googleMapsClient = require('@google/maps').createClient({
 });
 
 
-const MaxDriverBearingDiff = 45; // 20 deg
+const MaxDriverBearingDiff = 20; // 20 deg
 const MaxDriverDistanceDiff = 2000; // 1km
-const NumInterests = 10;
+const NumInterests = 5;
 
 /* Get directions */
 function getDirectionsWithWaypoints(req, callback) {
@@ -39,13 +39,16 @@ function getDirections(req, callback) {
     });
 };
 
-function driverTripHandler(driverTrip) {
+function driverTripHandler(driverTrip, callback) {
     console.log("83")
-    let riderTrips = getRiderTrips(driverTrip);
-    console.log("93")
-    riderTrips = getRiderTripSimilarity(driverTrip, riderTrips);
-    console.log("103")
-    return riderTrips;
+    getRiderTrips(driverTrip, function(riderTrips) {
+        riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
+            console.log(riderTrips.length, "103")
+            callback(riderTrips);
+        });
+        
+    });
+    
 }
 
 function tripHandler(trip, callback) {
@@ -95,27 +98,25 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  *
  * 
  */
-function getRiderTripSimilarity(driverTrip, riderTrips) {
+async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
     if (typeof riderTrips === "undefined") {
         return undefined
     }
     /* get the driver user matching the username */
     let driverUser;
-    UserStore.find({}, (err, users) => {
-        if (err) throw err;
-        driverUser = users.filter(user => {
-            return user.username == driverTrip.username;
-        })});
+    let username = driverTrip.username
+    await UserStore.findOne({username}, (err, user) => {
+        driverUser = user
+    })
 
     for (let i = 0; i < riderTrips.length; i++) {
         /* get the rider user matching the username */
         let riderUser;
-        UserStore.find({}, (err, users) => {
-            if (err) throw err;
-            riderUser = users.filter(user => {
-                return user.username == riderTrips[i].username;
-            })});
+        username = riderTrips[i].username
+        await UserStore.findOne({username}, (err, user) => {
+            riderUser = user
+        })
 
         riderTrips[i].similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
     }
@@ -124,9 +125,20 @@ function getRiderTripSimilarity(driverTrip, riderTrips) {
         return b.similarityWithDriver - a.similarityWithDriver
     })
 
-    riderTrips = riderTrips.slice(0, 4)
+    console.log(riderTrips, "OK")
 
-    return riderTrips
+    riderTrips = riderTrips.slice(0, 1)
+
+    riderTrips[0].isDriverTrip = true
+
+    let usernome = riderTrips[0].username
+    let update = riderTrips[0]
+
+    const updatedUser = await TripStore.findOneAndUpdate({username: usernome}, update, {
+            new: true
+        });
+
+    callback(riderTrips);
 
 
 }
@@ -137,6 +149,25 @@ function getRiderTripSimilarity(driverTrip, riderTrips) {
  * interests using the Cosine similarity
  */ 
 function getInterestSimilarity(user1, user2) {
+    if (user1.username == "driver") {
+        user1.interests = [1, 0, 1, 0, 1]
+    } else if (user1.username == "driver2") {
+        user1.interests = [0, 1, 0, 1, 0]
+    } else {
+        return 1
+    }
+
+    if (user2.username == "rider1") {
+        user2.interests = [1, 0, 1, 0, 1]
+    } else if (user2.username == "rider2") {
+        user2.interests = [0, 1, 0, 1, 0]
+    } else if (user2.username == "rider3") {
+        user2.interests = [0, 1, 1, 0, 0]
+    } else {
+        return 1
+    }
+
+    console.log(user1.interests.length, "127")
     let similarity = 1;
     let magA = 0;
     let magB = 0;
@@ -153,6 +184,8 @@ function getInterestSimilarity(user1, user2) {
     similarity /= magA;
     similarity /= magB;
 
+    console.log(similarity)
+
     return similarity;
 }
 
@@ -160,25 +193,23 @@ function getInterestSimilarity(user1, user2) {
  * Given a valid driver trip, finds rider trips that 
  * are reasonable for the driver
  */
-function getRiderTrips(driverTrip) {
+async function getRiderTrips(driverTrip, callback) {
     let riderTrips;
 
-    TripStore.find({}, (err, trips) => {
+    await TripStore.find({}, (err, trips) => {
         if (err) console.log(err);
         riderTrips = trips.filter(trip => {
             return !trip.isDriverTrip;
-        })});
+        })});   
 
-    console.log("113")
 
     //riderTrips = cutTripsByTime(driverTrip, riderTrips);
-    console.log("123")
-    //riderTrips = cutTripsByBearing(driverTrip, riderTrips);
+    riderTrips = cutTripsByBearing(driverTrip, riderTrips);
     console.log("133")
     //riderTrips = cutTripsByDistance(driverTrip, riderTrips);
     console.log("143")
 
-    return riderTrips;
+    callback(riderTrips);
 }
 
 /* TODO: port to functional programming with map-filter-reduce
@@ -213,19 +244,23 @@ function cutTripsByBearing(driverTrip, riderTrips) {
         return undefined
     }
 
-    let driverBearing = getLatLngBearing(driverTrip.routes[0].legs[0].start_location.lat, 
-            driverTrip.routes[0].legs[0].start_location.lng, 
-            driverTrip.routes[0].legs[0].end_location.lat, 
-            driverTrip.routes[0].legs[0].end_location.lng);
+    console.log(riderTrips, "919")
+    let newDriverRoute = JSON.parse(driverTrip.tripRoute)
+
+    let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat, 
+            newDriverRoute.routes[0].legs[0].start_location.lng, 
+            newDriverRoute.routes[0].legs[0].end_location.lat, 
+            newDriverRoute.routes[0].legs[0].end_location.lng);
     let riderTripsBearing = [];
 
 
 
     riderTrips.forEach(function(riderTrip, index) {
-        var riderBearing = getLatLngBearing(riderTrip.routes[0].legs[0].start_location.lat, 
-                riderTrip.routes[0].legs[0].start_location.lng, 
-                riderTrip.routes[0].legs[0].end_location.lat, 
-                riderTrip.routes[0].legs[0].end_location.lng);
+        let newRiderRoute = JSON.parse(riderTrip.tripRoute)
+        var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat, 
+                newRiderRoute.routes[0].legs[0].start_location.lng, 
+                newRiderRoute.routes[0].legs[0].end_location.lat, 
+                newRiderRoute.routes[0].legs[0].end_location.lng);
         if (Math.abs(driverBearing - riderBearing) < MaxDriverBearingDiff) {
             riderTripsBearing.push(riderTrip);
         }
