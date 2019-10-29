@@ -15,14 +15,9 @@ const handleRegister = async (req, res) => {
 	else {
 		user = new User({
 			username: username,
-			firstName: firstName,
-			lastName: lastName,
-			age: age,
-			gender: gender,
 			email: email,
 			joinedDate: new Date(),
-			password: bcrypt.hashSync(password, 10),
-			isDriver: isDriver
+			password: bcrypt.hashSync(password, 10)
 
 		});
 		await user.save(err => {
