@@ -10,15 +10,19 @@ const TripSchema = mongoose.Schema({
 		type: String,
 		required: true
 	},
-	ass_user: [{
+	taggedUsers: [{
 		type: String,
 		required: true
 	}],
-	username: {
-		type: String,
+	isDriverTrip: {
+		type: Boolean,
 		required: true
 	},
-	isDriverTrip: {
+	user_id: {
+		type: ObjectId,
+		required: true
+	},
+	isFulfilled: {
 		type: Boolean,
 		required: true
 	}
