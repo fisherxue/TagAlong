@@ -1,23 +1,30 @@
 const User = require('../models/user');
+const mongoose = require('mongoose');
 
 const handleFBtokenUpdate = async (req, res) => {
 
 	console.log('/updateFBtoken hit');
 	
-	const { username, fb_token} = req.body;
+	const { userID, fbToken} = req.body;
 
-	const user = await User.findOne({ username });
+	if (mongoose.Types.ObjectId.isValid(userID)) {
+		await User.findByIdAndUpdate(userID, { fbToken: fbToken }, {new: true}, (err, user) => {
+			if (err) {
+				return res.status(400).send("Unable to find user");
+			}
+			else {
+				console.log("user updated");
+				res.json(user);
+			}
 
-	if (user) {
-		const updatedUser = await User.findOneAndUpdate({username: username}, {fb_token: fb_token}, {
-			new: true
 		});
-
-		res.json(updatedUser);
 	}
 	else {
-		return res.status(400).send("Incorrect email or password");
+		return res.status(400).send("Invalid userID");
 	}
+
+	
+
 
 }
 

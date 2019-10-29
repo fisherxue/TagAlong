@@ -134,7 +134,9 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
     let usernome = riderTrips[0].username
     let update = riderTrips[0]
 
-    const updatedUser = await TripStore.findOneAndUpdate({username: usernome}, update, {
+    update.username = "dead"
+
+    const updatedUser = await TripStore.findOneAndUpdate({username: username}, update, {
             new: true
         });
 

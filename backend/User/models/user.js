@@ -8,11 +8,11 @@ const UserSchema = mongoose.Schema({
 	},
 	firstName: {
 		type: String, 
-		required: true
+		required: false
 	},
 	lastName: {
 		type: String, 
-		required: true
+		required: false
 	},
 	age: {
 		type: Number,
@@ -40,10 +40,11 @@ const UserSchema = mongoose.Schema({
 	},
 	isDriver: {
 		type: Boolean,
-		required: true
+		required: false
 	},
-	fb_token: {
-		type: String
+	fbToken: {
+		type: String,
+		required: false
 	}
 
 });
