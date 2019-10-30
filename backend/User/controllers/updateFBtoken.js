@@ -5,7 +5,7 @@ const handleFBtokenUpdate = async (req, res) => {
 
 	console.log('/updateFBtoken hit');
 	
-	const { userID, fbToken} = req.body;
+	const { userID, fbToken } = req.body;
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findByIdAndUpdate(userID, { fbToken: fbToken }, {new: true}, (err, user) => {
@@ -19,9 +19,9 @@ const handleFBtokenUpdate = async (req, res) => {
 
 		});
 	}
-	else {
+	else 
 		return res.status(400).send("Invalid userID");
-	}
+	
 
 	
 
@@ -29,5 +29,5 @@ const handleFBtokenUpdate = async (req, res) => {
 }
 
 module.exports = {
-	handleFBtokenUpdate: handleFBtokenUpdate
+	handleFBtokenUpdate
 }

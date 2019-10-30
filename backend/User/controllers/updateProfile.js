@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 
 const handleProfileUpdate = async (req, res) => {
 	console.log('/profileUpdate hit');
-	console.log(req.body);
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
@@ -67,5 +66,5 @@ const handleProfileUpdate = async (req, res) => {
 }
 
 module.exports = {
-	handleProfileUpdate: handleProfileUpdate
+	handleProfileUpdate
 }

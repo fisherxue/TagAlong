@@ -14,12 +14,11 @@ const handleDelTrip = async (req, res) => {
 			}
 			else {
 				TripStore.findByIdAndDelete(tripid, err => {
-					if (err) {
-						res.status(400).send("trip not found")
-					}
-					else {
-						res.json("trip successfully deleted")
-					}
+					if (err) 
+						res.status(400).send("trip not found");
+					else 
+						res.json("trip successfully deleted");
+					
 				})
 			}
 
@@ -34,5 +33,5 @@ const handleDelTrip = async (req, res) => {
 }
 
 module.exports = {
-	handleDelTrip: handleDelTrip
+	handleDelTrip
 }
