@@ -31,6 +31,7 @@ const handleCreateTrip = async (req, res) => {
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 					trip.tripRoute = JSON.stringify(resp.json)
 
+
 					trip.save(err => {
 						console.log(err);
 					});
