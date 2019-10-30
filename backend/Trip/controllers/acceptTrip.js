@@ -10,7 +10,7 @@ const handleAcceptTrip = async (req, res) => {
 
 	if (user) {
 
-		const firebaseToken = user.fb_token;
+		const firebaseToken = user.fbToken;
 		const payload = {
 		    notification: {
 		    	title: 'Trip Accepted',

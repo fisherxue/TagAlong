@@ -7,19 +7,14 @@ const handleLogin = async (req, res) => {
 
 	console.log("/login hit");
 	
-	const { username, password } = req.body;
+	const { username, password, fbToken } = req.body;
 
 	const user = await User.findOne({ username });
 
 	if (user && bcrypt.compareSync(password, user.password)) {
-		// res.json({
-		// 	token: jwt.sign({
-		// 		email: user.email,
-		// 		_id: user._id,
-		// 		firstName: user.firstName,
-		// 		lastName: user.lastName
-		// 	}, config.get('PrivateKey'))
-		// });
+		user.fbToken = fbToken;
+		user.save();
+
 		res.json(user);
 	}
 	else {

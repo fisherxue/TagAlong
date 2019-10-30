@@ -4,8 +4,9 @@ const bcrypt = require('bcryptjs');
 const handleRegister = async (req, res) => {
 
 	console.log("/register hit");
+	console.log(req.body);
 
-	const { username, firstName, lastName, age, gender, email, interests, isDriver, password } = req.body;
+	const { username, email, password, fbToken } = req.body;
 
 	let user = await User.findOne({ email });
 
@@ -17,7 +18,8 @@ const handleRegister = async (req, res) => {
 			username: username,
 			email: email,
 			joinedDate: new Date(),
-			password: bcrypt.hashSync(password, 10)
+			password: bcrypt.hashSync(password, 10),
+			fbToken: fbToken
 
 		});
 		await user.save(err => {
