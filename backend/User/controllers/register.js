@@ -29,9 +29,9 @@ const handleRegister = async (req, res) => {
 			else {
 				res.send(user);
 			}
-		})
+		});
 	}
-}
+};
 
 module.exports = {
 	handleRegister

@@ -16,7 +16,7 @@ const handleProfileUpdate = async (req, res) => {
 
 	if (lastName) {
 		update.lastName = lastName;
- 	}
+	}
 
 	if (age) {
 		update.age = age;
@@ -56,7 +56,7 @@ const handleProfileUpdate = async (req, res) => {
 				console.log("user updated");
 				res.json(user);
 			}
-		})
+		});
 	}
 	else {
 		return res.status(400).send("Invalid userID");
@@ -64,7 +64,7 @@ const handleProfileUpdate = async (req, res) => {
 
 	
 
-}
+};
 
 module.exports = {
 	handleProfileUpdate

@@ -1,5 +1,7 @@
-const TripStore = require('../models/Trip');
-const User = require('../../User/models/user');
+const TripStore = require("../models/Trip");
+const User = require("../../User/models/user");
+const mongoose = require("mongoose");
+
 
 const handleDelTrip = async (req, res) => {
 	
@@ -11,7 +13,7 @@ const handleDelTrip = async (req, res) => {
 				return res.status(400).send("Unable to find user");
 			}
 			else {
-				TripStore.findByIdAndDelete(tripid, err => {
+				TripStore.findByIdAndDelete(tripid, (err) => {
 					if (err) {
 						res.status(400).send("trip not found");
 					}
@@ -29,7 +31,7 @@ const handleDelTrip = async (req, res) => {
 
 
 
-}
+};
 
 module.exports = {
 	handleDelTrip

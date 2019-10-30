@@ -23,7 +23,7 @@ const handleFBtokenUpdate = async (req, res) => {
 		return res.status(400).send("Invalid userID");
 	}
 	
-}
+};
 
 module.exports = {
 	handleFBtokenUpdate

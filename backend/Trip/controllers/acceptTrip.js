@@ -28,7 +28,7 @@ const handleAcceptTrip = async (req, res) => {
 		.then((res) => {
 			console.log(res.results);
 		})
-	 	.catch((err) => {
+		.catch((err) => {
 			console.log(err);
 		});
 		res.json("Sent");
@@ -37,7 +37,7 @@ const handleAcceptTrip = async (req, res) => {
 		return res.status(400).send("Incorrect email or password");
 	}
 
-}
+};
 
 module.exports = {
 	handleAcceptTrip

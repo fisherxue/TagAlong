@@ -21,7 +21,7 @@ const handleLogin = async (req, res) => {
 		return res.status(400).send("Incorrect email or password");
 	}
 
-}
+};
 
 module.exports = {
 	handleLogin
