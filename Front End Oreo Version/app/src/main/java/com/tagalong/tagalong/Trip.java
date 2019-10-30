@@ -14,6 +14,8 @@ public class Trip implements Serializable {
     private boolean isDriverTrip;
     private JSONObject tripRoute;
     private Date arrivaltime;
+    private String userID;
+    private String[] taggedUsers;
 
     public void setTripRoute(LatLng origin, LatLng destination) {
         tripRoute = new JSONObject();
@@ -53,5 +55,13 @@ public class Trip implements Serializable {
 
     public Date getArrivaltime() {
         return arrivaltime;
+    }
+
+    public String getUserID() {
+        return userID;
+    }
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 }

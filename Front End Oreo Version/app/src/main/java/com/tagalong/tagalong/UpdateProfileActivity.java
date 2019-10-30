@@ -26,13 +26,21 @@ import org.json.JSONObject;
 
 public class UpdateProfileActivity extends AppCompatActivity {
 
-    private EditText age,gen,fn,ln,carcap;
+    private EditText age;
+    private EditText gen;
+    private EditText fn;
+    private EditText ln;
+    private EditText carcap;
     private Button submit;
     private Switch isDriver;
     private Context context;
     private boolean allSet;
     private Profile userProfile;
-    private SeekBar music, smoking, speed, fragrance, chatting;
+    private SeekBar music;
+    private SeekBar smoking;
+    private SeekBar speed;
+    private SeekBar fragrance;
+    private SeekBar chatting;
     private int[] interests = {2,2,2,2,2};
 
     @Override
@@ -197,8 +205,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 newUserProfile.setInterests(interests);
                 newUserProfile.setUserID(userProfile.getUserID());
                 newUserProfile.setEmail(userProfile.getEmail());
-                newUserProfile.setFirstName(userProfile.getFirstName());
-                newUserProfile.setLastName(userProfile.getLastName());
+                newUserProfile.setUserName(userProfile.getUserName());
+                newUserProfile.setPassword(userProfile.getPassword());
                 newUserProfile.setJoinedDate(userProfile.getJoinedDate());
 
                 if (allSet) {
@@ -219,14 +227,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully signed up", Toast.LENGTH_LONG).show();
                     final Profile received_profile = new Profile();
                     try {
-                        System.out.println(response.toString());
                         received_profile.setUserName(response.getString("username"));
                         JSONArray jsonArray = response.getJSONArray("interests");
                         int [] interests = new int[jsonArray.length()];

@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -49,7 +50,6 @@ import java.util.Calendar;
 public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     private GoogleMap mMap;
-    private Button back;
     private FusedLocationProviderClient client;
     private LocationRequest locationRequest;
     private Location lastLocation;
@@ -60,7 +60,8 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
     private Profile userProfile;
     Button searchRoute;
     private Context context;
-    //private EditText arrivaltime;
+    private TextInputEditText arrivalDate;
+    private TextInputEditText arrivalTime;
 
 
     @Override
@@ -73,17 +74,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
         fetchLastLocation();
 
-        back = (Button) findViewById(R.id.back);
         searchRoute = (Button) findViewById(R.id.To);
-        //arrivaltime = (EditText) findViewById(R.id.arrivalTime);
-
-
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Maps_Fragment.this.finish();
-            }
-        });
+        arrivalTime = (TextInputEditText) findViewById(R.id.arrivalTime);
+        arrivalDate = (TextInputEditText) findViewById(R.id.arrivalDate);
 
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,8 +98,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
 
                 trip.setTripRoute(origin, destination);
-                //trip.setUsername(userProfile.getUserName());
-                //trip.setDriverTrip(userProfile.getDriver());
+                trip.setUsername(userProfile.getUserName());
+                trip.setUserID(userProfile.getUserID());
+                trip.setDriverTrip(userProfile.getDriver());
                 trip.setArrivaltime(cal.getTime());
                 generateTrip(trip);
 
@@ -142,7 +136,7 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
     private void generateTrip(Trip trip){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/trips/newTrip";
+        String url = "http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/newTrip";
         Gson gson = new Gson();
         String tripJson = gson.toJson(trip);
         JSONObject tripJSONObject;
@@ -158,9 +152,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(Maps_Fragment.this, HomeActivity.class);
-                    startActivity(intent);
-                    Maps_Fragment.this.finish();
+                    //Intent intent = new Intent(Maps_Fragment.this, HomeActivity.class);
+                    //startActivity(intent);
+                    //Maps_Fragment.this.finish();
                     /*mMap.clear();
                     Object dataTransfer[] = new Object[3];
                     GetDirectionsData getDirectionsData = new GetDirectionsData();
@@ -239,7 +233,7 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,5));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
         mMap.addMarker(markerOptions);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMarkerClickListener(this);

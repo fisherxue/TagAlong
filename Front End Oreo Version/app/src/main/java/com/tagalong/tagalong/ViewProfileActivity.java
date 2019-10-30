@@ -11,8 +11,15 @@ import android.widget.TextView;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
-    private TextView name, username, age, email, interests, carCap, registeredAs, gender;
-    private Button edit, logout;
+    private TextView name;
+    private TextView username;
+    private TextView age;
+    private TextView email;
+    private TextView interests;
+    private TextView carCap;
+    private TextView registeredAs;
+    private TextView gender;
+    private Button edit;
     private Context context;
 
     private Profile userProfile;

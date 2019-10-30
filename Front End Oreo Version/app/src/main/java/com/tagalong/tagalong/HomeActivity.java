@@ -68,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_maps:
-                            Intent intent = new Intent(context, Chat_Fragment.class);
+                            Intent intent = new Intent(context, Maps_Fragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
                             break;
