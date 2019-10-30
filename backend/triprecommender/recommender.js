@@ -47,7 +47,9 @@ function getDirections(req, callback) {
 function driverTripHandler(driverTrip, callback) {
     getRiderTrips(driverTrip, function(riderTrips) {
         riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
-            callback(riderTrips);
+            modifyTrip(driverTrip, riderTrips, (res) => {
+                callback(riderTrips, driverTrip);
+            })
         });
         
     });
@@ -110,16 +112,14 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
     }
     /* get the driver user matching the username */
     let driverUser;
-    let userID = driverTrip.userID;
-    await UserStore.findById(userID, (err, user) => {
+    await UserStore.findById(driverTrip.userID, (err, user) => {
         driverUser = user
     })
 
     for (let i = 0; i < riderTrips.length; i++) {
         /* get the rider user matching the username */
         let riderUser;
-        userID = riderTrips[i].userID
-        await UserStore.findByID(userID, (err, user) => {
+        await UserStore.findById(riderTrips[i].userID, (err, user) => {
             riderUser = user
         })
 
@@ -134,14 +134,16 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
     riderTrips = riderTrips.slice(0, 1) // should slice by driver car size
 
-    riderTrips[0].isDriverTrip = true
+    riderTrips[0].isFulfilled = true
 
     let userID = riderTrips[0].userID;
     let update = riderTrips[0]
 
-    const updatedUser = await TripStore.findOneAndUpdate({userID: userID}, update, {
-            new: true
-        });
+    await TripStore.findByIdAndUpdate(userID, update, {new: true}, (err) => {
+        if (err) {
+            console.log(err);
+        }
+    });
 
     callback(riderTrips);
 

@@ -18,12 +18,16 @@ const TripSchema = mongoose.Schema({
 		type: Boolean,
 		required: true
 	},
-	user_id: {
+	userID: {
 		type: ObjectId,
 		required: true
 	},
 	isFulfilled: {
 		type: Boolean,
+		required: true
+	},
+	username: {
+		type: String,
 		required: true
 	}
 	

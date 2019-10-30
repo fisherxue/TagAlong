@@ -3,23 +3,33 @@ const User = require('../../User/models/user');
 
 const handleDelTrip = async (req, res) => {
 	
-	const { username } = req.body;
+	const { userID, tripid } = req.body;
 
 	const user = await User.findOne({ username });
 
-	if (user) {
-		TripStore.deleteOne({_id: tripid}, err => {
+	if (mongoose.Types.ObjectId.isValid(userID)) {
+		await User.findById(userID, (err, user) => {
 			if (err) {
-				return res.status(400).send("trip not found");
+				return res.status(400).send("Unable to find user");
 			}
 			else {
-				return res.json("trip successfully deleted");
+				TripStore.findByIdAndDelete(tripid, err => {
+					if (err) {
+						res.status(400).send("trip not found")
+					}
+					else {
+						res.json("trip successfully deleted")
+					}
+				})
 			}
-		})
+
+		});
 	}
 	else {
-		return res.status(400).send("Incorrect email or password");
+		return res.status(400).send("Invalid userID");
 	}
+
+
 
 }
 
