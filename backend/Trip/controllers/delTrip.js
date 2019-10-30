@@ -12,8 +12,9 @@ const handleDelTrip = async (req, res) => {
 			}
 			else {
 				TripStore.findByIdAndDelete(tripid, err => {
-					if (err) 
+					if (err) {
 						res.status(400).send("trip not found");
+					}
 					else 
 						res.json("trip successfully deleted");
 				})
@@ -21,9 +22,8 @@ const handleDelTrip = async (req, res) => {
 
 		});
 	}
-	else {
+	else 
 		return res.status(400).send("Invalid userID");
-	}
 
 
 

@@ -20,11 +20,11 @@ const handleCreateTrip = async (req, res) => {
 			else {
 
 				trip = new TripStore({
-					username: username,
-					userID: userID,
-					arrivaltime: arrivaltime,
+					username,
+					userID,
+					arrivaltime,
 					tripRoute: JSON.stringify(tripRoute),
-					isDriverTrip: isDriverTrip,
+					isDriverTrip,
 					isFulfilled: false
 				});
 
@@ -107,5 +107,5 @@ const handleCreateTrip = async (req, res) => {
 }
 
 module.exports = {
-	handleCreateTrip: handleCreateTrip
+	handleCreateTrip
 }

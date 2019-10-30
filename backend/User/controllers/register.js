@@ -23,8 +23,9 @@ const handleRegister = async (req, res) => {
 
 		});
 		await user.save(err => {
-			if(err)
+			if (err) {
 				res.status(400).send("ERROR MISSING FIELD")
+			}
 			else
 				res.send(user);
 		})
