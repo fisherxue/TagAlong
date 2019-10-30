@@ -3,6 +3,7 @@
     <string name="facebook_app_id">380658912814380</string>
     <string name="fb_login_protocol_scheme">fb380658912814380</string>
     <string name="default_notification_channel_id">fcm_event_channel</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBkJOd7BbpK9xtuNfBmq6JmzH5CHiO8Cz8</string>
 
 
 </resources>
