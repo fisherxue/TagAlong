@@ -15,11 +15,11 @@ const handleRegister = async (req, res) => {
 	}
 	else {
 		user = new User({
-			username: username,
-			email: email,
+			username,
+			email,
 			joinedDate: new Date(),
 			password: bcrypt.hashSync(password, 10),
-			fbToken: fbToken
+			fbToken
 
 		});
 		await user.save(err => {
@@ -32,5 +32,5 @@ const handleRegister = async (req, res) => {
 }
 
 module.exports = {
-	handleRegister: handleRegister
+	handleRegister
 }

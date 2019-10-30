@@ -22,7 +22,7 @@ const handleAcceptTrip = async (req, res) => {
 			priority: "high",
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
-	 
+
 	 	console.log(firebaseToken);
 	 	firebase.messaging().sendToDevice(firebaseToken, payload, options)
 		.then(res => {
@@ -40,5 +40,5 @@ const handleAcceptTrip = async (req, res) => {
 }
 
 module.exports = {
-	handleAcceptTrip: handleAcceptTrip
+	handleAcceptTrip
 }
