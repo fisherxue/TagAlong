@@ -23,7 +23,9 @@ function getDirectionsWithWaypoints(req, callback) {
         destination: req.destination,
         waypoints: req.waypoints,
     }, function(err, response) {
-        if (err) throw err;
+        if (err) {
+            throw err;
+        }
 
         callback(response);
     });
@@ -34,7 +36,9 @@ function getDirections(req, callback) {
         origin: req.origin,
         destination: req.destination,
     }, function(err, response) {
-        if (err) console.log(err);
+        if (err) {
+            console.log(err);
+        }
         callback(response);
     });
 }
@@ -173,12 +177,13 @@ function tripHandler(trip, callback) {
 function modifyTrip(driverTrip, riderTrips, callback) {
     let waypoints = [];
 
-    for (let i = 0; i < riderTrips.length; i++) {
-        let startPoint = riderTrips[i].startLat + "," + riderTrips[i].startLng;
-        let endPoint = riderTrips[i].endLat + "," + riderTrips[i].endLng
+    riderTrips.forEach(function(riderTrip) {
+        let startPoint = riderTrip.startLat + "," + riderTrip.startLng;
+        let endPoint = riderTrip.endLat + "," + riderTrip.endLng
         waypoints.push(startPoint);
         waypoints.push(endPoint);
-    }
+    });
+    
 
     let driverStartPoint = driverTrip.startLat + "," + driverTrip.startLng;
     let driverEndPoint = driverTrip.endLat + "," + driverTrip.endLng;
@@ -207,17 +212,17 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
     let driverUser;
     await UserStore.findById(driverTrip.userID, (err, user) => {
         driverUser = user;
-    })
+    });
 
-    for (let i = 0; i < riderTrips.length; i++) {
-        /* get the rider user matching the username */
-        let riderUser;
-        await UserStore.findById(riderTrips[i].userID, (err, user) => {
-            riderUser = user;
-        })
-
-        riderTrips[i].similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
-    }
+    riderTrips.forEach(function(riderTrip) {
+         /* get the rider user matching the username */
+         let riderUser;
+         await UserStore.findById(riderTrip.userID, (err, user) => {
+             riderUser = user;
+         });
+ 
+         riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+    });
 
     riderTrips = riderTrips.sort(function (a, b) {
         return b.similarityWithDriver - a.similarityWithDriver;
@@ -267,7 +272,7 @@ function getInterestSimilarity(user1, user2) {
     similarity /= magA;
     similarity /= magB;
 
-    console.log(similarity)
+    console.log(similarity);
 
     return similarity;
 }
@@ -296,4 +301,4 @@ async function getRiderTrips(driverTrip, callback) {
 module.exports = {
     driverTripHandler,
     tripHandler
-}
+};
