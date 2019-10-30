@@ -10,7 +10,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -27,14 +26,14 @@ import org.json.JSONObject;
 
 public class UpdateProfileActivity extends AppCompatActivity {
 
-    private EditText age,gen,interest,fn,ln,carcap;
+    private EditText age,gen,fn,ln,carcap;
     private Button submit;
     private Switch isDriver;
     private Context context;
     private boolean allSet;
     private Profile userProfile;
     private SeekBar music, smoking, speed, fragrance, chatting;
-    private int[] interests = new int[5];
+    private int[] interests = {2,2,2,2,2};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         ln = (EditText) findViewById(R.id.lastName);
         age = (EditText) findViewById(R.id.age);
         gen = (EditText) findViewById(R.id.gender);
-        //interest = (TextView) findViewById(R.id.intrests);
         carcap = (EditText) findViewById(R.id.carCapacity);
         isDriver = (Switch) findViewById(R.id.isDriver);
         submit = (Button) findViewById(R.id.submit);
@@ -197,7 +195,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 }
 
                 newUserProfile.setInterests(interests);
-                newUserProfile.set_id(userProfile.get_id());
+                newUserProfile.setUserID(userProfile.getUserID());
                 newUserProfile.setEmail(userProfile.getEmail());
                 newUserProfile.setFirstName(userProfile.getFirstName());
                 newUserProfile.setLastName(userProfile.getLastName());
@@ -214,22 +212,21 @@ public class UpdateProfileActivity extends AppCompatActivity {
     void sendProfile(Profile profile) {
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://206.87.96.130:3000/users/register";
+        String url = getString(R.string.updateProfile);
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
 
-        System.out.println(profileJson.toString());
-
         try {
             profileJsonObject = new JSONObject((profileJson));
 
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully signed up", Toast.LENGTH_LONG).show();
                     final Profile received_profile = new Profile();
                     try {
+                        System.out.println(response.toString());
                         received_profile.setUserName(response.getString("username"));
                         JSONArray jsonArray = response.getJSONArray("interests");
                         int [] interests = new int[jsonArray.length()];
@@ -237,20 +234,22 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             interests[i] = jsonArray.getInt(i);
                         }
                         received_profile.setInterests(interests);
-                        received_profile.setFirstName(response.getString("firstName"));
-                        received_profile.setLastName(response.getString("lastName"));
                         received_profile.setAge(response.getInt("age"));
                         received_profile.setGender(response.getString( "gender"));
                         received_profile.setEmail(response.getString("email"));
                         received_profile.setPassword(response.getString("password"));
                         received_profile.setDriver(response.getBoolean("isDriver"));
-                        received_profile.set_id(response.getString("_id"));
+                        received_profile.setUserID(response.getString("_id"));
                         received_profile.setJoinedDate(response.getString("joinedDate"));
+                        received_profile.setFirstName(response.getString("firstName"));
+                        received_profile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        System.out.println(e);
                     }
                     Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                     intent.putExtra("profile", received_profile);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     UpdateProfileActivity.this.finish();
 

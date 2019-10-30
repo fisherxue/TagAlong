@@ -163,7 +163,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:text="   How fast do you ride/drive ?" />
+                android:text="   How fast do prefer your ride to be ?" />
 
             <SeekBar
                 android:id="@+id/seekSpeed"

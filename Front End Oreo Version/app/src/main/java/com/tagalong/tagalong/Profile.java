@@ -13,8 +13,23 @@ public class Profile implements Serializable {
     private int age;
     //private String interests;
     private int carCapacity;
-    private String _id;
+    private String userID;
     private String joinedDate;
+
+    public Profile() {
+        this.firstName = "Not Set";
+        this.lastName = "Not Set";
+        this.username = "Not Set";
+        this.password = "Not Set";
+        this.email = "Not Set";
+        this.isDriver = false;
+        this.gender = "Not Set";
+        this.age = 0;
+        this.carCapacity = 0;
+        this.userID = "Not Set";
+        this.joinedDate = "Not Set";
+        this.interests = new int[5];
+    }
 
 
     public int[] getInterests() {
@@ -107,16 +122,16 @@ public class Profile implements Serializable {
         return interests;
     }*/
 
-    public void set_id(String _id) {
-        this._id = _id;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public void setJoinedDate(String joinedDate) {
         this.joinedDate = joinedDate;
     }
 
-    public String get_id() {
-        return _id;
+    public String getUserID() {
+        return userID;
     }
 
     public String getJoinedDate() {

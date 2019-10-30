@@ -23,7 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
-
+        System.out.println(userProfile.getUserID());
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
@@ -38,6 +38,24 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.profile :
+                Intent intent = new Intent(context, ViewProfileActivity.class);
+                intent.putExtra("profile", userProfile);
+                startActivity(intent);
+                break;
+            case R.id.logout :
+                Intent intent2 = new Intent(context, MainActivity.class);
+                startActivity(intent2);
+                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                HomeActivity.this.finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener lister =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -50,7 +68,7 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_maps:
-                            Intent intent = new Intent(context, Maps_Fragment.class);
+                            Intent intent = new Intent(context, Chat_Fragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
                             break;
@@ -59,12 +77,13 @@ public class HomeActivity extends AppCompatActivity {
                             frag = new Chat_Fragment();
                             break;
 
+                        /*
                         case R.id.nav_profile:
                             frag = new Profile_Fragment();
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("profile", userProfile);
                             frag.setArguments(bundle);
-                            break;
+                            break;*/
                     }
 
                     if (frag != null) {

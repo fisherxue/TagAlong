@@ -76,7 +76,15 @@ public class SignupActivity extends AppCompatActivity {
                            Toast.makeText(context, "Please Enter Password", Toast.LENGTH_LONG).show();
                            allSet = false;
                        }
-                            newUserLogin.setFbToken(login.getFbToken());
+
+                       if (!email.getText().toString().isEmpty()) {
+                           newUserLogin.setEmailId(email.getText().toString());
+                       } else {
+                           Toast.makeText(context, "Please Enter emailID", Toast.LENGTH_LONG).show();
+                           allSet = false;
+                       }
+
+                       newUserLogin.setFbToken(login.getFbToken());
                        if (allSet) {
                             sendLogin(newUserLogin);
                        }
@@ -88,7 +96,7 @@ public class SignupActivity extends AppCompatActivity {
 
     private void sendLogin(Login loginProfile){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/users/login";
+        String url = getString(R.string.register);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
@@ -106,13 +114,13 @@ public class SignupActivity extends AppCompatActivity {
                         receivedProfile.setUserName(response.getString("username"));
                         receivedProfile.setPassword(response.getString("password"));
                         receivedProfile.setEmail(response.getString("email"));
-                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setUserID(response.getString("_id"));
                         receivedProfile.setJoinedDate(response.getString("joinedDate"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    Intent intent = new Intent(context, Login.class);
+                    Intent intent = new Intent(context, UpdateProfileActivity.class);
                     intent.putExtra("profile", receivedProfile);
                     startActivity(intent);
                 }
@@ -120,6 +128,8 @@ public class SignupActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    Log.d(TAG,error.toString());
                     Log.d(TAG, "Registration Un-Successful");
                     Toast.makeText(context, "Please Try Again", Toast.LENGTH_LONG).show();
                 }

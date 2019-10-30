@@ -28,7 +28,6 @@ import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +36,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -154,11 +154,10 @@ public class MainActivity extends AppCompatActivity {
                                 Log.d(TAG, token);
                                 loginProfile.setFbToken(token);
 
-                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
                                 intent.putExtra("login",loginProfile);
                                 startActivity(intent);
                                 Log.d(TAG, "Main Activity Ended");
-                                //MainActivity.this.finish();
                             }
                         });
             }
@@ -250,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void verifyUser(final Login loginProfile, final boolean isExternal){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/users/login";
+        String url = getString(R.string.login);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
@@ -264,17 +263,23 @@ public class MainActivity extends AppCompatActivity {
                     Profile receivedProfile = new Profile();
 
                     try {
+                        System.out.println(response.toString());
                         receivedProfile.setUserName(response.getString("username"));
-                        //receivedProfile.setInterest(response.getString("interests"));
-                        receivedProfile.setFirstName(response.getString("firstName"));
-                        receivedProfile.setLastName(response.getString("lastName"));
+                        JSONArray jsonArray = response.getJSONArray("interests");
+                        int [] interests = new int[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++){
+                            interests[i] = jsonArray.getInt(i);
+                        }
+                        receivedProfile.setInterests(interests);
                         receivedProfile.setAge(response.getInt("age"));
                         receivedProfile.setGender(response.getString("gender"));
                         receivedProfile.setEmail(response.getString("email"));
                         receivedProfile.setPassword(response.getString("password"));
                         receivedProfile.setDriver(response.getBoolean("isDriver"));
-                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setUserID(response.getString("_id"));
                         receivedProfile.setJoinedDate(response.getString("joinedDate"));
+                        receivedProfile.setFirstName(response.getString("firstName"));
+                        receivedProfile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -317,7 +322,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendLogin(Login loginProfile){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/users/login";
+        String url = getString(R.string.login);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
@@ -335,15 +340,16 @@ public class MainActivity extends AppCompatActivity {
                         receivedProfile.setUserName(response.getString("username"));
                         receivedProfile.setPassword(response.getString("password"));
                         receivedProfile.setEmail(response.getString("email"));
-                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setUserID(response.getString("_id"));
                         receivedProfile.setJoinedDate(response.getString("joinedDate"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
-                    Intent intent = new Intent(context, Login.class);
+                    Intent intent = new Intent(context, UpdateProfileActivity.class);
                     intent.putExtra("profile", receivedProfile);
                     startActivity(intent);
+
                 }
 
             }, new Response.ErrorListener() {
