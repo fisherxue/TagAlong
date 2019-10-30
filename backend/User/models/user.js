@@ -42,6 +42,10 @@ const UserSchema = mongoose.Schema({
 		type: Boolean,
 		required: false
 	},
+	carCapacity: {
+		type: Number,
+		required: false
+	},
 	fbToken: {
 		type: String,
 		required: false

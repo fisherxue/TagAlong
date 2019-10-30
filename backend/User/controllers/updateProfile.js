@@ -5,10 +5,18 @@ const handleProfileUpdate = async (req, res) => {
 	console.log('/profileUpdate hit');
 	console.log(req.body);
 	
-	const { userID, firstName, lastName, age, gender, email, interests, isDriver, fbToken } = req.body;
+	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
 	let update = {
 	}
+
+	if (firstName) {
+		update.firstName = firstName;
+	}
+
+	if (lastName) {
+		update.lastName = lastName;
+ 	}
 
 	if (age) {
 		update.age = age;
@@ -30,12 +38,16 @@ const handleProfileUpdate = async (req, res) => {
 		update.isDriver = isDriver;
 	}
 
+	if (carCapacity) {
+		update.carCapacity = carCapacity;
+	}
+
 	if (fbToken) {
 		update.fbToken = fbToken;
 	}
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
-		console.log("VALID");
+
 		await User.findByIdAndUpdate(userID, update, { new: true }, (err, user) => {
 			if (err) {
 				return res.status(400).send(err);
