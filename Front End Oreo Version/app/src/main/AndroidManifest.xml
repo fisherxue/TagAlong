@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".UpdateProfileActivity"></activity>
+        <activity android:name=".ViewProfileActivity"></activity>
+        <activity android:name=".UpdateProfileActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".HomeActivity" />
 

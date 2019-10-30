@@ -3,6 +3,8 @@ package com.tagalong.tagalong;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -28,6 +30,14 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home_Fragment()).commit();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //return super.onCreateOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.top_menu,menu);
+        return true;
+    }
+
     private BottomNavigationView.OnNavigationItemSelectedListener lister =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -40,7 +50,7 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_maps:
-                            Intent intent = new Intent(context, Chat_Fragment.class);
+                            Intent intent = new Intent(context, Maps_Fragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
                             break;
