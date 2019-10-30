@@ -45,7 +45,7 @@ public class Profile_Fragment extends Fragment {
             email.setText("Email address :" + userProfile.getEmail());
             age.setText("Age :" + userProfile.getAge());
 
-            interests.setText("Interests: " + userProfile.getInterest());
+            //interests.setText("Interests: " + userProfile.getInterest());
             if(userProfile.getDriver()){
                 registeredAs.setText(" Registered as : Driver");
                 carCap.setText("Car Capacity: " + userProfile.getCarCapacity());

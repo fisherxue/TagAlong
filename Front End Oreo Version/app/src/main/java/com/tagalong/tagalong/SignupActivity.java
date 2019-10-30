@@ -26,18 +26,22 @@ public class SignupActivity extends AppCompatActivity {
     private String TAG = "Signup Activity";
     private EditText un;
     private EditText pswd;
+    private EditText pswd2;
     private EditText email;
     private Button nxt;
     private Context context;
     private boolean allSet;
+    private Login login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         context = getApplicationContext();
+        login = (Login) getIntent().getSerializableExtra("login") ;
         un = (EditText) findViewById(R.id.username);
         pswd = (EditText) findViewById(R.id.password);
+        pswd2 = (EditText) findViewById(R.id.password2);
         nxt = (Button) findViewById(R.id.nextbutton);
         email = (EditText) findViewById(R.id.Email);
     }
@@ -60,14 +64,21 @@ public class SignupActivity extends AppCompatActivity {
                        }
 
                        if (!pswd.getText().toString().isEmpty()) {
-                           newUserLogin.setPassword(pswd.getText().toString());
+                           if (pswd.getText().toString().equals(pswd2.getText().toString())) {
+                               newUserLogin.setPassword(pswd.getText().toString());
+                           }
+                           else {
+                               Toast.makeText(context, "Passwords Do not Match", Toast.LENGTH_LONG).show();
+                               allSet = false;
+                           }
+
                        } else {
                            Toast.makeText(context, "Please Enter Password", Toast.LENGTH_LONG).show();
                            allSet = false;
                        }
-
+                            newUserLogin.setFbToken(login.getFbToken());
                        if (allSet) {
-
+                            sendLogin(newUserLogin);
                        }
 
                    }
@@ -90,6 +101,16 @@ public class SignupActivity extends AppCompatActivity {
                     Log.d(TAG, "Login Verification Successful");
                     Profile receivedProfile = new Profile();
                     Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+
+                    try {
+                        receivedProfile.setUserName(response.getString("username"));
+                        receivedProfile.setPassword(response.getString("password"));
+                        receivedProfile.setEmail(response.getString("email"));
+                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setJoinedDate(response.getString("joinedDate"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     Intent intent = new Intent(context, Login.class);
                     intent.putExtra("profile", receivedProfile);

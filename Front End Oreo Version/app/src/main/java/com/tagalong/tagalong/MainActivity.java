@@ -141,10 +141,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Sign up requested");
-                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-                startActivity(intent);
-                Log.d(TAG, "Main Activity Ended");
-                //MainActivity.this.finish();
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                Login loginProfile = new Login();
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "getInstanceId failed", task.getException());
+                                    return;
+                                }
+                                String token = task.getResult().getToken();
+                                Log.d(TAG, token);
+                                loginProfile.setFbToken(token);
+
+                                Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+                                intent.putExtra("login",loginProfile);
+                                startActivity(intent);
+                                Log.d(TAG, "Main Activity Ended");
+                                //MainActivity.this.finish();
+                            }
+                        });
             }
         });
 
@@ -249,7 +265,7 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         receivedProfile.setUserName(response.getString("username"));
-                        receivedProfile.setInterest(response.getString("interests"));
+                        //receivedProfile.setInterest(response.getString("interests"));
                         receivedProfile.setFirstName(response.getString("firstName"));
                         receivedProfile.setLastName(response.getString("lastName"));
                         receivedProfile.setAge(response.getInt("age"));
@@ -314,6 +330,16 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "Login Verification Successful");
                     Profile receivedProfile = new Profile();
                     Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+
+                    try {
+                        receivedProfile.setUserName(response.getString("username"));
+                        receivedProfile.setPassword(response.getString("password"));
+                        receivedProfile.setEmail(response.getString("email"));
+                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setJoinedDate(response.getString("joinedDate"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                     Intent intent = new Intent(context, Login.class);
                     intent.putExtra("profile", receivedProfile);

@@ -11,10 +11,21 @@ public class Profile implements Serializable {
     private Boolean isDriver;
     private String gender;
     private int age;
-    private String interests;
+    //private String interests;
     private int carCapacity;
     private String _id;
     private String joinedDate;
+
+
+    public int[] getInterests() {
+        return interests;
+    }
+
+    public void setInterests(int[] interests) {
+        this.interests = interests;
+    }
+
+    private int[] interests;
 
     public String getFirstName() {
         return firstName;
@@ -60,9 +71,9 @@ public class Profile implements Serializable {
         this.age = age;
     }
 
-    public void setInterest(String interests) {
+    /*public void setInterest(String interests) {
         this.interests = interests;
-    }
+    }*/
 
     public String getLastName() {
         return lastName;
@@ -92,9 +103,9 @@ public class Profile implements Serializable {
         return age;
     }
 
-    public String getInterest() {
+    /*public String getInterest() {
         return interests;
-    }
+    }*/
 
     public void set_id(String _id) {
         this._id = _id;

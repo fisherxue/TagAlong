@@ -8,7 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Switch;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -19,6 +21,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +32,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private Switch isDriver;
     private Context context;
     private boolean allSet;
+    private Profile userProfile;
+    private SeekBar music, smoking, speed, fragrance, chatting;
+    private int[] interests = new int[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,20 +42,112 @@ public class UpdateProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_profile);
         context = getApplicationContext();
 
+        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
+
         fn = (EditText) findViewById(R.id.firstName);
         ln = (EditText) findViewById(R.id.lastName);
         age = (EditText) findViewById(R.id.age);
         gen = (EditText) findViewById(R.id.gender);
-        interest = (EditText) findViewById(R.id.intrests);
+        //interest = (TextView) findViewById(R.id.intrests);
         carcap = (EditText) findViewById(R.id.carCapacity);
         isDriver = (Switch) findViewById(R.id.isDriver);
         submit = (Button) findViewById(R.id.submit);
-
+        music = (SeekBar) findViewById(R.id.seekMusic);
+        smoking = (SeekBar) findViewById(R.id.seekSmoking);
+        fragrance = (SeekBar) findViewById(R.id.seekFragrance);
+        speed = (SeekBar) findViewById(R.id.seekSpeed);
+        chatting = (SeekBar) findViewById(R.id.seekChatting);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+
+        music.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[0] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        chatting.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[1] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[2] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        fragrance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[3] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
+        smoking.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[4] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
+
 
         final Profile newUserProfile = new Profile();
         submit.setOnClickListener(new View.OnClickListener() {
@@ -98,13 +196,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     }
                 }
 
-
-                if (!interest.getText().toString().isEmpty()){
-                    newUserProfile.setInterest(interest.getText().toString());
-                } else {
-                    Toast.makeText(context, "Please Enter Interests", Toast.LENGTH_LONG).show();
-                    allSet = false;
-                }
+                newUserProfile.setInterests(interests);
+                newUserProfile.set_id(userProfile.get_id());
+                newUserProfile.setEmail(userProfile.getEmail());
+                newUserProfile.setFirstName(userProfile.getFirstName());
+                newUserProfile.setLastName(userProfile.getLastName());
+                newUserProfile.setJoinedDate(userProfile.getJoinedDate());
 
                 if (allSet) {
                     sendProfile(newUserProfile);
@@ -134,11 +231,16 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     final Profile received_profile = new Profile();
                     try {
                         received_profile.setUserName(response.getString("username"));
-                        received_profile.setInterest(response.getString("interests"));
+                        JSONArray jsonArray = response.getJSONArray("interests");
+                        int [] interests = new int[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++){
+                            interests[i] = jsonArray.getInt(i);
+                        }
+                        received_profile.setInterests(interests);
                         received_profile.setFirstName(response.getString("firstName"));
                         received_profile.setLastName(response.getString("lastName"));
                         received_profile.setAge(response.getInt("age"));
-                        received_profile.setGender(response.getString("gender"));
+                        received_profile.setGender(response.getString( "gender"));
                         received_profile.setEmail(response.getString("email"));
                         received_profile.setPassword(response.getString("password"));
                         received_profile.setDriver(response.getBoolean("isDriver"));
