@@ -1,9 +1,9 @@
-const User = require('../models/user');
-const mongoose = require('mongoose');
+const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const handleFBtokenUpdate = async (req, res) => {
 
-	console.log('/updateFBtoken hit');
+	console.log("/updateFBtoken hit");
 	
 	const { userID, fbToken} = req.body;
 

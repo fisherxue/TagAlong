@@ -64,7 +64,7 @@ module.exports = {
     getLatLngDistance, 
     getLatLngBearing, 
     getLatLngShortestDistanceLinePoint
-}
+};
 
 // sample usage
 /*
