@@ -1,14 +1,14 @@
 
-const LatLng = require('./latlng.js');
+const LatLng = require("./latlng.js");
 
 // database
-const TripStore = require('../Trip/models/Trip');
-const UserStore = require('../User/models/user');
+const TripStore = require("../Trip/models/Trip");
+const UserStore = require("../User/models/user");
 
 /* Google Maps */
 // initialize maps client
-const googleMapsClient = require('@google/maps').createClient({
-    key: 'AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ'
+const googleMapsClient = require("@google/maps").createClient({
+    key: "AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ"
 });
 
 
@@ -47,11 +47,11 @@ function getDirections(req, callback) {
 function driverTripHandler(driverTrip, callback) {
     getRiderTrips(driverTrip, function(riderTrips) {
         riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
-            callback(riderTrips);
-        });
-        
+            modifyTrip(driverTrip, riderTrips, (res) => {
+                callback(riderTrips);
+            });
+        }); 
     });
-    
 }
 
 /*
@@ -134,18 +134,19 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
     riderTrips = riderTrips.slice(0, 1) // should slice by driver car size
 
-    riderTrips[0].isDriverTrip = true
-
-    let userID = riderTrips[0].userID;
-    let update = riderTrips[0]
-
-    const updatedUser = await TripStore.findOneAndUpdate({userID: userID}, update, {
-            new: true
+    riderTrips.forEach(function(riderTrip, index) {
+        let userID = riderTrip.userID;
+        let update = riderTrip;
+        riderTrip.isFulfilled = true;
+    
+        await TripStore.findByIdAndUpdate(userID, update, {new: true}, (err) => {
+            if (err) {console.log(err);}
+            
         });
-
+    })
+   
+                                      
     callback(riderTrips);
-
-
 }
 
 /*
@@ -224,7 +225,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
  * TESTED WORKING NO EDGE CASE TESTS DONE
  */
 function cutTripsByBearing(driverTrip, riderTrips) {
-        if (typeof riderTrips === "undefined") {
+    if (typeof riderTrips === "undefined") {
         return undefined
     }
 
@@ -235,8 +236,6 @@ function cutTripsByBearing(driverTrip, riderTrips) {
             newDriverRoute.routes[0].legs[0].end_location.lat, 
             newDriverRoute.routes[0].legs[0].end_location.lng);
     let riderTripsBearing = [];
-
-
 
     riderTrips.forEach(function(riderTrip, index) {
         let newRiderRoute = JSON.parse(riderTrip.tripRoute)
