@@ -25,7 +25,7 @@ if (!config.get("PrivateKey")) {
 // Connect to MongoDB 
 mongoose.connect("mongodb://localhost:27017/TagAlong", {useNewUrlParser: true})
 	.then(() => console.log("Successfully connected to TagAlong MongoDB"))
-	.catch(err => console.log("Error connecting to database", err));
+	.catch((err) => console.log("Error connecting to database", err));
 
 app.use(bodyParser.json());
 

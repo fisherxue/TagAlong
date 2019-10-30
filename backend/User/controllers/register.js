@@ -22,16 +22,17 @@ const handleRegister = async (req, res) => {
 			fbToken
 
 		});
-		await user.save(err => {
+		await user.save((err) => {
 			if (err) {
-				res.status(400).send("ERROR MISSING FIELD")
+				res.status(400).send("ERROR MISSING FIELD");
 			}
-			else
+			else {
 				res.send(user);
+			}
 		})
 	}
 }
 
 module.exports = {
 	handleRegister
-}
+};

@@ -217,7 +217,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
     riderTrips.forEach(function(riderTrip) {
          /* get the rider user matching the username */
          let riderUser;
-         await UserStore.findById(riderTrip.userID, (err, user) => {
+        UserStore.findById(riderTrip.userID, (err, user) => {
              riderUser = user;
          });
  

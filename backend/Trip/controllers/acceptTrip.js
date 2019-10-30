@@ -12,23 +12,23 @@ const handleAcceptTrip = async (req, res) => {
 
 		const firebaseToken = user.fbToken;
 		const payload = {
-		    notification: {
-		    	title: "Trip Accepted",
-		    	body: "You have been matched with a driver and other riders for the requested trip",
-		    }
+				notification: {
+				title: "Trip Accepted",
+				body: "You have been matched with a driver and other riders for the requested trip",
+			}
 		};
-	 
+	
 		const options = {
 			priority: "high",
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 
-	 	console.log(firebaseToken);
-	 	firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.then(res => {
+		console.log(firebaseToken);
+		firebase.messaging().sendToDevice(firebaseToken, payload, options)
+		.then((res) => {
 			console.log(res.results);
 		})
-	 	.catch(err => {
+	 	.catch((err) => {
 			console.log(err);
 		});
 		res.json("Sent");
@@ -41,4 +41,4 @@ const handleAcceptTrip = async (req, res) => {
 
 module.exports = {
 	handleAcceptTrip
-}
+};

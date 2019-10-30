@@ -15,15 +15,17 @@ const handleDelTrip = async (req, res) => {
 					if (err) {
 						res.status(400).send("trip not found");
 					}
-					else 
+					else {
 						res.json("trip successfully deleted");
-				})
+					}
+				});
 			}
 
 		});
 	}
-	else 
+	else {
 		return res.status(400).send("Invalid userID");
+	}
 
 
 
@@ -31,4 +33,4 @@ const handleDelTrip = async (req, res) => {
 
 module.exports = {
 	handleDelTrip
-}
+};

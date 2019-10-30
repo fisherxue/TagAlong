@@ -1,10 +1,10 @@
-const TripStore = require('../models/Trip');
-const User = require('../../User/models/user');
-const firebase = require('firebase-admin');
-const mongoose = require('mongoose');
+const TripStore = require("../models/Trip");
+const User = require("../../User/models/user");
+const firebase = require("firebase-admin");
+const mongoose = require("mongoose");
 
 
-const tripRecommender = require('../../triprecommender/recommender');
+const tripRecommender = require("../../triprecommender/recommender");
 
 const handleCreateTrip = async (req, res) => {
 		
@@ -19,7 +19,7 @@ const handleCreateTrip = async (req, res) => {
 			}
 			else {
 
-				trip = new TripStore({
+				let trip = new TripStore({
 					username,
 					userID,
 					arrivaltime,
@@ -29,20 +29,18 @@ const handleCreateTrip = async (req, res) => {
 				});
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
-					trip.tripRoute = JSON.stringify(resp.json)
+					trip.tripRoute = JSON.stringify(resp.json);
 
 
-					trip.save(err => {
+					trip.save((err) => {
 						console.log(err);
 					});
 
 					console.log(typeof isDriverTrip, "IS THIS DRIVER TRIP");
 
 
-					if (isDriverTrip === 'true') {
-						console.log("IT WENT IN")
+					if (isDriverTrip === "true") {
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
-						console.log(riderTrips)
 						if (typeof riderTrips === "undefined") {
 							res.status(300).send("NOTHING");
 						} else {
@@ -60,29 +58,29 @@ const handleCreateTrip = async (req, res) => {
 									const firebaseToken = user.fb_token;
 									if (firebaseToken){
 										const payload = {
-										    notification: {
-										    	title: 'Trip Accepted',
-										    	body: 'You have been matched with a driver and other riders for the requested trip',
-										    }
+											notification: {
+												title: "Trip Accepted",
+												body: "You have been matched with a driver and other riders for the requested trip",
+											}
 										};
-									 
+									
 										const options = {
-											priority: 'high',
+											priority: "high",
 											timeToLive: 60 * 60 * 24, // 1 day
 										};
-									 
-									 	console.log(firebaseToken);
-									 	firebase.messaging().sendToDevice(firebaseToken, payload, options)
-									 	.then(res => {
-									 		console.log(res.results);
-									 	})
-									 	.catch(err => {
-									 		console.log(err);
-									 	});
-									 	res.json("Sent");
+									
+										console.log(firebaseToken);
+										firebase.messaging().sendToDevice(firebaseToken, payload, options)
+										.then((res) => {
+											console.log(res.results);
+										})
+										.catch((err) => {
+											console.log(err);
+										});
+										res.json("Sent");
 									}
 									else {
-										console.log("failed to send")
+										console.log("failed to send");
 									}
 									
 								}
@@ -94,7 +92,8 @@ const handleCreateTrip = async (req, res) => {
 						}
 						})
 						
-					} else {
+					} 
+					else {
 						res.send(trip)
 					}
 				})
@@ -109,4 +108,4 @@ const handleCreateTrip = async (req, res) => {
 
 module.exports = {
 	handleCreateTrip
-}
+};
