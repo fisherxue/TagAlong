@@ -1,8 +1,13 @@
-const User = require('../models/user');
-const mongoose = require('mongoose');
+const User = require("../models/user");
+const mongoose = require("mongoose");
 
 const handleProfileUpdate = async (req, res) => {
+<<<<<<< HEAD
 	console.log('/profileUpdate hit');
+=======
+	console.log("/profileUpdate hit");
+	console.log(req.body);
+>>>>>>> 4d44fb2b319d77d259d511838f05e0e1bd685373
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
