@@ -166,6 +166,13 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	});
 }
 
+function sumProducts(array1, array2) {
+    if(array1.length) 
+        return array1.pop() * array2.pop() + sumProducts(array1, array2);
+
+    return 0;
+}
+
 /*
  * Given two users, accesses their interest fields
  * and computes the similarity between their
@@ -176,21 +183,11 @@ function getInterestSimilarity(user1, user2) {
 	let magA = 0;
 	let magB = 0;
 
-	let sim1 = 0;
-	let sim2 = 0;
-	let similarity = 0;
-
-
 	/* COSINE MATCHING FUNCTION */
-	sim1 = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
-		return accumulator + currentValue;
-	}, 0);
-	sim2 = user2.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
-		return accumulator + currentValue;
-	}, 0);
+	let similarity = sumProducts(user1.interests, user2.interests);
 
 	for (let i = 0; i < NumInterests; i++) {
-		similarity += sim1[i] * sim2[i];
+		similarity += user1.interests[i] * user2.interests[i];
 	}
 
 	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
