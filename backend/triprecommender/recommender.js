@@ -184,7 +184,7 @@ function getInterestSimilarity(user1, user2) {
 	let magB = 0;
 
 	/* COSINE MATCHING FUNCTION */
-	let similarity = sumProducts(user1.interests, user2.interests);
+	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
 
 	for (let i = 0; i < NumInterests; i++) {
 		similarity += user1.interests[i] * user2.interests[i];
