@@ -20,8 +20,6 @@ import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-import androidx.core.app.NotificationCompat;
-
 // TODO probably worth mentioning this code is literally from Google
 
 /**
