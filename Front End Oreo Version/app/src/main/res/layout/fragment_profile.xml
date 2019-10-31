@@ -12,6 +12,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="24dp"
+            android:paddingTop="56dp"
+            android:paddingRight="24dp"
             android:gravity="center|center_horizontal|fill_vertical"
             android:orientation="vertical"
             android:visibility="visible">
@@ -203,35 +206,6 @@
                 android:layout_height="30dp"
                 android:background="?android:attr/listDivider"
                 android:visibility="invisible" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <View
-                    android:id="@+id/divider13"
-                    android:layout_width="100dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="?android:attr/listDivider"
-                    android:visibility="invisible" />
-
-                <Button
-                    android:id="@+id/logout"
-                    android:layout_width="254dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Logout" />
-
-                <View
-                    android:id="@+id/divider12"
-                    android:layout_width="100dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="?android:attr/listDivider"
-                    android:visibility="invisible" />
-            </LinearLayout>
 
             <View
                 android:id="@+id/divider10"

@@ -6,92 +6,261 @@
     android:layout_height="match_parent"
     tools:context=".UpdateProfileActivity">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="24dp"
+        tools:layout_editor_absoluteY="60dp"
+        android:paddingLeft="24dp"
+        android:paddingTop="56dp"
+        android:paddingRight="24dp">
 
-        <TextView
-            android:id="@+id/textView2"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Please Enter The Following Details" />
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <EditText
-            android:id="@+id/firstName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="First Name"
-            android:inputType="number" />
+            <TextView
+                android:id="@+id/textView2"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   Please Enter The Following Details"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/lastName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Last Name"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/firstName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="First Name"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/age"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Age"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/lastName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Last Name"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Gender"
-            android:inputType="textPersonName" />
+            <EditText
+                android:id="@+id/gender"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Gender"
+                android:inputType="textPersonName" />
 
-        <Switch
-            android:id="@+id/isDriver"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text=" Register as Driver?"
-            android:textSize="18sp" />
+            <EditText
+                android:id="@+id/age"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Age"
+                android:inputType="number" />
 
-        <EditText
-            android:id="@+id/carCapacity"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:hint="Car Capacity (if Driver)"
-            android:inputType="number" />
+            <Switch
+                android:id="@+id/isDriver"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:checked="true"
+                android:text="   Register as Driver?"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-        <EditText
-            android:id="@+id/intrests"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:ems="10"
-            android:hint="Interests"
-            android:inputType="textMultiLine" />
+            <EditText
+                android:id="@+id/carCapacity"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:hint="Car Capacity (if Driver)"
+                android:inputType="number" />
 
-        <SeekBar
-            android:id="@+id/seekBar"
-            style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="3"
-            android:progress="1" />
+            <TextView
+                android:id="@+id/intrests"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:ems="10"
+                android:inputType="textMultiLine"
+                android:text="Preferences \n On a scale of 1 to 5, please rank your satisfaction level based on the questions prompted. "
+                android:textAlignment="center"
+                android:textStyle="bold" />
 
-        <Button
-            android:id="@+id/submit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="SUBMIT" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/music"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   To what extent do you like to listen music in car?" />
+
+            <SeekBar
+                android:id="@+id/seekMusic"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <TextView
+                android:id="@+id/speed"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   How fast do prefer your ride to be ?" />
+
+            <SeekBar
+                android:id="@+id/seekSpeed"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <TextView
+                android:id="@+id/chatting"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   To what extent do you enjoy talking?" />
+
+            <SeekBar
+                android:id="@+id/seekChatting"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <TextView
+                android:id="@+id/Fragrance"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   To what extent do you enjoy fragrance in car?" />
+
+            <SeekBar
+                android:id="@+id/seekFragrance"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <TextView
+                android:id="@+id/Smoking"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   To what extent do you accept smoking in car?" />
+
+            <SeekBar
+                android:id="@+id/seekSmoking"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <Button
+                android:id="@+id/submit"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="SUBMIT" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

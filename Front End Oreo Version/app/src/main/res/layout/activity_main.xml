@@ -6,87 +6,88 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/fblogin_button"
-        android:layout_width="229dp"
-        android:layout_height="34dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="24dp"
+        android:paddingTop="56dp"
+        android:paddingRight="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.527" />
+        app:layout_constraintVertical_bias="0.415">
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="234dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Login"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.548"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordLogin"
-        app:layout_constraintVertical_bias="0.072" />
+        <com.facebook.login.widget.LoginButton
+            android:id="@+id/fblogin_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp" />
 
-    <Button
-        android:id="@+id/signup_button"
-        android:layout_width="235dp"
-        android:layout_height="39dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Sign Up"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.554"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login_button"
-        app:layout_constraintVertical_bias="0.004" />
+        <EditText
+            android:id="@+id/userNameLogin"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Username"
+            android:inputType="textPersonName" />
 
-    <EditText
-        android:id="@+id/userNameLogin"
-        android:layout_width="228dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:hint="username"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.517"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fblogin_button"
-        app:layout_constraintVertical_bias="0.04" />
+        <EditText
+            android:id="@+id/passwordLogin"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Password"
+            android:inputType="textPassword" />
 
-    <EditText
-        android:id="@+id/passwordLogin"
-        android:layout_width="232dp"
-        android:layout_height="47dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:ems="10"
-        android:hint="password"
-        android:inputType="textPassword"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.539"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/userNameLogin"
-        app:layout_constraintVertical_bias="0.0" />
+        <Button
+            android:id="@+id/login_button"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Login"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/signup_button"
+            style="@style/Widget.MaterialComponents.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="Sign Up"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.50121653" />
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
