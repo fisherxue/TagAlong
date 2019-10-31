@@ -172,14 +172,13 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  * interests using the Cosine similarity
  */
 function getInterestSimilarity(user1, user2) {
-	return 1; // replace this when we reimplement interests
 
 	let magA = 0;
 	let magB = 0;
 
 	let sim1 = 0;
 	let sim2 = 0;
-	let similarity;
+	let similarity = 0;
 
 
 	/* COSINE MATCHING FUNCTION */
@@ -190,7 +189,9 @@ function getInterestSimilarity(user1, user2) {
 		return accumulator + currentValue;
 	}, 0);
 
-	similarity = sim1 + sim2;
+	for (let i = 0; i < NumInterests; i++) {
+		similarity += sim1[i] * sim2[i];
+	}
 
 	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
 		return accumulator + Math.pow(currentValue, 2);
