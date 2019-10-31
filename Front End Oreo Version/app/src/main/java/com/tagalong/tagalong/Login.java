@@ -9,6 +9,7 @@ public class Login implements Serializable {
     private String firstName;
     private String lastName;
     private String email;
+    private String id;
 
     public String getEmailId() {
         return email;
@@ -25,8 +26,6 @@ public class Login implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
-
-    private String id;
 
     public String getLastName() {
         return lastName;

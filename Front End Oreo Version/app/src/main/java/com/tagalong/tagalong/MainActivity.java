@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     //FaceBook Login Fields
     private CallbackManager callbackManager;
     private LoginButton fbloginButton;
-    private AccessTokenTracker accessTokenTracker;
-    private AccessToken accessToken;
+    //private AccessTokenTracker accessTokenTracker;
+    //private AccessToken accessToken;
 
     //Login-SignUp Fields
     private Button loginButton;
@@ -102,38 +102,7 @@ public class MainActivity extends AppCompatActivity {
         loginPassword = (EditText) findViewById(R.id.passwordLogin);
         loginUser = (EditText) findViewById(R.id.userNameLogin);
 
-        //Click on FaceBook Button
-        fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "Successful FaceBook Login");
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                    return;
-                                }
-
-                                String token = task.getResult().getToken();
-                                Log.d(TAG, token);
-
-                                handleFacebookLogin(token);
-                            }
-                        });
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "FaceBook Login Cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.d(TAG, "Error In Login using FaceBook: Check the Network");
-            }
-        });
+        startFBAuthentication();
 
         //Click on signupButton
         signupButton.setOnClickListener( new View.OnClickListener(){
@@ -208,6 +177,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startFBAuthentication(){
+        //Click on FaceBook Button
+        fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "Successful FaceBook Login");
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "getInstanceId failed", task.getException());
+                                    return;
+                                }
+
+                                String token = task.getResult().getToken();
+                                Log.d(TAG, token);
+
+                                handleFacebookLogin(token);
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "FaceBook Login Cancelled");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.d(TAG, "Error In Login using FaceBook: Check the Network");
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -215,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleFacebookLogin(final String fcmToken){
-        accessToken = AccessToken.getCurrentAccessToken();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {
             Log.d(TAG, "Some Error, please re-login and try again");
         }

@@ -27,7 +27,7 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new Home_Fragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new HomeFragment()).commit();
     }
 
     @Override
@@ -52,6 +52,8 @@ public class HomeActivity extends AppCompatActivity {
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 HomeActivity.this.finish();
                 break;
+            default :
+                super.onOptionsItemSelected(item);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -63,18 +65,19 @@ public class HomeActivity extends AppCompatActivity {
                     Fragment frag = null;
 
                     switch (menuItem.getItemId()){
+
                         case R.id.nav_home:
-                            frag = new Home_Fragment();
+                            frag = new HomeFragment();
                             break;
 
                         case R.id.nav_maps:
-                            Intent intent = new Intent(context, Maps_Fragment.class);
+                            Intent intent = new Intent(context, MapsFragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
                             break;
 
                         case R.id.nav_chat:
-                            frag = new Chat_Fragment();
+                            frag = new ChatFragment();
                             break;
 
                         /*
@@ -84,6 +87,8 @@ public class HomeActivity extends AppCompatActivity {
                             bundle.putSerializable("profile", userProfile);
                             frag.setArguments(bundle);
                             break;*/
+                        default:
+                            return true;
                     }
 
                     if (frag != null) {

@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            tools:context=".Maps_Fragment" />
+            tools:context=".MapsFragment" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

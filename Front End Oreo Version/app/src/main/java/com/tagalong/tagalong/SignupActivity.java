@@ -30,7 +30,6 @@ public class SignupActivity extends AppCompatActivity {
     private EditText email;
     private Button nxt;
     private Context context;
-    private boolean allSet;
     private Login login;
 
     @Override
@@ -49,11 +48,11 @@ public class SignupActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         final Login newUserLogin = new Login();
         nxt.setOnClickListener(new View.OnClickListener() {
                    @Override
                    public void onClick(View v) {
+                       boolean allSet;
                        allSet = true;
 
                        if (!un.getText().toString().isEmpty()) {

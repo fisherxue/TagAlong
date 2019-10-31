@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,6 +27,7 @@ import org.json.JSONObject;
 
 public class UpdateProfileActivity extends AppCompatActivity {
 
+    private String TAG = "Update Profile Activity";
     private EditText age;
     private EditText gen;
     private EditText fn;
@@ -34,7 +36,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private Button submit;
     private Switch isDriver;
     private Context context;
-    private boolean allSet;
     private Profile userProfile;
     private SeekBar music;
     private SeekBar smoking;
@@ -63,11 +64,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         fragrance = (SeekBar) findViewById(R.id.seekFragrance);
         speed = (SeekBar) findViewById(R.id.seekSpeed);
         chatting = (SeekBar) findViewById(R.id.seekChatting);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
 
         music.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -77,12 +73,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "music on start tracing touch");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "music on stop tracing touch");
             }
         });
 
@@ -94,12 +90,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "chatting on start tracing touch");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "chatting on stop tracing touch");
             }
         });
 
@@ -111,12 +107,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "speed on start tracing touch");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "speed on stop tracing touch");
             }
         });
 
@@ -128,12 +124,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "fragrance on start tracing touch");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "fragrance on stop tracing touch");
             }
         });
 
@@ -145,21 +141,25 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "smoking on start tracing touch");
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
+                Log.d(TAG, "smoking on stop tracing touch");
             }
         });
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         final Profile newUserProfile = new Profile();
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                allSet = true;
+                boolean allSet = true;
 
                 if (!fn.getText().toString().isEmpty()) {
                     newUserProfile.setFirstName(fn.getText().toString());
@@ -217,7 +217,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
-    void sendProfile(Profile profile) {
+    private void sendProfile(Profile profile) {
 
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = getString(R.string.updateProfile);

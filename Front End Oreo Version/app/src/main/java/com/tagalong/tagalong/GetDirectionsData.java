@@ -12,10 +12,10 @@ import com.google.maps.android.PolyUtil;
 import java.io.IOException;
 
 public class GetDirectionsData extends AsyncTask<Object, String, String> {
-    GoogleMap mMap;
-    String url;
-    String googleDirectionsData;
-    LatLng latLng;
+    private GoogleMap mMap;
+    private String url;
+    private String googleDirectionsData;
+    private LatLng latLng;
 
     @Override
     protected String doInBackground(Object... objects) {

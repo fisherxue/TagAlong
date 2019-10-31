@@ -15,6 +15,7 @@ public class Profile implements Serializable {
     private int carCapacity;
     private String userID;
     private String joinedDate;
+    private int[] interests;
 
     public Profile() {
         this.firstName = "Not Set";
@@ -39,8 +40,6 @@ public class Profile implements Serializable {
     public void setInterests(int[] interests) {
         this.interests = interests;
     }
-
-    private int[] interests;
 
     public String getFirstName() {
         return firstName;

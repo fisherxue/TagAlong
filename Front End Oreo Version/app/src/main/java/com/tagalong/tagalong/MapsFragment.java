@@ -2,18 +2,15 @@ package com.tagalong.tagalong;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -24,8 +21,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -47,7 +42,7 @@ import org.json.JSONObject;
 
 import java.util.Calendar;
 
-public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallback
+public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     private GoogleMap mMap;
     private FusedLocationProviderClient client;
@@ -86,24 +81,26 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
                     Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
                     allChecked = false;
                 }
+                /*
                 else {
-                    if (!arrivalDate.getResources().toString().matches("^(3[01]|[12][0-9])/(1[0-2]"
+                    if (!arrivalDate.getResources().toString().matches("^(3[0-1]|[1-2][0-9])/(1[0-2]"
                             + "|0[1-9]|0[1-9])/[0-9]{4}$")) {
                         Toast.makeText(context, "Please enter arrival date in the specified format", Toast.LENGTH_LONG).show();
                         allChecked = false;
                     }
-                }
+                } */
                 if (arrivalTime.getResources().toString().isEmpty()){
                     Toast.makeText(context, "Please enter arrival time", Toast.LENGTH_LONG).show();
                     allChecked = false;
                 }
+                /*
                 else {
                     if (!arrivalTime.getResources().toString().matches("^(2[0-3]|[01][0-9]): (5[0-9])$")) {
                         Toast.makeText(context, "Please enter arrival time in the specified format", Toast.LENGTH_LONG).show();
                         allChecked = false;
                     }
 
-                }
+                } */
 
                 if (allChecked){
                     Trip trip = new Trip();
@@ -149,7 +146,7 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
                     longitude = location.getLongitude();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
-                    mapFragment.getMapAsync(Maps_Fragment.this);
+                    mapFragment.getMapAsync(MapsFragment.this);
                 }
             }
         });
@@ -173,9 +170,9 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
-                    //Intent intent = new Intent(Maps_Fragment.this, HomeActivity.class);
+                    //Intent intent = new Intent(MapsFragment.this, HomeActivity.class);
                     //startActivity(intent);
-                    //Maps_Fragment.this.finish();
+                    //MapsFragment.this.finish();
                     /*mMap.clear();
                     Object dataTransfer[] = new Object[3];
                     GetDirectionsData getDirectionsData = new GetDirectionsData();
