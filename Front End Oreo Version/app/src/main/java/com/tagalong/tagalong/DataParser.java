@@ -4,7 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+//import java.util.HashMap;
 
 public class DataParser {
 
@@ -34,7 +34,7 @@ public class DataParser {
 
         return googlePlaceMap;
     }
-    
+
      */
 
 
