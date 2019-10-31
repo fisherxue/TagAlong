@@ -12,11 +12,12 @@ const createUpdateObject = (req) => {
 		...age && { age },
 		...gender && { gender },
 		...email && { email },
-		...isDriver && { isDriver },
 		...email && { email },
 		...carCapacity && { carCapacity },
 		...fbToken && { fbToken }
 	};
+
+	update.isDriver = isDriver;
 
 	return update;
 };
