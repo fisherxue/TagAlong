@@ -7,44 +7,17 @@ const handleProfileUpdate = async (req, res) => {
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
-	let update = {
+	const update = {
+		...firstName && { firstName },
+		...lastName && { lastName },
+		...age && { age },
+		...gender && { gender },
+		...email && { email },
+		...isDriver && { isDriver },
+		...email && { email },
+		...carCapacity && { carCapacity },
+		...fbToken && { fbToken }
 	};
-
-	if (firstName) {
-		update.firstName = firstName;
-	}
-
-	if (lastName) {
-		update.lastName = lastName;
-	}
-
-	if (age) {
-		update.age = age;
-	}
-
-	if (gender) {
-		update.gender = gender;
-	}
-
-	if (email) {
-		update.email = email;
-	}
-
-	if (interests) {
-		update.interests = interests;
-	}
-
-	if (isDriver != null) {
-		update.isDriver = isDriver;
-	}
-
-	if (carCapacity) {
-		update.carCapacity = carCapacity;
-	}
-
-	if (fbToken) {
-		update.fbToken = fbToken;
-	}
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 
