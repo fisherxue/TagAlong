@@ -66,7 +66,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
     let riderTripsTime = [];
 
     if (typeof riderTrips === "undefined") {
-        return undefined;
+        return [];
     }
 
     riderTrips.forEach(function(riderTrip, index) {
@@ -84,8 +84,8 @@ function cutTripsByTime(driverTrip, riderTrips) {
  * TESTED WORKING NO EDGE CASE TESTS DONE
  */
 function cutTripsByBearing(driverTrip, riderTrips) {
-        if (typeof riderTrips === "undefined") {
-        return undefined;
+    if (typeof riderTrips === "undefined") {
+        return [];
     }
 
     let newDriverRoute = JSON.parse(driverTrip.tripRoute);
@@ -121,7 +121,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
     let riderTripsDistance = [];
 
     if (typeof riderTrips === "undefined") {
-        return undefined;
+        return [];
     }
 
     let newDriverRoute = JSON.parse(driverTrip.tripRoute);
@@ -154,23 +154,6 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 }
 
 /*
- * Handles all trips
- * Gets the directions object from Google
- *
- */
-function tripHandler(trip, callback) {
-    let startPoint = trip.origin;
-    let endPoint = trip.destination
-    let req = {
-        origin: startPoint,
-        destination: endPoint
-    }
-    getDirections(req, function(res) {
-        callback(res);
-    });
-}
-
-/*
  * Modify the driver trip by adding waypoints for each 
  * rider trip start and end
  */ 
@@ -191,11 +174,11 @@ function modifyTrip(driverTrip, riderTrips, callback) {
         origin: driverStartPoint,
         destination: driverEndPoint,
         waypoints: waypoints
-    }
+    };
 
     getDirectionsWithWaypoints(req, function(res) {
         callback(res);
-    })
+    });
 }
 
 /*
@@ -206,7 +189,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
     if (typeof riderTrips === "undefined") {
-        return undefined;
+        callback([]);
     }
     /* get the driver user matching the username */
     let driverUser;
@@ -226,7 +209,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
     riderTrips = riderTrips.sort(function (a, b) {
         return b.similarityWithDriver - a.similarityWithDriver;
-    })
+    });
 
     console.log(riderTrips, "OK");
 
@@ -285,10 +268,13 @@ async function getRiderTrips(driverTrip, callback) {
     let riderTrips;
 
     await TripStore.find({}, (err, trips) => {
-        if (err) console.log(err);
-        riderTrips = trips.filter(trip => {
+        if (err) {
+            console.log(err);
+        }
+        riderTrips = trips.filter((trip) => {
             return !(trip.isDriverTrip || trip.isFulfilled);
-        })});   
+        })
+    });   
 
 
     //riderTrips = cutTripsByTime(driverTrip, riderTrips);
@@ -296,6 +282,23 @@ async function getRiderTrips(driverTrip, callback) {
     //riderTrips = cutTripsByDistance(driverTrip, riderTrips);
 
     callback(riderTrips);
+}
+
+/*
+ * Handles all trips
+ * Gets the directions object from Google
+ *
+ */
+function tripHandler(trip, callback) {
+    let startPoint = trip.origin;
+    let endPoint = trip.destination;
+    let req = {
+        origin: startPoint,
+        destination: endPoint
+    }
+    getDirections(req, function(res) {
+        callback(res);
+    });
 }
 
 module.exports = {
