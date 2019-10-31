@@ -8,6 +8,7 @@ import java.util.HashMap;
 
 public class DataParser {
 
+    /*
     private HashMap<String,String> getPlace(JSONObject googlePlaceJson){
         HashMap<String,String> googlePlaceMap = new HashMap<>();
         String placeName = "-NA-";
@@ -33,6 +34,8 @@ public class DataParser {
 
         return googlePlaceMap;
     }
+    
+     */
 
 
     public String[] parseDirections(String jsonData){

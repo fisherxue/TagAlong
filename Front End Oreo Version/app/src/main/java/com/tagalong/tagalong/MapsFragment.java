@@ -53,7 +53,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private double end_latitude;
     private double end_longitude;
     private Profile userProfile;
-    private Button searchRoute;
     private Context context;
     private TextInputEditText arrivalDate;
     private TextInputEditText arrivalTime;
@@ -62,6 +61,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Button searchRoute;
         setContentView(R.layout.fragment_map);
         userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
         context = getApplicationContext();
