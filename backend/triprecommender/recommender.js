@@ -275,6 +275,8 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	let userID = riderTrips[0].userID;
 	let update = riderTrips[0];
 
+	console.log(update, "update value after trip");
+
 	await TripStore.findByIdAndUpdate(userID, update, {new: true}, (err) => {
 		if (err) {
 			console.log(err);
