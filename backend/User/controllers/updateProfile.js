@@ -58,8 +58,9 @@ const handleProfileUpdate = async (req, res) => {
 			}
 		});
 	}
-	else 
+	else {
 		return res.status(400).send("Invalid userID");
+	}
 
 
 	

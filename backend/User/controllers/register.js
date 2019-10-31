@@ -26,8 +26,9 @@ const handleRegister = async (req, res) => {
 			if (err) {
 				res.status(400).send("ERROR MISSING FIELD");
 			}
-			else 
+			else {
 				res.send(user);
+			}
 		});
 	}
 };

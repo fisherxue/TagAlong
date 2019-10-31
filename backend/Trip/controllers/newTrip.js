@@ -90,7 +90,7 @@ const handleCreateTrip = async (req, res) => {
 							}
 							res.send(driverTrip);
 						}
-						})
+						});
 						
 					} 
 					else {
@@ -100,8 +100,9 @@ const handleCreateTrip = async (req, res) => {
 			}
 		});
 	}
-	else 
+	else {
 		return res.status(400).send("Invalid userID");
+	}
 
 };
 
