@@ -43,21 +43,6 @@ function getDirections(req, callback) {
     });
 }
 
-/* 
- * Handles a driver trip request 
- * Gets the applicable rider trips
- */
-function driverTripHandler(driverTrip, callback) {
-    getRiderTrips(driverTrip, function(riderTrips) {
-        riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
-            modifyTrip(driverTrip, riderTrips, (res) => {
-                callback(riderTrips, driverTrip);
-            })
-        }); 
-    });
-}
-
-
 /* TODO: port to functional programming with map-filter-reduce
  * Reduces down rider trips to those within some time constraint
  * of driver trip
@@ -162,7 +147,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 
     riderTrips.forEach(function(riderTrip) {
         let startPoint = riderTrip.startLat + "," + riderTrip.startLng;
-        let endPoint = riderTrip.endLat + "," + riderTrip.endLng
+        let endPoint = riderTrip.endLat + "," + riderTrip.endLng;
         waypoints.push(startPoint);
         waypoints.push(endPoint);
     });
@@ -173,7 +158,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
     let req = {
         origin: driverStartPoint,
         destination: driverEndPoint,
-        waypoints: waypoints
+        waypoints
     };
 
     getDirectionsWithWaypoints(req, function(res) {
@@ -239,16 +224,30 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 function getInterestSimilarity(user1, user2) {
 	return 1; // replace this when we reimplement interests
 
-    let similarity = 1;
     let magA = 0;
     let magB = 0;
 
+    let sim1 = 0;
+    let sim2 = 0;
+    let similarity;
+    
+
     /* COSINE MATCHING FUNCTION */
-    for (let i = 0; i < NumInterests; i++) {
-        similarity += user1.interests[i] * user2.interests[i];
-        magA += Math.pow(user1.interests[i], 2);
-        magB += Math.pow(user2.interests[i], 2);
-    }
+    sim1 = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+        return accumulator + currentValue;
+    }, 0);
+    sim2 = user2.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+        return accumulator + currentValue;
+    }, 0);
+
+    similarity = sim1 + sim2;
+
+    magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+        return accumulator + Math.pow(currentValue, 2);
+    }, 0)
+    magB = user2.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+        return accumulator + Math.pow(currentValue, 2);
+    }, 0)
 
     magA = Math.pow(magA, 0.5);
     magB = Math.pow(magB, 0.5);
@@ -273,7 +272,7 @@ async function getRiderTrips(driverTrip, callback) {
         }
         riderTrips = trips.filter((trip) => {
             return !(trip.isDriverTrip || trip.isFulfilled);
-        })
+        });
     });   
 
 
@@ -283,6 +282,21 @@ async function getRiderTrips(driverTrip, callback) {
 
     callback(riderTrips);
 }
+
+/* 
+ * Handles a driver trip request 
+ * Gets the applicable rider trips
+ */
+function driverTripHandler(driverTrip, callback) {
+    getRiderTrips(driverTrip, function(riderTrips) {
+        riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
+            modifyTrip(driverTrip, riderTrips, (res) => {
+                callback(riderTrips, driverTrip);
+            })
+        }); 
+    });
+}
+
 
 /*
  * Handles all trips
@@ -295,7 +309,7 @@ function tripHandler(trip, callback) {
     let req = {
         origin: startPoint,
         destination: endPoint
-    }
+    };
     getDirections(req, function(res) {
         callback(res);
     });
