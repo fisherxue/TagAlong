@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
-const TripSchema = mongoose.Schema({
+const tripSchema = mongoose.Schema({
 	arrivaltime: {
 		type: Date,
 		required: true
@@ -35,7 +35,7 @@ const TripSchema = mongoose.Schema({
 });
 
 
-const Trip = module.exports = mongoose.model("TripStore", TripSchema);
+const Trip = module.exports = mongoose.model("TripStore", tripSchema);
 
 
 
