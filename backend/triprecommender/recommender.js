@@ -75,9 +75,9 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 
 	let newDriverRoute = JSON.parse(driverTrip.tripRoute);
 
-	let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat, 
-			newDriverRoute.routes[0].legs[0].start_location.lng, 
-			newDriverRoute.routes[0].legs[0].end_location.lat, 
+	let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat,
+			newDriverRoute.routes[0].legs[0].start_location.lng,
+			newDriverRoute.routes[0].legs[0].end_location.lat,
 			newDriverRoute.routes[0].legs[0].end_location.lng);
 	let riderTripsBearing = [];
 
@@ -85,9 +85,9 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 
 	riderTrips.forEach(function(riderTrip, index) {
 		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
-		var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat, 
-				newRiderRoute.routes[0].legs[0].start_location.lng, 
-				newRiderRoute.routes[0].legs[0].end_location.lat, 
+		var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
+				newRiderRoute.routes[0].legs[0].start_location.lng,
+				newRiderRoute.routes[0].legs[0].end_location.lat,
 				newRiderRoute.routes[0].legs[0].end_location.lng);
 		if (Math.abs(driverBearing - riderBearing) < MaxDriverBearingDiff) {
 			riderTripsBearing.push(riderTrip);
@@ -101,7 +101,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
  * Reduces down rider trips to those within some distance
  * of driver trip
  * TESTED WORKING NO EDGE CASE TESTS DONE
- */ 
+ */
 function cutTripsByDistance(driverTrip, riderTrips) {
 	let riderTripsDistance = [];
 
@@ -114,19 +114,19 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 	riderTrips.forEach(function(riderTrip, index) {
 		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
 		let riderDistanceStart = LatLng.getLatLngShortestDistanceLinePoint(
-			newDriverRoute.routes[0].legs[0].start_location.lat, 
-			newDriverRoute.routes[0].legs[0].start_location.lng, 
-			newDriverRoute.routes[0].legs[0].end_location.lat, 
-			newDriverRoute.routes[0].legs[0].end_location.lng, 
-			newRiderRoute.routes[0].legs[0].start_location.lat, 
+			newDriverRoute.routes[0].legs[0].start_location.lat,
+			newDriverRoute.routes[0].legs[0].start_location.lng,
+			newDriverRoute.routes[0].legs[0].end_location.lat,
+			newDriverRoute.routes[0].legs[0].end_location.lng,
+			newRiderRoute.routes[0].legs[0].start_location.lat,
 			newRiderRoute.routes[0].legs[0].start_location.lng
 		);
 		let riderDistanceEnd = LatLng.getLatLngShortestDistanceLinePoint(
-			newDriverRoute.routes[0].legs[0].start_location.lat, 
-			newDriverRoute.routes[0].legs[0].start_location.lng, 
-			newDriverRoute.routes[0].legs[0].end_location.lat, 
-			newDriverRoute.routes[0].legs[0].end_location.lng, 
-			newRiderRoute.routes[0].legs[0].end_location.lat, 
+			newDriverRoute.routes[0].legs[0].start_location.lat,
+			newDriverRoute.routes[0].legs[0].start_location.lng,
+			newDriverRoute.routes[0].legs[0].end_location.lat,
+			newDriverRoute.routes[0].legs[0].end_location.lng,
+			newRiderRoute.routes[0].legs[0].end_location.lat,
 			newRiderRoute.routes[0].legs[0].end_location.lng
 		);
 
@@ -139,9 +139,9 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 }
 
 /*
- * Modify the driver trip by adding waypoints for each 
+ * Modify the driver trip by adding waypoints for each
  * rider trip start and end
- */ 
+ */
 function modifyTrip(driverTrip, riderTrips, callback) {
 	let waypoints = [];
 
@@ -151,7 +151,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		waypoints.push(startPoint);
 		waypoints.push(endPoint);
 	});
-	
+
 
 	let driverStartPoint = driverTrip.startLat + "," + driverTrip.startLng;
 	let driverEndPoint = driverTrip.endLat + "," + driverTrip.endLng;
@@ -170,7 +170,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  * Given two users, accesses their interest fields
  * and computes the similarity between their
  * interests using the Cosine similarity
- */ 
+ */
 function getInterestSimilarity(user1, user2) {
 	return 1; // replace this when we reimplement interests
 
@@ -180,7 +180,7 @@ function getInterestSimilarity(user1, user2) {
 	let sim1 = 0;
 	let sim2 = 0;
 	let similarity;
-	
+
 
 	/* COSINE MATCHING FUNCTION */
 	sim1 = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
@@ -212,7 +212,7 @@ function getInterestSimilarity(user1, user2) {
 /*
  * Adds a field to riderTrip indicating similarity to given driver
  *
- * 
+ *
  */
 async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
@@ -226,13 +226,13 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	});
 
 	riderTrips.forEach(function(riderTrip) {
-		 /* get the rider user matching the username */
-		 let riderUser;
+		/* get the rider user matching the username */
+		let riderUser;
 		UserStore.findById(riderTrip.userID, (err, user) => {
-			 riderUser = user;
-		 });
- 
-		 riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+			riderUser = user;
+		});
+
+		riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
 	});
 
 	riderTrips = riderTrips.sort(function (a, b) {
@@ -260,7 +260,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 }
 
 /*
- * Given a valid driver trip, finds rider trips that 
+ * Given a valid driver trip, finds rider trips that
  * are reasonable for the driver
  */
 async function getRiderTrips(driverTrip, callback) {
@@ -273,7 +273,7 @@ async function getRiderTrips(driverTrip, callback) {
 		riderTrips = trips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
-	});   
+	});
 
 
 	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
@@ -283,8 +283,8 @@ async function getRiderTrips(driverTrip, callback) {
 	callback(riderTrips);
 }
 
-/* 
- * Handles a driver trip request 
+/*
+ * Handles a driver trip request
  * Gets the applicable rider trips
  */
 function driverTripHandler(driverTrip, callback) {
@@ -293,7 +293,7 @@ function driverTripHandler(driverTrip, callback) {
 			modifyTrip(driverTrip, riderTrips, (res) => {
 				callback(riderTrips, driverTrip);
 			});
-		}); 
+		});
 	});
 }
 
