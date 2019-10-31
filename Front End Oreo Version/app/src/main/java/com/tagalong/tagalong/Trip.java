@@ -13,7 +13,7 @@ public class Trip implements Serializable {
     private String username;
     private boolean isDriverTrip;
     private JSONObject tripRoute;
-    private Date arrivaltime;
+    private Date arrivalTime;
     private String userID;
     //private String[] taggedUsers;
 
@@ -49,12 +49,12 @@ public class Trip implements Serializable {
         return isDriverTrip;
     }
 
-    public void setArrivaltime(Date arrivaltime) {
-        this.arrivaltime = arrivaltime;
+    public void setArrivalTime(Date arrivalTime) {
+        this.arrivalTime = arrivalTime;
     }
 
-    public Date getArrivaltime() {
-        return arrivaltime;
+    public Date getArrivalTime() {
+        return arrivalTime;
     }
 
     public String getUserID() {
