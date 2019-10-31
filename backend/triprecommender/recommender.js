@@ -282,6 +282,8 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	});
 
 	callback(riderTrips);
+
+
 }
 
 /*

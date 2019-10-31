@@ -7,7 +7,7 @@ const mongoose = require("mongoose");
 const tripRecommender = require("../../triprecommender/recommender");
 
 const sendNotif = async (user) => {
-	const firebaseToken = user.fb_token;
+	const firebaseToken = user.fbToken;
 	if (firebaseToken){
 		const payload = {
 			notification: {
@@ -46,7 +46,7 @@ const notifyAllRiders = async (riderTrips) => {
 
 		if (user) {
 			console.log("tried to send", user);
-			sendNotif(user);
+			await sendNotif(user);
 		}
 		else {
 			return res.status(400).send("Unable to find user");
