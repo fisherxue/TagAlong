@@ -15,7 +15,7 @@ public class Trip implements Serializable {
     private JSONObject tripRoute;
     private Date arrivaltime;
     private String userID;
-    private String[] taggedUsers;
+    //private String[] taggedUsers;
 
     public void setTripRoute(LatLng origin, LatLng destination) {
         tripRoute = new JSONObject();

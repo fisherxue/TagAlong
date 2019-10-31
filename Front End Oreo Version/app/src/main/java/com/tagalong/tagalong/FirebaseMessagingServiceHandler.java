@@ -80,13 +80,13 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
         if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
-            if (/* Check if data needs to be processed by long running job */ true) {
+            //if (/* Check if data needs to be processed by long running job */ true) {
                 // For long-running tasks (10 seconds or more) use WorkManager.
-                scheduleJob();
-            } else {
+            //    scheduleJob();
+            //} else {
                 // Handle message within 10 seconds
-                handleNow();
-            }
+             //   handleNow();
+            //}
 
         }
 
@@ -128,6 +128,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
 //                .build();
 //        WorkManager.getInstance().beginWith(work).enqueue();
         // [END dispatch_job]
+        return;
     }
 
     /**
@@ -147,6 +148,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
      */
     private void sendRegistrationToServer(String token) {
         // TODO: Implement this method to send token to your app server.
+        return;
     }
 
     /**

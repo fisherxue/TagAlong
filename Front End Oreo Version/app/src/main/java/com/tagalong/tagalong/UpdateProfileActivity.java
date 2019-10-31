@@ -65,6 +65,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
         speed = (SeekBar) findViewById(R.id.seekSpeed);
         chatting = (SeekBar) findViewById(R.id.seekChatting);
 
+        initializeSeekBar();
+    }
+
+    private void initializeSeekBar(){
         music.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {

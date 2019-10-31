@@ -53,7 +53,7 @@ public class HomeActivity extends AppCompatActivity {
                 HomeActivity.this.finish();
                 break;
             default :
-                super.onOptionsItemSelected(item);
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -88,7 +88,7 @@ public class HomeActivity extends AppCompatActivity {
                             frag.setArguments(bundle);
                             break;*/
                         default:
-                            return true;
+                            break;
                     }
 
                     if (frag != null) {

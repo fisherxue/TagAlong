@@ -46,12 +46,13 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     private GoogleMap mMap;
     private FusedLocationProviderClient client;
-    private LocationRequest locationRequest;
     private Location lastLocation;
     private Marker currentLocationMarker;
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 101;
-    double latitude, longitude;
-    double end_latitude, end_longitude;
+    double latitude;
+    double longitude;
+    double end_latitude;
+    double end_longitude;
     private Profile userProfile;
     Button searchRoute;
     private Context context;
@@ -222,6 +223,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
                 }
                 return;
+            default:
+                return;
         }
     }
 
@@ -310,17 +313,17 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-
+        return;
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-
+        return;
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-
+        return;
     }
 
     public boolean checkLocationPermission(){
@@ -347,12 +350,12 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-
+        return;
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-
+        return;
     }
 
     @Override
