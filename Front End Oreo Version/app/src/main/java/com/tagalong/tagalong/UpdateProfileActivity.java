@@ -5,9 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
@@ -19,16 +21,28 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateProfileActivity extends AppCompatActivity {
 
-    private EditText age,gen,interest,fn,ln,carcap;
+    private String TAG = "Update Profile Activity";
+    private EditText age;
+    private EditText gen;
+    private EditText fn;
+    private EditText ln;
+    private EditText carcap;
     private Button submit;
     private Switch isDriver;
     private Context context;
-    private boolean allSet;
+    private Profile userProfile;
+    private SeekBar music;
+    private SeekBar smoking;
+    private SeekBar speed;
+    private SeekBar fragrance;
+    private SeekBar chatting;
+    private int[] interests = {2,2,2,2,2};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,15 +50,109 @@ public class UpdateProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_update_profile);
         context = getApplicationContext();
 
+        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
+
         fn = (EditText) findViewById(R.id.firstName);
         ln = (EditText) findViewById(R.id.lastName);
         age = (EditText) findViewById(R.id.age);
         gen = (EditText) findViewById(R.id.gender);
-        interest = (EditText) findViewById(R.id.intrests);
         carcap = (EditText) findViewById(R.id.carCapacity);
         isDriver = (Switch) findViewById(R.id.isDriver);
         submit = (Button) findViewById(R.id.submit);
+        music = (SeekBar) findViewById(R.id.seekMusic);
+        smoking = (SeekBar) findViewById(R.id.seekSmoking);
+        fragrance = (SeekBar) findViewById(R.id.seekFragrance);
+        speed = (SeekBar) findViewById(R.id.seekSpeed);
+        chatting = (SeekBar) findViewById(R.id.seekChatting);
 
+        initializeSeekBar();
+    }
+
+    private void initializeSeekBar(){
+        music.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[0] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "music on start tracing touch");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "music on stop tracing touch");
+            }
+        });
+
+        chatting.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[1] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "chatting on start tracing touch");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "chatting on stop tracing touch");
+            }
+        });
+
+        speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[2] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "speed on start tracing touch");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "speed on stop tracing touch");
+            }
+        });
+
+        fragrance.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[3] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "fragrance on start tracing touch");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "fragrance on stop tracing touch");
+            }
+        });
+
+        smoking.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                interests[4] = i;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "smoking on start tracing touch");
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Log.d(TAG, "smoking on stop tracing touch");
+            }
+        });
     }
 
     @Override
@@ -55,7 +163,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                allSet = true;
+                boolean allSet = true;
 
                 if (!fn.getText().toString().isEmpty()) {
                     newUserProfile.setFirstName(fn.getText().toString());
@@ -98,13 +206,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     }
                 }
 
-
-                if (!interest.getText().toString().isEmpty()){
-                    newUserProfile.setInterest(interest.getText().toString());
-                } else {
-                    Toast.makeText(context, "Please Enter Interests", Toast.LENGTH_LONG).show();
-                    allSet = false;
-                }
+                newUserProfile.setInterests(interests);
+                newUserProfile.setUserID(userProfile.getUserID());
+                newUserProfile.setEmail(userProfile.getEmail());
+                newUserProfile.setUserName(userProfile.getUserName());
+                newUserProfile.setPassword(userProfile.getPassword());
+                newUserProfile.setJoinedDate(userProfile.getJoinedDate());
 
                 if (allSet) {
                     sendProfile(newUserProfile);
@@ -114,41 +221,45 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
-    void sendProfile(Profile profile) {
+    private void sendProfile(Profile profile) {
 
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = "http://206.87.96.130:3000/users/register";
+        String url = getString(R.string.updateProfile);
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
 
-        System.out.println(profileJson.toString());
-
         try {
             profileJsonObject = new JSONObject((profileJson));
-
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully signed up", Toast.LENGTH_LONG).show();
                     final Profile received_profile = new Profile();
                     try {
                         received_profile.setUserName(response.getString("username"));
-                        received_profile.setInterest(response.getString("interests"));
-                        received_profile.setFirstName(response.getString("firstName"));
-                        received_profile.setLastName(response.getString("lastName"));
+                        JSONArray jsonArray = response.getJSONArray("interests");
+                        int [] interests = new int[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++){
+                            interests[i] = jsonArray.getInt(i);
+                        }
+                        received_profile.setInterests(interests);
                         received_profile.setAge(response.getInt("age"));
-                        received_profile.setGender(response.getString("gender"));
+                        received_profile.setGender(response.getString( "gender"));
                         received_profile.setEmail(response.getString("email"));
                         received_profile.setPassword(response.getString("password"));
                         received_profile.setDriver(response.getBoolean("isDriver"));
-                        received_profile.set_id(response.getString("_id"));
+                        received_profile.setUserID(response.getString("_id"));
                         received_profile.setJoinedDate(response.getString("joinedDate"));
+                        received_profile.setFirstName(response.getString("firstName"));
+                        received_profile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        System.out.println(e);
                     }
                     Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                     intent.putExtra("profile", received_profile);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                     UpdateProfileActivity.this.finish();
 

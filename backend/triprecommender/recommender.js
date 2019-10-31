@@ -166,31 +166,26 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	});
 }
 
+function sumProducts(array1, array2) {
+    if(array1.length) {
+		return array1.pop() * array2.pop() + sumProducts(array1, array2);
+	}
+
+    return 0;
+}
+
 /*
  * Given two users, accesses their interest fields
  * and computes the similarity between their
  * interests using the Cosine similarity
  */
 function getInterestSimilarity(user1, user2) {
-	return 1; // replace this when we reimplement interests
 
 	let magA = 0;
 	let magB = 0;
 
-	let sim1 = 0;
-	let sim2 = 0;
-	let similarity;
-
-
 	/* COSINE MATCHING FUNCTION */
-	sim1 = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
-		return accumulator + currentValue;
-	}, 0);
-	sim2 = user2.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
-		return accumulator + currentValue;
-	}, 0);
-
-	similarity = sim1 + sim2;
+	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
 
 	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
 		return accumulator + Math.pow(currentValue, 2);

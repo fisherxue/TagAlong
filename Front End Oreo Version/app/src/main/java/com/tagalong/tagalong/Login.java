@@ -1,19 +1,22 @@
 package com.tagalong.tagalong;
 
-public class Login {
+import java.io.Serializable;
+
+public class Login implements Serializable {
     private String username;
     private String password;
     private String fbToken;
     private String firstName;
     private String lastName;
-    private String emailId;
+    private String email;
+    private String id;
 
     public String getEmailId() {
-        return emailId;
+        return email;
     }
 
     public void setEmailId(String emailId) {
-        this.emailId = emailId;
+        this.email = emailId;
     }
 
     public String getId() {
@@ -23,8 +26,6 @@ public class Login {
     public void setId(String id) {
         this.id = id;
     }
-
-    private String id;
 
     public String getLastName() {
         return lastName;

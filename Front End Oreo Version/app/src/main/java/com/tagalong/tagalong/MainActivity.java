@@ -22,13 +22,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
+//import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -37,6 +36,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -46,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
     //FaceBook Login Fields
     private CallbackManager callbackManager;
     private LoginButton fbloginButton;
-    private AccessTokenTracker accessTokenTracker;
-    private AccessToken accessToken;
+    //private AccessTokenTracker accessTokenTracker;
+    //private AccessToken accessToken;
 
     //Login-SignUp Fields
     private Button loginButton;
@@ -102,38 +102,7 @@ public class MainActivity extends AppCompatActivity {
         loginPassword = (EditText) findViewById(R.id.passwordLogin);
         loginUser = (EditText) findViewById(R.id.userNameLogin);
 
-        //Click on FaceBook Button
-        fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "Successful FaceBook Login");
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                    return;
-                                }
-
-                                String token = task.getResult().getToken();
-                                Log.d(TAG, token);
-
-                                handleFacebookLogin(token);
-                            }
-                        });
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "FaceBook Login Cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.d(TAG, "Error In Login using FaceBook: Check the Network");
-            }
-        });
+        startFBAuthentication();
 
         //Click on signupButton
         signupButton.setOnClickListener( new View.OnClickListener(){
@@ -141,10 +110,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Sign up requested");
-                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-                startActivity(intent);
-                Log.d(TAG, "Main Activity Ended");
-                //MainActivity.this.finish();
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                Login loginProfile = new Login();
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "getInstanceId failed", task.getException());
+                                    return;
+                                }
+                                String token = task.getResult().getToken();
+                                Log.d(TAG, token);
+                                loginProfile.setFbToken(token);
+
+                                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+                                intent.putExtra("login",loginProfile);
+                                startActivity(intent);
+                                Log.d(TAG, "Main Activity Ended");
+                            }
+                        });
             }
         });
 
@@ -193,6 +177,41 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void startFBAuthentication(){
+        //Click on FaceBook Button
+        fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.d(TAG, "Successful FaceBook Login");
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Log.w(TAG, "getInstanceId failed", task.getException());
+                                    return;
+                                }
+
+                                String token = task.getResult().getToken();
+                                Log.d(TAG, token);
+
+                                handleFacebookLogin(token);
+                            }
+                        });
+            }
+
+            @Override
+            public void onCancel() {
+                Log.d(TAG, "FaceBook Login Cancelled");
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                Log.d(TAG, "Error In Login using FaceBook: Check the Network");
+            }
+        });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -200,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleFacebookLogin(final String fcmToken){
-        accessToken = AccessToken.getCurrentAccessToken();
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {
             Log.d(TAG, "Some Error, please re-login and try again");
         }
@@ -209,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     Login fbLoginProfile = new Login();
-                    Profile facebookProfile = new Profile();
                     try {
                         fbLoginProfile.setUsername(object.getString("first_name") + " " + object.getString("last_name"));
                         fbLoginProfile.setId(object.getString("id"));
@@ -234,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void verifyUser(final Login loginProfile, final boolean isExternal){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/users/login";
+        String url = getString(R.string.login);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
@@ -248,17 +266,23 @@ public class MainActivity extends AppCompatActivity {
                     Profile receivedProfile = new Profile();
 
                     try {
+                        System.out.println(response.toString());
                         receivedProfile.setUserName(response.getString("username"));
-                        receivedProfile.setInterest(response.getString("interests"));
-                        receivedProfile.setFirstName(response.getString("firstName"));
-                        receivedProfile.setLastName(response.getString("lastName"));
+                        JSONArray jsonArray = response.getJSONArray("interests");
+                        int [] interests = new int[jsonArray.length()];
+                        for (int i = 0; i < jsonArray.length(); i++){
+                            interests[i] = jsonArray.getInt(i);
+                        }
+                        receivedProfile.setInterests(interests);
                         receivedProfile.setAge(response.getInt("age"));
                         receivedProfile.setGender(response.getString("gender"));
                         receivedProfile.setEmail(response.getString("email"));
                         receivedProfile.setPassword(response.getString("password"));
                         receivedProfile.setDriver(response.getBoolean("isDriver"));
-                        receivedProfile.set_id(response.getString("_id"));
+                        receivedProfile.setUserID(response.getString("_id"));
                         receivedProfile.setJoinedDate(response.getString("joinedDate"));
+                        receivedProfile.setFirstName(response.getString("firstName"));
+                        receivedProfile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -301,7 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendLogin(Login loginProfile){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://206.87.96.130:3000/users/login";
+        String url = getString(R.string.login);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
@@ -315,9 +339,20 @@ public class MainActivity extends AppCompatActivity {
                     Profile receivedProfile = new Profile();
                     Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
 
-                    Intent intent = new Intent(context, Login.class);
+                    try {
+                        receivedProfile.setUserName(response.getString("username"));
+                        receivedProfile.setPassword(response.getString("password"));
+                        receivedProfile.setEmail(response.getString("email"));
+                        receivedProfile.setUserID(response.getString("_id"));
+                        receivedProfile.setJoinedDate(response.getString("joinedDate"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Intent intent = new Intent(context, UpdateProfileActivity.class);
                     intent.putExtra("profile", receivedProfile);
                     startActivity(intent);
+
                 }
 
             }, new Response.ErrorListener() {
