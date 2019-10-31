@@ -23,7 +23,7 @@ const handleProfileUpdate = async (req, res) => {
 
 		await User.findByIdAndUpdate(userID, update, { new: true }, (err, user) => {
 			if (err) {
-				return res.status(400).send(err);
+				res.status(400).send(err);
 			}
 			else {
 				console.log("user updated");
@@ -32,7 +32,7 @@ const handleProfileUpdate = async (req, res) => {
 		});
 	}
 	else {
-		return res.status(400).send("Invalid userID");
+		res.status(400).send("Invalid userID");
 	}
 
 
