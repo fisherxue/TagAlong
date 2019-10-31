@@ -61,6 +61,8 @@ const handleCreateTrip = async (req, res) => {
 
 	const { userID, username, arrivaltime, tripRoute, isDriverTrip } = req.body;
 
+	console.log(req.body);
+
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
