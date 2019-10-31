@@ -70,6 +70,8 @@ const handleCreateTrip = async (req, res) => {
 			}
 			else {
 
+				console.log("creating new trip");
+
 				let trip = new TripStore({
 					username,
 					userID,
@@ -78,6 +80,8 @@ const handleCreateTrip = async (req, res) => {
 					isDriverTrip,
 					isFulfilled: false
 				});
+
+				console.log(trip);
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 					trip.tripRoute = JSON.stringify(resp.json);
