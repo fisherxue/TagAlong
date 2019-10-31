@@ -6,6 +6,7 @@ const createUpdateObject = (req) => {
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
 	const update = {
+		...interests && { interests },
 		...firstName && { firstName },
 		...lastName && { lastName },
 		...age && { age },
