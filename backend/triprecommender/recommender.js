@@ -2,6 +2,7 @@
 const LatLng = require("./latlng.js");
 
 // database
+const mongoose = require("mongoose");
 const TripStore = require("../Trip/models/Trip");
 const UserStore = require("../User/models/user");
 
@@ -185,7 +186,7 @@ function getInterestSimilarity(user1, user2) {
 	let magB = 0;
 
 	/* COSINE MATCHING FUNCTION */
-	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
+	let similarity = sumProducts(tuser1.interests.slice(), user2.interests.slice());
 
 	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
 		return accumulator + Math.pow(currentValue, 2);
@@ -216,18 +217,34 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	}
 	/* get the driver user matching the username */
 	let driverUser;
-	await UserStore.findById(driverTrip.userID, (err, user) => {
-		driverUser = user;
-	});
 
-	riderTrips.forEach(function(riderTrip) {
+	if (mongoose.Types.ObjectId.isValid(driverTrip.userID)) {
+		await UserStore.findById(driverTrip.userID, (err, user) => {
+			driverUser = user;
+		});
+	}
+	else {
+		console.log("invalid user id from driver trip");
+		console.log(typeof driverTrip.userID, driverTrip.userID);
+
+	}
+	
+
+	riderTrips.forEach(async function(riderTrip) {
 		/* get the rider user matching the username */
 		let riderUser;
-		UserStore.findById(riderTrip.userID, (err, user) => {
-			riderUser = user;
-		});
+		if (mongoose.Types.ObjectId.isValid(riderTrip.userID)) {
+			UserStore.findById(riderTrip.userID, (err, user) => {
+				riderUser = user;
+			});
 
-		riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+		}
+		else {
+			console.log("invalid user id from rider trip");
+			console.log(typeof riderTrip.userID, riderTrip.userID);
+		}
+		
 	});
 
 	riderTrips = riderTrips.sort(function (a, b) {
