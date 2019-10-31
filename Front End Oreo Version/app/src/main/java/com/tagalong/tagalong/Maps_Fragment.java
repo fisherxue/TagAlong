@@ -81,31 +81,52 @@ public class Maps_Fragment extends FragmentActivity implements OnMapReadyCallbac
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean allChecked = true;
+                if (arrivalDate.getResources().toString().isEmpty()) {
+                    Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
+                    allChecked = false;
+                }
+                else {
+                    if (!arrivalDate.getResources().toString().matches("^(3[01]|[12][0-9])/(1[0-2]"
+                            + "|0[1-9]|0[1-9])/[0-9]{4}$")) {
+                        Toast.makeText(context, "Please enter arrival date in the specified format", Toast.LENGTH_LONG).show();
+                        allChecked = false;
+                    }
+                }
+                if (arrivalTime.getResources().toString().isEmpty()){
+                    Toast.makeText(context, "Please enter arrival time", Toast.LENGTH_LONG).show();
+                    allChecked = false;
+                }
+                else {
+                    if (!arrivalTime.getResources().toString().matches("^(2[0-3]|[01][0-9]): (5[0-9])$")) {
+                        Toast.makeText(context, "Please enter arrival time in the specified format", Toast.LENGTH_LONG).show();
+                        allChecked = false;
+                    }
 
-                Trip trip = new Trip();
-                Object dataTransfer[] = new Object[3];
-                String url = getDirectionsURL();
-                GetDirectionsData getDirectionsData = new GetDirectionsData();
-                LatLng origin = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
-                LatLng destination = new LatLng(end_latitude, end_longitude);
-                Calendar cal = Calendar.getInstance(); // creates calendar
-                cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
+                }
 
-                dataTransfer[0] = mMap;
-                dataTransfer[1] = url;
-                dataTransfer[2] = destination;
-                getDirectionsData.execute(dataTransfer);
+                if (allChecked){
+                    Trip trip = new Trip();
+                    Object dataTransfer[] = new Object[3];
+                    String url = getDirectionsURL();
+                    GetDirectionsData getDirectionsData = new GetDirectionsData();
+                    LatLng origin = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                    LatLng destination = new LatLng(end_latitude, end_longitude);
+                    Calendar cal = Calendar.getInstance(); // creates calendar
+                    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 
+                    dataTransfer[0] = mMap;
+                    dataTransfer[1] = url;
+                    dataTransfer[2] = destination;
+                    getDirectionsData.execute(dataTransfer);
 
-                trip.setTripRoute(origin, destination);
-                trip.setUsername(userProfile.getUserName());
-                trip.setUserID(userProfile.getUserID());
-                trip.setDriverTrip(userProfile.getDriver());
-                trip.setArrivaltime(cal.getTime());
-                generateTrip(trip);
-
-
-
+                    trip.setTripRoute(origin, destination);
+                    trip.setUsername(userProfile.getUserName());
+                    trip.setUserID(userProfile.getUserID());
+                    trip.setDriverTrip(userProfile.getDriver());
+                    trip.setArrivaltime(cal.getTime());
+                    generateTrip(trip);
+                }
 
             }
         });
