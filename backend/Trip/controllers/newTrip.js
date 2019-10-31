@@ -59,7 +59,7 @@ const handleCreateTrip = async (req, res) => {
 		
 	console.log("/newTrip hit");
 
-	const { userID, username, arrivaltime, tripRoute, isDriverTrip } = req.body;
+	const { userID, username, arrivalTime, tripRoute, isDriverTrip } = req.body;
 
 	console.log(req.body);
 
@@ -73,7 +73,7 @@ const handleCreateTrip = async (req, res) => {
 				let trip = new TripStore({
 					username,
 					userID,
-					arrivaltime,
+					arrivalTime,
 					tripRoute: JSON.stringify(tripRoute),
 					isDriverTrip,
 					isFulfilled: false
