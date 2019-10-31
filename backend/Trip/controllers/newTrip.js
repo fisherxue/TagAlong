@@ -6,7 +6,7 @@ const mongoose = require("mongoose");
 
 const tripRecommender = require("../../triprecommender/recommender");
 
-const sendNotif = (user) => {
+const sendNotif = async (user) => {
 	const firebaseToken = user.fb_token;
 	if (firebaseToken){
 		const payload = {
@@ -36,7 +36,7 @@ const sendNotif = (user) => {
 	}
 };
 
-const notifyAllRiders = (riderTrips) => {
+const notifyAllRiders = async (riderTrips) => {
 	for(const trip of riderTrips) {
 		let username = trip.username;
 		console.log(username, "USERNAME");
