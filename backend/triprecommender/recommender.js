@@ -241,7 +241,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		/* get the rider user matching the username */
 		let riderUser;
 		if (mongoose.Types.ObjectId.isValid(riderTrip.userID)) {
-			UserStore.findById(riderTrip.userID, (err, user) => {
+			await UserStore.findById(riderTrip.userID, (err, user) => {
 				if (err) {
 					console.log(err);
 				}
