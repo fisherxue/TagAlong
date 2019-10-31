@@ -96,13 +96,12 @@ const handleCreateTrip = async (req, res) => {
 					else {
 						res.send(trip);
 					}
-				})
+				});
 			}
 		});
 	}
-	else {
+	else 
 		return res.status(400).send("Invalid userID");
-	}
 
 };
 
