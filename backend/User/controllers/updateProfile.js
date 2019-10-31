@@ -7,17 +7,7 @@ const handleProfileUpdate = async (req, res) => {
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
-	const update = {
-		...firstName && { firstName },
-		...lastName && { lastName },
-		...age && { age },
-		...gender && { gender },
-		...email && { email },
-		...isDriver && { isDriver },
-		...email && { email },
-		...carCapacity && { carCapacity },
-		...fbToken && { fbToken }
-	};
+	const update = createUpdateObject(req);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 
@@ -39,6 +29,26 @@ const handleProfileUpdate = async (req, res) => {
 	
 
 };
+
+const createUpdateObject = (req) => {
+
+	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
+
+	const update = {
+		...firstName && { firstName },
+		...lastName && { lastName },
+		...age && { age },
+		...gender && { gender },
+		...email && { email },
+		...isDriver && { isDriver },
+		...email && { email },
+		...carCapacity && { carCapacity },
+		...fbToken && { fbToken }
+	};
+
+	return update;
+}
+
 
 module.exports = {
 	handleProfileUpdate
