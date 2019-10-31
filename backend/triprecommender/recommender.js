@@ -220,7 +220,14 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	if (mongoose.Types.ObjectId.isValid(driverTrip.userID)) {
 		await UserStore.findById(driverTrip.userID, (err, user) => {
-			driverUser = user;
+			if (err) {
+				console.log(err);
+			}
+			else {
+				driverUser = user;
+				console.log(driverUser);
+			}
+			
 		});
 	}
 	else {
@@ -235,7 +242,15 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		let riderUser;
 		if (mongoose.Types.ObjectId.isValid(riderTrip.userID)) {
 			UserStore.findById(riderTrip.userID, (err, user) => {
-				riderUser = user;
+				if (err) {
+					console.log(err);
+				}
+				else {
+					riderUser = user;
+					console.log(riderUser);
+				}
+				
+
 			});
 
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
