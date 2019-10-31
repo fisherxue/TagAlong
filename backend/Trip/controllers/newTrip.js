@@ -6,6 +6,55 @@ const mongoose = require("mongoose");
 
 const tripRecommender = require("../../triprecommender/recommender");
 
+const sendNotif = (user) => {
+	const firebaseToken = user.fb_token;
+	if (firebaseToken){
+		const payload = {
+			notification: {
+				title: "Trip Accepted",
+				body: "You have been matched with a driver and other riders for the requested trip",
+			}
+		};
+	
+		const options = {
+			priority: "high",
+			timeToLive: 60 * 60 * 24, // 1 day
+		};
+	
+		console.log(firebaseToken);
+		firebase.messaging().sendToDevice(firebaseToken, payload, options)
+		.then((res) => {
+			console.log(res.results);
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+		res.json("Sent");
+	}
+	else {
+		console.log("failed to send");
+	}
+};
+
+const notifyAllRiders = (riderTrips) => {
+	for(const trip of riderTrips) {
+		let username = trip.username;
+		console.log(username, "USERNAME");
+		const user = await User.findOne({ username });
+
+		console.log(user, "SADFASDFASDF");
+
+		if (user) {
+			console.log("tried to send", user);
+			sendNotif(user);
+		}
+		else {
+			return res.status(400).send("Unable to find user");
+		}
+	}
+};
+
+
 const handleCreateTrip = async (req, res) => {
 		
 	console.log("/newTrip hit");
@@ -44,50 +93,7 @@ const handleCreateTrip = async (req, res) => {
 						if (typeof riderTrips === "undefined") {
 							res.status(300).send("NOTHING");
 						} else {
-							let username;
-							for(const trip of riderTrips) {
-								username = trip.username;
-								console.log(username, "USERNAME");
-								const user = await User.findOne({ username });
-
-								console.log(user, "SADFASDFASDF");
-
-								if (user) {
-									console.log("tried to send", user);
-
-									const firebaseToken = user.fb_token;
-									if (firebaseToken){
-										const payload = {
-											notification: {
-												title: "Trip Accepted",
-												body: "You have been matched with a driver and other riders for the requested trip",
-											}
-										};
-									
-										const options = {
-											priority: "high",
-											timeToLive: 60 * 60 * 24, // 1 day
-										};
-									
-										console.log(firebaseToken);
-										firebase.messaging().sendToDevice(firebaseToken, payload, options)
-										.then((res) => {
-											console.log(res.results);
-										})
-										.catch((err) => {
-											console.log(err);
-										});
-										res.json("Sent");
-									}
-									else {
-										console.log("failed to send");
-									}
-									
-								}
-								else {
-									return res.status(400).send("Unable to find user");
-								}
-							}
+							notifyAllRiders(riderTrips);
 							res.send(driverTrip);
 						}
 						});
