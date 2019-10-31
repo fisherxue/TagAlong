@@ -167,8 +167,9 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 }
 
 function sumProducts(array1, array2) {
-    if(array1.length) 
-        return array1.pop() * array2.pop() + sumProducts(array1, array2);
+    if(array1.length) {
+		return array1.pop() * array2.pop() + sumProducts(array1, array2);
+	}
 
     return 0;
 }
@@ -185,10 +186,6 @@ function getInterestSimilarity(user1, user2) {
 
 	/* COSINE MATCHING FUNCTION */
 	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
-
-	for (let i = 0; i < NumInterests; i++) {
-		similarity += user1.interests[i] * user2.interests[i];
-	}
 
 	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
 		return accumulator + Math.pow(currentValue, 2);
