@@ -22,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,12 +48,12 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private Location lastLocation;
     private Marker currentLocationMarker;
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 101;
-    double latitude;
-    double longitude;
-    double end_latitude;
-    double end_longitude;
+    private double latitude;
+    private double longitude;
+    private double end_latitude;
+    private double end_longitude;
     private Profile userProfile;
-    Button searchRoute;
+    private Button searchRoute;
     private Context context;
     private TextInputEditText arrivalDate;
     private TextInputEditText arrivalTime;
@@ -216,7 +215,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                         mMap.setMyLocationEnabled(true);
                     }
 
-
                     break;
                 }
                 else {
@@ -286,7 +284,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
  */
 
-
     @Override
     public void onLocationChanged(Location location) {
         latitude = location.getLatitude();
@@ -313,17 +310,17 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
-        return;
+        //Nothing to be done
     }
 
     @Override
     public void onProviderEnabled(String provider) {
-        return;
+        //Nothing to be done
     }
 
     @Override
     public void onProviderDisabled(String provider) {
-        return;
+        //Nothing to be done
     }
 
     public boolean checkLocationPermission(){
@@ -350,12 +347,12 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMarkerDragStart(Marker marker) {
-        return;
+        //Nothing to be done
     }
 
     @Override
     public void onMarkerDrag(Marker marker) {
-        return;
+        //Nothing to be done
     }
 
     @Override

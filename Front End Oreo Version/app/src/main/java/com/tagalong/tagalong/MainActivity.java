@@ -22,7 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
+//import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onCompleted(JSONObject object, GraphResponse response) {
                     Login fbLoginProfile = new Login();
-                    Profile facebookProfile = new Profile();
                     try {
                         fbLoginProfile.setUsername(object.getString("first_name") + " " + object.getString("last_name"));
                         fbLoginProfile.setId(object.getString("id"));
