@@ -1,6 +1,26 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
 
+const createUpdateObject = (req) => {
+
+	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
+
+	const update = {
+		...firstName && { firstName },
+		...lastName && { lastName },
+		...age && { age },
+		...gender && { gender },
+		...email && { email },
+		...isDriver && { isDriver },
+		...email && { email },
+		...carCapacity && { carCapacity },
+		...fbToken && { fbToken }
+	};
+
+	return update;
+};
+
+
 const handleProfileUpdate = async (req, res) => {
 
 	console.log("/profileUpdate hit");
@@ -30,24 +50,7 @@ const handleProfileUpdate = async (req, res) => {
 
 };
 
-const createUpdateObject = (req) => {
 
-	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
-
-	const update = {
-		...firstName && { firstName },
-		...lastName && { lastName },
-		...age && { age },
-		...gender && { gender },
-		...email && { email },
-		...isDriver && { isDriver },
-		...email && { email },
-		...carCapacity && { carCapacity },
-		...fbToken && { fbToken }
-	};
-
-	return update;
-}
 
 
 module.exports = {
