@@ -89,6 +89,7 @@ const handleCreateTrip = async (req, res) => {
 
 					trip.save((err) => {
 						console.log(err);
+						
 					});
 
 
