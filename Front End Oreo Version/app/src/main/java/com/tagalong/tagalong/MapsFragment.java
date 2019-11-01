@@ -39,7 +39,10 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
@@ -81,26 +84,24 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
                     allChecked = false;
                 }
-                /*
                 else {
-                    if (!arrivalDate.getResources().toString().matches("^(3[0-1]|[1-2][0-9])/(1[0-2]"
-                            + "|0[1-9]|0[1-9])/[0-9]{4}$")) {
+                    if (!arrivalDate.getText().toString().replaceAll("\\s+","")
+                            .matches("^(3[0-1]|[0-2][0-9])/(1[0-2]|0[1-9]|0[1-9])/[0-9]{4}$")) {
                         Toast.makeText(context, "Please enter arrival date in the specified format", Toast.LENGTH_LONG).show();
                         allChecked = false;
                     }
-                } */
-                if (arrivalTime.getResources().toString().isEmpty()){
+                }
+                if (arrivalTime.getText().toString().isEmpty()){
                     Toast.makeText(context, "Please enter arrival time", Toast.LENGTH_LONG).show();
                     allChecked = false;
                 }
-                /*
                 else {
-                    if (!arrivalTime.getResources().toString().matches("^(2[0-3]|[01][0-9]): (5[0-9])$")) {
+                    if (!arrivalTime.getText().toString().replaceAll("\\s+","")
+                            .matches("^(2[0-3]|[0-1][0-9]):([0-5][0-9])$")) {
                         Toast.makeText(context, "Please enter arrival time in the specified format", Toast.LENGTH_LONG).show();
                         allChecked = false;
                     }
-
-                } */
+                }
 
                 if (allChecked){
                     Trip trip = new Trip();
@@ -117,11 +118,22 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     dataTransfer[2] = destination;
                     getDirectionsData.execute(dataTransfer);
 
+                    String dateTimeString = arrivalDate.getText().toString() + " " +
+                            arrivalTime.getText().toString();
+
+                    Date arrivalDate = new Date();
+                    try {
+                        arrivalDate = new SimpleDateFormat("dd/MM/yyyy HH:mm")
+                                .parse(dateTimeString);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+
                     trip.setTripRoute(origin, destination);
                     trip.setUsername(userProfile.getUserName());
                     trip.setUserID(userProfile.getUserID());
                     trip.setDriverTrip(userProfile.getDriver());
-                    trip.setArrivaltime(cal.getTime());
+                    trip.setArrivalTime(arrivalDate);
                     generateTrip(trip);
                 }
 
