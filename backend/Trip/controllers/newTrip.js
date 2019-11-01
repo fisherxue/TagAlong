@@ -29,14 +29,13 @@ const sendNotif = async (user) => {
 		.catch((err) => {
 			console.log(err);
 		});
-		res.json("Sent");
 	}
 	else {
 		console.log("failed to send");
 	}
 };
 
-const notifyAllRiders = async (riderTrips) => {
+const notifyAllRiders = async (riderTrips, callback) => {
 	for(const trip of riderTrips) {
 		let username = trip.username;
 		console.log(username, "USERNAME");
@@ -49,8 +48,9 @@ const notifyAllRiders = async (riderTrips) => {
 			await sendNotif(user);
 		}
 		else {
-			return res.status(400).send("Unable to find user");
+			callback(Error("Unable to find user"));
 		}
+
 	}
 };
 
@@ -98,7 +98,14 @@ const handleCreateTrip = async (req, res) => {
 						if (typeof riderTrips === "undefined") {
 							res.status(300).send("NOTHING");
 						} else {
-							notifyAllRiders(riderTrips);
+							notifyAllRiders(riderTrips, (err) => {
+								if (err) {
+									res.status(400).json("unable to find user");
+								}
+								else {
+									res.send("Sent succesfully");
+								}
+							});
 							res.send(driverTrip);
 						}
 						});
