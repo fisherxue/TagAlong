@@ -105,7 +105,7 @@ const handleCreateTrip = async (req, res) => {
 						
 					} 
 					else {
-						console.log("NOT A DRIVER TRIP")
+						console.log("NOT A DRIVER TRIP");
 						res.send(trip);
 					}
 				});

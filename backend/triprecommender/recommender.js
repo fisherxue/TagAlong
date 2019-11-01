@@ -15,7 +15,6 @@ const googleMapsClient = require("@google/maps").createClient({
 
 const MaxDriverBearingDiff = 20; // 20 deg
 const MaxDriverDistanceDiff = 2000; // 1km
-const NumInterests = 5;
 
 /* Get directions with waypoints */
 function getDirectionsWithWaypoints(req, callback) {
@@ -48,21 +47,21 @@ function getDirections(req, callback) {
  * Reduces down rider trips to those within some time constraint
  * of driver trip
  */
-function cutTripsByTime(driverTrip, riderTrips) {
-	let riderTripsTime = [];
+// function cutTripsByTime(driverTrip, riderTrips) {
+// 	let riderTripsTime = [];
 
-	if (typeof riderTrips === "undefined") {
-		return [];
-	}
+// 	if (typeof riderTrips === "undefined") {
+// 		return [];
+// 	}
 
-	riderTrips.forEach(function(riderTrip, index) {
-		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
-			riderTripsTime.push(riderTrip);
-		}
-	});
+// 	riderTrips.forEach(function(riderTrip, index) {
+// 		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
+// 			riderTripsTime.push(riderTrip);
+// 		}
+// 	});
 
-	return riderTripsTime;
-}
+// 	return riderTripsTime;
+// }
 
 /* TODO: port to functional programming with map-filter-reduce
  * Reduces down rider trips to those within some bearing constraint
@@ -84,7 +83,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 
 
 
-	riderTrips.forEach(function(riderTrip, index) {
+	riderTrips.forEach(function(riderTrip) {
 		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
 		var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
 				newRiderRoute.routes[0].legs[0].start_location.lng,
@@ -112,7 +111,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 
 	let newDriverRoute = JSON.parse(driverTrip.tripRoute);
 
-	riderTrips.forEach(function(riderTrip, index) {
+	riderTrips.forEach(function(riderTrip) {
 		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
 		let riderDistanceStart = LatLng.getLatLngShortestDistanceLinePoint(
 			newDriverRoute.routes[0].legs[0].start_location.lat,
@@ -188,10 +187,10 @@ function getInterestSimilarity(user1, user2) {
 	/* COSINE MATCHING FUNCTION */
 	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
 
-	magA = user1.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+	magA = user1.interests.reduce(function(accumulator, currentValue) {
 		return accumulator + Math.pow(currentValue, 2);
 	}, 0);
-	magB = user2.interests.reduce(function(accumulator, currentValue, currentIndex, array) {
+	magB = user2.interests.reduce(function(accumulator, currentValue) {
 		return accumulator + Math.pow(currentValue, 2);
 	}, 0);
 
@@ -305,7 +304,7 @@ async function getRiderTrips(driverTrip, callback) {
 
 	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
-	//riderTrips = cutTripsByDistance(driverTrip, riderTrips);
+	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
 
 	callback(riderTrips);
 }
