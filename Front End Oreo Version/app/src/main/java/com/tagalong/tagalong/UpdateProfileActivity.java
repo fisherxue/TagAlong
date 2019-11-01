@@ -228,7 +228,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
-
         try {
             profileJsonObject = new JSONObject((profileJson));
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
@@ -255,7 +254,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                         received_profile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        System.out.println(e);
                     }
                     Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                     intent.putExtra("profile", received_profile);
@@ -268,7 +266,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println(error.toString());
                     Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
                 }
             });
