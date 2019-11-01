@@ -1,9 +1,10 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const debug = require("debug")("http");
 
 const handleFBtokenUpdate = async (req, res) => {
 
-	console.log("/updateFBtoken hit");
+	debug("/updateFBtoken hit");
 	
 	const { userID, fbToken } = req.body;
 
@@ -13,7 +14,7 @@ const handleFBtokenUpdate = async (req, res) => {
 				return res.status(400).send("Unable to find user");
 			}
 			else {
-				console.log("user updated");
+				debug("user updated");
 				res.json(user);
 			}
 

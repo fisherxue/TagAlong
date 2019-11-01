@@ -2,6 +2,8 @@ const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const firebase = require("firebase-admin");
 const mongoose = require("mongoose");
+const debug = require("debug")("http");
+
 
 
 const tripRecommender = require("../../triprecommender/recommender");
@@ -21,30 +23,30 @@ const sendNotif = async (user) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 	
-		console.log(firebaseToken);
+		debug(firebaseToken);
 		firebase.messaging().sendToDevice(firebaseToken, payload, options)
 		.then((res) => {
-			console.log(res.results);
+			debug(res.results);
 		})
 		.catch((err) => {
-			console.log(err);
+			debug(err);
 		});
 	}
 	else {
-		console.log("failed to send");
+		debug("failed to send");
 	}
 };
 
 const notifyAllRiders = async (riderTrips, callback) => {
 	for(const trip of riderTrips) {
 		let username = trip.username;
-		console.log(username, "USERNAME");
+		debug(username, "USERNAME");
 		const user = await User.findOne({ username });
 
-		console.log(user, "SADFASDFASDF");
+		debug(user, "SADFASDFASDF");
 
 		if (user) {
-			console.log("tried to send", user);
+			debug("tried to send", user);
 			await sendNotif(user);
 		}
 		else {
@@ -57,11 +59,11 @@ const notifyAllRiders = async (riderTrips, callback) => {
 
 const handleCreateTrip = async (req, res) => {
 		
-	console.log("/newTrip hit");
+	debug("/newTrip hit");
 
 	const { userID, username, arrivalTime, tripRoute, isDriverTrip } = req.body;
 
-	console.log(req.body);
+	debug(req.body);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
@@ -70,7 +72,7 @@ const handleCreateTrip = async (req, res) => {
 			}
 			else {
 
-				console.log("creating new trip");
+				debug("creating new trip");
 
 				let trip = new TripStore({
 					username,
@@ -81,20 +83,20 @@ const handleCreateTrip = async (req, res) => {
 					isFulfilled: false
 				});
 
-				console.log(trip);
+				debug(trip);
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 					trip.tripRoute = JSON.stringify(resp.json);
 
 
 					trip.save((err) => {
-						console.log(err);
-						
+						debug(err);
+
 					});
 
 
 					if (isDriverTrip) {
-						console.log("DRIVER TRIP");
+						debug("DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
 						if (typeof riderTrips === "undefined") {
 							res.status(300).send("NOTHING");
@@ -113,7 +115,7 @@ const handleCreateTrip = async (req, res) => {
 						
 					} 
 					else {
-						console.log("NOT A DRIVER TRIP");
+						debug("NOT A DRIVER TRIP");
 						res.send(trip);
 					}
 				});

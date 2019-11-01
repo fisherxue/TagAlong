@@ -1,8 +1,12 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const firebase = require("firebase-admin");
+const debug = require("debug")("http");
+
 
 const handleAcceptTrip = async (req, res) => {
+
+	debug("/acceptTrip hit")
 	
 	const { username, routedata } = req.body;
 
@@ -23,13 +27,13 @@ const handleAcceptTrip = async (req, res) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 
-		console.log(firebaseToken);
+		debug(firebaseToken);
 		firebase.messaging().sendToDevice(firebaseToken, payload, options)
 		.then((res) => {
-			console.log(res.results);
+			debug(res.results);
 		})
 		.catch((err) => {
-			console.log(err);
+			debug(err);
 		});
 		res.json("Sent");
 	}

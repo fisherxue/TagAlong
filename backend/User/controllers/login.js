@@ -2,10 +2,12 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const config = require("config");
+const debug = require("debug")("http");
+
 
 const handleLogin = async (req, res) => {
 
-	console.log("/login hit");
+	debug("/login hit")
 	
 	const { username, password, fbToken } = req.body;
 

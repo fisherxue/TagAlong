@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
+const debug = require("debug")("http");
 
 const createUpdateObject = (req) => {
 
@@ -25,8 +26,8 @@ const createUpdateObject = (req) => {
 
 const handleProfileUpdate = async (req, res) => {
 
-	console.log("/profileUpdate hit");
-	console.log(req.body);
+	debug("/profileUpdate hit");
+	debug(req.body);
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
@@ -39,7 +40,7 @@ const handleProfileUpdate = async (req, res) => {
 				res.status(400).send(err);
 			}
 			else {
-				console.log("user updated");
+				debug("user updated");
 				res.json(user);
 			}
 		});

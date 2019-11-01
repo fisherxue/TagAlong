@@ -1,4 +1,6 @@
 
+const debug = require("debug")("recommender");
+
 const LatLng = require("./latlng.js");
 
 // database
@@ -37,7 +39,7 @@ function getDirections(req, callback) {
 		destination: req.destination,
 	}, function(err, response) {
 		if (err) {
-			console.log(err);
+			debug(err);
 		}
 		callback(response);
 	});
@@ -199,7 +201,7 @@ function getInterestSimilarity(user1, user2) {
 	similarity /= magA;
 	similarity /= magB;
 
-	console.log(similarity);
+	debug(similarity);
 
 	return similarity;
 }
@@ -220,18 +222,18 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	if (mongoose.Types.ObjectId.isValid(driverTrip.userID)) {
 		await UserStore.findById(driverTrip.userID, (err, user) => {
 			if (err) {
-				console.log(err);
+				debug(err);
 			}
 			else {
 				driverUser = user;
-				console.log(driverUser);
+				debug(driverUser);
 			}
 			
 		});
 	}
 	else {
-		console.log("invalid user id from driver trip");
-		console.log(typeof driverTrip.userID, driverTrip.userID);
+		debug("invalid user id from driver trip");
+		debug(typeof driverTrip.userID, driverTrip.userID);
 
 	}
 	
@@ -242,11 +244,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		if (mongoose.Types.ObjectId.isValid(riderTrip.userID)) {
 			await UserStore.findById(riderTrip.userID, (err, user) => {
 				if (err) {
-					console.log(err);
+					debug(err);
 				}
 				else {
 					riderUser = user;
-					console.log(riderUser);
+					debug(riderUser);
 				}
 				
 
@@ -255,8 +257,8 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
 		}
 		else {
-			console.log("invalid user id from rider trip");
-			console.log(typeof riderTrip.userID, riderTrip.userID);
+			debug("invalid user id from rider trip");
+			debug(typeof riderTrip.userID, riderTrip.userID);
 		}
 		
 	});
@@ -265,7 +267,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		return b.similarityWithDriver - a.similarityWithDriver;
 	});
 
-	console.log(riderTrips, "OK");
+	debug(riderTrips, "OK");
 
 	riderTrips = riderTrips.slice(0, 1); // should slice by driver car size
 
@@ -276,7 +278,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	await TripStore.findByIdAndUpdate(tripID, update, {new: true}, (err) => {
 		if (err) {
-			console.log(err);
+			debug(err);
 		}
 	});
 
@@ -294,7 +296,7 @@ async function getRiderTrips(driverTrip, callback) {
 
 	await TripStore.find({}, (err, trips) => {
 		if (err) {
-			console.log(err);
+			debug(err);
 		}
 		riderTrips = trips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);

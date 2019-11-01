@@ -1,10 +1,11 @@
 const User = require("../models/user");
 const bcrypt = require("bcryptjs");
+const debug = require("debug")("http");
 
 const handleRegister = async (req, res) => {
 
-	console.log("/register hit");
-	console.log(req.body);
+	debug("/register hit");
+	debug(req.body);
 
 	const { username, email, password, fbToken } = req.body;
 
