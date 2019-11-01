@@ -7,7 +7,7 @@ const debug = require("debug")("http");
 
 const handleLogin = async (req, res) => {
 
-	debug("/login hit")
+	debug("/login hit");
 	
 	const { username, password, fbToken } = req.body;
 

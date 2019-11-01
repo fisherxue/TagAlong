@@ -6,6 +6,8 @@ const mongoose = require("mongoose");
 const config = require("config");
 const firebase = require("firebase-admin");
 const serviceAccount = require("./serviceAcc.json");
+const debug = require("debug")("app");
+
 
 const hostname = "127.0.0.1";
 const port = 3000;
@@ -18,14 +20,14 @@ firebase.initializeApp({
 
 
 if (!config.get("PrivateKey")) {
-    console.error("FATAL ERROR: PrivateKey is not defined.");
+    debug("FATAL ERROR: PrivateKey is not defined.");
     process.exit(1);
 }
 
 // Connect to MongoDB 
 mongoose.connect("mongodb://localhost:27017/TagAlong", {useNewUrlParser: true})
-	.then(() => console.log("Successfully connected to TagAlong MongoDB"))
-	.catch((err) => console.log("Error connecting to database", err));
+	.then(() => debug("Successfully connected to TagAlong MongoDB"))
+	.catch((err) => debug("Error connecting to database", err));
 
 app.use(bodyParser.json());
 
@@ -37,7 +39,7 @@ app.use("/trips", trips);
 
 
 app.listen(port, () =>
-  console.log(`Example app listening on port ${port}!`),
+  debug(`Example app listening on port ${port}!`),
 );
 
 

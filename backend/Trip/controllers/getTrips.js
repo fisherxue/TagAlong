@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 
 const handleGetTrips = async (req, res) => {
 	
-	const { userID } = req.body;
+	const userID = req.body;
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {

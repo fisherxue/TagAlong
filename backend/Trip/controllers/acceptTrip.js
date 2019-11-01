@@ -6,7 +6,7 @@ const debug = require("debug")("http");
 
 const handleAcceptTrip = async (req, res) => {
 
-	debug("/acceptTrip hit")
+	debug("/acceptTrip hit");
 	
 	const { username, routedata } = req.body;
 
