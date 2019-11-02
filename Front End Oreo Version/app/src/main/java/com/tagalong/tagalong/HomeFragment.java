@@ -20,6 +20,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -88,6 +89,7 @@ public class HomeFragment extends Fragment {
 
     private void setTripList (JSONObject response){
         JSONArray tripListIN;
+        tripList = new ArrayList<Trip>();
         try {
             tripListIN = response.getJSONArray("trip"); // ASK IAN FOR CORRECT NAME
 

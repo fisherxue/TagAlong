@@ -16,6 +16,7 @@ public class Profile implements Serializable {
     private String userID;
     private String joinedDate;
     private int[] interests;
+    private String fbToken;
 
     public Profile() {
         this.firstName = "Not Set";
@@ -136,4 +137,13 @@ public class Profile implements Serializable {
     public String getJoinedDate() {
         return joinedDate;
     }
+
+    public String getFbToken() {
+        return fbToken;
+    }
+
+    public void setFbToken(String fbToken) {
+        this.fbToken = fbToken;
+    }
+
 }

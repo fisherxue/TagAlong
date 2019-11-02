@@ -2,6 +2,8 @@ package com.tagalong.tagalong;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.security.crypto.EncryptedFile;
+import androidx.security.crypto.MasterKeys;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -9,6 +11,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +42,15 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
@@ -86,11 +98,184 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        //Implement the part if user is already logged in
+        Boolean needAuthenication = false;
 
-        startAuthentication();
+        /*
+        KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
+        String masterKeyAlias = null;
+
+        try {
+            masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec);
+            Log.d(TAG, "key: " + masterKeyAlias);
+        } catch (GeneralSecurityException e) {
+            Log.d(TAG, "Error : creating key for encryption");
+            Log.d(TAG, "Error (General Security Exception): " + e.toString());
+            needAuthenication = true;
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.d(TAG, "Error : creating key for encryption");
+            Log.d(TAG, "Error (IOException): " + e.toString());
+            needAuthenication = true;
+            e.printStackTrace();
+        }
+
+        String fileToRead = "Saved_Profile.txt";
+        EncryptedFile encryptedFile = null;
+        try {
+            encryptedFile = new EncryptedFile.Builder(
+                    new File(context.getFilesDir(), fileToRead),
+                    context,
+                    masterKeyAlias,
+                    EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
+            ).build();
+
+        } catch (GeneralSecurityException e) {
+            Log.d(TAG, "Error : opening encryption file");
+            Log.d(TAG, "Error (General Security Exception): " + e.toString());
+            needAuthenication = true;
+            e.printStackTrace();
+        } catch (IOException e) {
+            Log.d(TAG, "Error : opening encrypted file");
+            Log.d(TAG, "Error (IOException): " + e.toString());
+            needAuthenication = true;
+            e.printStackTrace();
+        }
+
+        if (encryptedFile != null) {
+            StringBuffer stringBuffer = new StringBuffer();
+            try (BufferedReader reader =
+                         new BufferedReader(new InputStreamReader(encryptedFile.openFileInput()))) {
+
+                String line = reader.readLine();
+                while (line != null) {
+                    stringBuffer.append(line).append('\n');
+                    line = reader.readLine();
+                }
+            } catch (IOException e) {
+                Log.d(TAG, "Error : reading encrypted file");
+                Log.d(TAG, "Error (IOException): " + e.toString());
+                needAuthenication = true;
+                e.printStackTrace();
+            } catch (GeneralSecurityException e) {
+                Log.d(TAG, "Error : reading encryption file");
+                Log.d(TAG, "Error (General Security Exception): " + e.toString());
+                needAuthenication = true;
+                e.printStackTrace();
+            } finally {
+                String contents = stringBuffer.toString();
+                needAuthenication = loadProfile(contents);
+            }
+        }
+
+         */
+
+        String filename = "Saved_Profile.txt";
+        StringBuffer stringBuffer = new StringBuffer();
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(openFileInput(filename)))) {
+
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuffer.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.d(TAG, "Error : reading encrypted file");
+            Log.d(TAG, "Error (IOException): " + e.toString());
+            needAuthenication = true;
+            e.printStackTrace();
+        } finally {
+            String contents = stringBuffer.toString();
+            needAuthenication = loadProfile(contents);
+        }
+
+
+        if (needAuthenication){
+            startAuthentication();
+        }
     }
 
+    private boolean loadProfile(String contents){
+        boolean failedToLoad = false;
+        JSONObject profileJSON;
+        try {
+            profileJSON = new JSONObject(contents);
+            final Profile profile = new Profile();
+
+            profile.setUserName(profileJSON.getString("username"));
+            JSONArray jsonArray = profileJSON.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            profile.setInterests(interests);
+            profile.setAge(profileJSON.getInt("age"));
+            profile.setGender(profileJSON.getString("gender"));
+            profile.setEmail(profileJSON.getString("email"));
+            profile.setPassword(profileJSON.getString("password"));
+            profile.setDriver(profileJSON.getBoolean("isDriver"));
+            profile.setUserID(profileJSON.getString("userID"));
+            profile.setJoinedDate(profileJSON.getString("joinedDate"));
+            profile.setFirstName(profileJSON.getString("firstName"));
+            profile.setLastName(profileJSON.getString("lastName"));
+
+            FirebaseInstanceId.getInstance().getInstanceId()
+                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "getInstanceId failed", task.getException());
+                                return;
+                            }
+                            String token = task.getResult().getToken();
+                            Log.d(TAG, token);
+                            profile.setFbToken(token);
+                            sendFCM(profile);
+                        }
+                    });
+
+
+        } catch (JSONException e) {
+            Log.d(TAG, "Error : failed to convert stored json string to profile");
+            Log.d(TAG, "Error (JSONException): " + e.toString());
+            e.printStackTrace();
+            failedToLoad = true;
+        }
+
+        return failedToLoad;
+    }
+
+    public void sendFCM(final Profile profile){
+        RequestQueue queue = Volley.newRequestQueue(context);
+        String url = getString(R.string.updateProfile);
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(profile);
+        JSONObject profileJsonObject;
+        try {
+            profileJsonObject = new JSONObject((profileJson));
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Intent intent = new Intent(context, HomeActivity.class);
+                    intent.putExtra("profile", profile);
+                    startActivity(intent);
+                    MainActivity.this.finish();
+
+                }
+
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+                }
+            });
+
+            queue.add(jsonObjectRequest);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void startAuthentication () {
         //FaceBook login Fields Initiations
@@ -266,7 +451,6 @@ public class MainActivity extends AppCompatActivity {
                     Profile receivedProfile = new Profile();
 
                     try {
-                        System.out.println(response.toString());
                         receivedProfile.setUserName(response.getString("username"));
                         JSONArray jsonArray = response.getJSONArray("interests");
                         int [] interests = new int[jsonArray.length()];
