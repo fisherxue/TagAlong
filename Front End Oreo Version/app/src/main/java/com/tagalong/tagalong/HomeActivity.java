@@ -3,7 +3,7 @@ package com.tagalong.tagalong;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.security.keystore.KeyGenParameterSpec;
+//import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,18 +11,18 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
-import java.io.BufferedWriter;
-import java.io.File;
+//import java.io.BufferedWriter;
+//import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.security.GeneralSecurityException;
+//import java.io.IOException;
+//import java.io.OutputStreamWriter;
+//import java.security.GeneralSecurityException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.security.crypto.EncryptedFile;
-import androidx.security.crypto.MasterKeys;
+//import androidx.security.crypto.EncryptedFile;
+//import androidx.security.crypto.MasterKeys;
 
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";

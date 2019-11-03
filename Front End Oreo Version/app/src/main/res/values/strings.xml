@@ -8,5 +8,5 @@
     <string name="register">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/register</string>
     <string name="updateProfile">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/updateProfile</string>
     <string name="login">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/login</string>
-    <string name="getTripList">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/login</string>
+    <string name="getTripList">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/trips/gettrips</string>
 </resources>
