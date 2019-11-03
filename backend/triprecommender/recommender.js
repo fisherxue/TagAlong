@@ -186,24 +186,25 @@ function getInterestSimilarity(user1, user2) {
 	let magA = 0;
 	let magB = 0;
 
-	/* COSINE MATCHING FUNCTION */
-	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
+    let similarity = 1;
+    let magA = 0;
+    let magB = 0;
 
-	magA = user1.interests.reduce(function(accumulator, currentValue) {
-		return accumulator + Math.pow(currentValue, 2);
-	}, 0);
-	magB = user2.interests.reduce(function(accumulator, currentValue) {
-		return accumulator + Math.pow(currentValue, 2);
-	}, 0);
+    /* COSINE MATCHING FUNCTION */
+    for (let i = 0; i < NumInterests; i++) {
+        similarity += user1.interests[parseInt(i, 10)] * user2.interests[parseInt(i, 10)];
+        magA += Math.pow(user1.interests[parseInt(i, 10)], 2);
+        magB += Math.pow(user2.interests[parseInt(i, 10)], 2);
+    }
 
-	magA = Math.pow(magA, 0.5);
-	magB = Math.pow(magB, 0.5);
-	similarity /= magA;
-	similarity /= magB;
+    magA = Math.pow(magA, 0.5);
+    magB = Math.pow(magB, 0.5);
+    similarity /= magA;
+    similarity /= magB;
 
-	debug(similarity);
+    console.log(similarity)
 
-	return similarity;
+    return similarity;
 }
 
 /*
