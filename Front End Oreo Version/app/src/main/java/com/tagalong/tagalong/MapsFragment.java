@@ -38,7 +38,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
 import org.json.JSONException;
@@ -81,43 +80,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         arrivalTime = (TextInputEditText) findViewById(R.id.arrivalTime);
         arrivalDate = (TextInputEditText) findViewById(R.id.arrivalDate);
 
-        arrivalDate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                final Calendar calendar = Calendar.getInstance();
-
-                DatePickerDialog datePickerDialog = new DatePickerDialog(MapsFragment.this,
-                        new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int year, int month, int day) {
-                        Calendar calendarOneYearAdvance = (Calendar)calendar.clone();
-                        calendarOneYearAdvance.add(Calendar.YEAR,1);
-                        Calendar calendarSetDate = Calendar.getInstance();
-                        calendarSetDate.set(year,month,day);
-                        if (calendarSetDate.after(calendar) && calendarSetDate.before(calendarOneYearAdvance)){
-                            arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
-                        }
-                        else {
-                            Toast.makeText(context, "Please enter date that is within one year from today", Toast.LENGTH_LONG).show();
-                        }
-                    }
-                },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
-                datePickerDialog.show();
-            }
-        });
-
-        arrivalTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(MapsFragment.this, new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
-                        arrivalTime.setText(String.format("%02d:%02d",hour,minute));
-                    }
-                },0,0,false);
-                timePickerDialog.show();
-            }
-        });
+        initializeArrivalButtons();
 
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +143,46 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     generateTrip(trip);
                 }
 
+            }
+        });
+    }
+
+    private void initializeArrivalButtons () {
+        arrivalDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(MapsFragment.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                Calendar calendarOneYearAdvance = (Calendar)calendar.clone();
+                                calendarOneYearAdvance.add(Calendar.YEAR,1);
+                                Calendar calendarSetDate = Calendar.getInstance();
+                                calendarSetDate.set(year,month,day);
+                                if (calendarSetDate.after(calendar) && calendarSetDate.before(calendarOneYearAdvance)){
+                                    arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
+                                }
+                                else {
+                                    Toast.makeText(context, "Please enter date that is within one year from today", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+
+        arrivalTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(MapsFragment.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                        arrivalTime.setText(String.format("%02d:%02d",hour,minute));
+                    }
+                },0,0,false);
+                timePickerDialog.show();
             }
         });
     }

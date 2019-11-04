@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
 
-    private final String TAG = "Trip View Adapter";
+    //private final String TAG = "Trip View Adapter";
     private Context context;
     private List<Trip> tripList;
 
