@@ -13,8 +13,7 @@ const handleRegister = async (req, res) => {
 
 	if (user) {
 		return res.status(400).send("User already exists.");
-	}
-	else {
+	} else {
 		user = new User({
 			username,
 			email,
@@ -26,8 +25,7 @@ const handleRegister = async (req, res) => {
 		await user.save((err) => {
 			if (err) {
 				res.status(400).send("ERROR MISSING FIELD");
-			}
-			else {
+			} else {
 				res.send(user);
 			}
 		});

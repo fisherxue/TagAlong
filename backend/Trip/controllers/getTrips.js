@@ -11,8 +11,7 @@ const handleGetTrips = async (req, res) => {
 		await User.findById(userID, (err, user) => {
 			if (err) {
 				return res.status(400).send("Unable to find user");
-			}
-			else {
+			} else {
 				TripStore.find({ userID }, (err, trips) => {
 					if (err) {
 						res.status(400).send("trip not found");
@@ -23,8 +22,7 @@ const handleGetTrips = async (req, res) => {
 			}
 
 		});
-	}
-	else {
+	} else {
 		return res.status(400).send("Invalid userID");
 	}
 

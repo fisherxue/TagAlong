@@ -38,14 +38,12 @@ const handleProfileUpdate = async (req, res) => {
 		await User.findByIdAndUpdate(userID, update, { new: true }, (err, user) => {
 			if (err) {
 				res.status(400).send(err);
-			}
-			else {
+			} else {
 				debug("user updated");
 				res.json(user);
 			}
 		});
-	}
-	else {
+	} else {
 		res.status(400).send("Invalid userID");
 	}
 

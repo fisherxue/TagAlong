@@ -11,21 +11,18 @@ const handleDelTrip = async (req, res) => {
 		await User.findById(userID, (err, user) => {
 			if (err) {
 				return res.status(400).send("Unable to find user");
-			}
-			else {
+			} else {
 				TripStore.findByIdAndDelete(tripid, (err) => {
 					if (err) {
 						res.status(400).send("trip not found");
-					}
-					else {
+					} else {
 						res.json("trip successfully deleted");
 					}
 				});
 			}
 
 		});
-	}
-	else {
+	} else {
 		return res.status(400).send("Invalid userID");
 	}
 

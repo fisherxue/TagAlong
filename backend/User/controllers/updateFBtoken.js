@@ -12,15 +12,13 @@ const handleFBtokenUpdate = async (req, res) => {
 		await User.findByIdAndUpdate(userID, { fbToken }, {new: true}, (err, user) => {
 			if (err) {
 				return res.status(400).send("Unable to find user");
-			}
-			else {
+			} else {
 				debug("user updated");
 				res.json(user);
 			}
 
 		});
-	}
-	else {
+	} else {
 		return res.status(400).send("Invalid userID");
 	}
 	
