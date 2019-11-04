@@ -224,15 +224,13 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		await UserStore.findById(driverTrip.userID, (err, user) => {
 			if (err) {
 				debug(err);
-			}
-			else {
+			} else {
 				driverUser = user;
 				debug(driverUser);
 			}
 			
 		});
-	}
-	else {
+	} else {
 		debug("invalid user id from driver trip");
 		debug(typeof driverTrip.userID, driverTrip.userID);
 
@@ -246,8 +244,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 			await UserStore.findById(riderTrip.userID, (err, user) => {
 				if (err) {
 					debug(err);
-				}
-				else {
+				} else {
 					riderUser = user;
 					debug(riderUser);
 				}
@@ -256,8 +253,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 			});
 
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
-		}
-		else {
+		} else {
 			debug("invalid user id from rider trip");
 			debug(typeof riderTrip.userID, riderTrip.userID);
 		}
