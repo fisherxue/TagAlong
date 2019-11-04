@@ -36,7 +36,6 @@ public class Trip implements Serializable {
     }
 
     public Trip(JSONObject trip) {
-
         try {
             this.username = trip.getString("username");
         } catch (JSONException e) {
@@ -51,6 +50,22 @@ public class Trip implements Serializable {
 
         try {
             this.tripRoute = trip.getJSONObject("tripRoute");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            this.arrivalTime = (Date) trip.get("arrivalDate");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
+                    .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
+                    .getLong("value");
+            this.departureTime = (Date) arrivalTime.clone();
+            this.departureTime.setTime(this.arrivalTime.getTime()-duration);
         } catch (JSONException e) {
             e.printStackTrace();
         }

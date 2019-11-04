@@ -88,6 +88,10 @@ public class Profile implements Serializable {
         return age;
     }
 
+    public String getFbToken() {
+        return fbToken;
+    }
+
     //Setters
     public void setInterests(int[] interests) {
         this.interests = interests;

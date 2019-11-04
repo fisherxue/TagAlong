@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -25,14 +26,14 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        Button map;
-        Button chat;
-        Button delete;
-        TextView departurePlace;
-        TextView arrivalPlace;
-        TextView departureTime;
-        TextView arrivalTime;
-        TextView usersAlong;
+        private Button map;
+        private Button chat;
+        private Button delete;
+        private TextView departurePlace;
+        private TextView arrivalPlace;
+        private TextView departureTime;
+        private TextView arrivalTime;
+        private TextView usersAlong;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -58,12 +59,18 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Trip trip = tripList.get(position);
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
+        StringBuilder userSB = new StringBuilder();
+        for (int i = 0; i < trip.getTaggedUsers().length; i++) {
+            userSB.append(trip.getTaggedUsers()[i]).append(",\t");
+        }
+        String usersAlong = userSB.toString();
 
-        holder.departurePlace.setText("Departure Place: ");
-        holder.departureTime.setText("Departure Time");
-        holder.arrivalTime.setText("Arrival Time");
-        holder.arrivalPlace.setText("Arrival Place");
-        holder.usersAlong.setText("UserAlong");
+        holder.departurePlace.setText("Departure Place: " + trip.getDeparturePlace());
+        holder.departureTime.setText("Departure Time: " + format.format(trip.getDepartureTime()));
+        holder.arrivalTime.setText("Arrival Time: " + format.format(trip.getArrivalTime()));
+        holder.arrivalPlace.setText("Arrival Place" + trip.getArrivalPlace());
+        holder.usersAlong.setText("UserAlong" + usersAlong);
 
         holder.map.setOnClickListener(new View.OnClickListener() {
             @Override
