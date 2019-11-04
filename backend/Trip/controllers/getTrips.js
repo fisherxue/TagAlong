@@ -16,8 +16,7 @@ const handleGetTrips = async (req, res) => {
 				TripStore.find({ userID }, (err, trips) => {
 					if (err) {
 						res.status(400).send("trip not found");
-					}
-					else {
+					} else {
 						res.json(trips);
 					}
 				});
