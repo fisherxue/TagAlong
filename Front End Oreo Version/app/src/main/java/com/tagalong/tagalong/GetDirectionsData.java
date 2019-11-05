@@ -36,7 +36,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
 
     @Override
     protected void onPostExecute(String s){
-        String[] directionsList = null;
+        String[] directionsList;
         DataParser parser = new DataParser();
         directionsList = parser.parseDirections(s);
 
@@ -46,7 +46,9 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         markerOptions.draggable(true);
         markerOptions.title("Destination");
 
-        displayDirections(directionsList);
+        if(directionsList != null) {
+            displayDirections(directionsList);
+        }
 
         mMap.addMarker(markerOptions);
     }

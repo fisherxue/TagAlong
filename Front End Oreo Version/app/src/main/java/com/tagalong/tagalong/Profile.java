@@ -3,50 +3,98 @@ package com.tagalong.tagalong;
 import java.io.Serializable;
 
 public class Profile implements Serializable {
-    private String firstName;
-    private String lastName;
+
+    public static final int minAgeDriver = 19;
+    public static final int minAgeRider = 15;
+    public static final int maxAge = 100;
+
+    private String userID;
     private String username;
     private String password;
     private String email;
-    private Boolean isDriver;
+    private String firstName;
+    private String lastName;
     private String gender;
-    private int age;
-    //private String interests;
-    private int carCapacity;
-    private String userID;
     private String joinedDate;
+    private String fbToken;
+    private Boolean isDriver;
+    private int age;
+    private int carCapacity;
     private int[] interests;
 
+
     public Profile() {
+        this.userID = "Not Set";
         this.firstName = "Not Set";
         this.lastName = "Not Set";
         this.username = "Not Set";
         this.password = "Not Set";
         this.email = "Not Set";
-        this.isDriver = false;
+        this.joinedDate = "Not Set";
         this.gender = "Not Set";
+        this.isDriver = false;
         this.age = 0;
         this.carCapacity = 0;
-        this.userID = "Not Set";
-        this.joinedDate = "Not Set";
         this.interests = new int[5];
     }
 
 
-    public int[] getInterests() {
-        return interests;
+    // Getters
+    public String getUserID() {
+        return userID;
     }
 
-    public void setInterests(int[] interests) {
-        this.interests = interests;
+    public String getJoinedDate() {
+        return joinedDate;
     }
 
     public String getFirstName() {
         return firstName;
     }
 
+    public int[] getInterests() {
+        return interests;
+    }
+
     public int getCarCapacity() {
         return carCapacity;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getUserName() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Boolean getDriver() {
+        return isDriver;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public String getFbToken() {
+        return fbToken;
+    }
+
+    //Setters
+    public void setInterests(int[] interests) {
+        this.interests = interests;
     }
 
     public void setCarCapacity(int carCapacity) {
@@ -85,42 +133,6 @@ public class Profile implements Serializable {
         this.age = age;
     }
 
-    /*public void setInterest(String interests) {
-        this.interests = interests;
-    }*/
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getUserName() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Boolean getDriver() {
-        return isDriver;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    /*public String getInterest() {
-        return interests;
-    }*/
-
     public void setUserID(String userID) {
         this.userID = userID;
     }
@@ -129,11 +141,8 @@ public class Profile implements Serializable {
         this.joinedDate = joinedDate;
     }
 
-    public String getUserID() {
-        return userID;
+    public void setFbToken(String fbToken) {
+        this.fbToken = fbToken;
     }
 
-    public String getJoinedDate() {
-        return joinedDate;
-    }
 }

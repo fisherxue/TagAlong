@@ -50,7 +50,10 @@ public class DataParser {
         }
 
 
-        return getPaths(jsonArray);
+        if (jsonArray != null) {
+            return getPaths(jsonArray);
+        }
+        return null;
     }
 
     public String[] getPaths(JSONArray googleStepsJson){

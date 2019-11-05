@@ -1,13 +1,20 @@
 package com.tagalong.tagalong;
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.SearchView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -39,10 +46,13 @@ import com.google.gson.Gson;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
@@ -59,6 +69,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private Context context;
     private TextInputEditText arrivalDate;
     private TextInputEditText arrivalTime;
+    private SearchView locationSearch;
+    //private PlacesClient placesClient;
 
 
     @Override
@@ -75,6 +87,10 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         searchRoute = (Button) findViewById(R.id.To);
         arrivalTime = (TextInputEditText) findViewById(R.id.arrivalTime);
         arrivalDate = (TextInputEditText) findViewById(R.id.arrivalDate);
+        locationSearch = (SearchView) findViewById(R.id.search);
+
+        initializeSearch();
+        initializeArrivalButtons();
 
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,8 +126,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     GetDirectionsData getDirectionsData = new GetDirectionsData();
                     LatLng origin = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
                     LatLng destination = new LatLng(end_latitude, end_longitude);
-                    Calendar cal = Calendar.getInstance(); // creates calendar
-                    cal.add(Calendar.HOUR_OF_DAY, 1); // adds one hour
 
                     dataTransfer[0] = mMap;
                     dataTransfer[1] = url;
@@ -137,6 +151,89 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     generateTrip(trip);
                 }
 
+            }
+        });
+    }
+
+
+
+
+    private void initializeSearch() {
+
+        locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                String location = locationSearch.getQuery().toString();
+                List<Address> locationList = new ArrayList<>();
+                Geocoder geocoder = new Geocoder(MapsFragment.this);
+                try {
+                    locationList = geocoder.getFromLocationName(location, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                mMap.clear();
+                if(!locationList.isEmpty()) {
+                    Address address = locationList.get(0);
+                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                    mMap.addMarker(new MarkerOptions().position(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                    end_latitude = latLng.latitude;
+                    end_longitude = latLng.longitude;
+                }
+                else {
+                    Toast.makeText(context, "Location not Found", Toast.LENGTH_LONG).show();
+                }
+
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+
+    }
+
+
+    private void initializeArrivalButtons () {
+        arrivalDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Calendar calendar = Calendar.getInstance();
+
+                DatePickerDialog datePickerDialog = new DatePickerDialog(MapsFragment.this,
+                        new DatePickerDialog.OnDateSetListener() {
+                            @Override
+                            public void onDateSet(DatePicker datePicker, int year, int month, int day) {
+                                Calendar calendarOneYearAdvance = (Calendar)calendar.clone();
+                                calendarOneYearAdvance.add(Calendar.YEAR,1);
+                                Calendar calendarSetDate = Calendar.getInstance();
+                                calendarSetDate.set(year,month,day);
+                                if (calendarSetDate.after(calendar) && calendarSetDate.before(calendarOneYearAdvance)){
+                                    arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
+                                }
+                                else {
+                                    Toast.makeText(context, "Please enter date that is within one year from today", Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
+                datePickerDialog.show();
+            }
+        });
+
+        arrivalTime.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(MapsFragment.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker timePicker, int hour, int minute) {
+                        arrivalTime.setText(String.format("%02d:%02d",hour,minute));
+                    }
+                },0,0,false);
+                timePickerDialog.show();
             }
         });
     }
@@ -264,7 +361,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
         mMap.animateCamera(CameraUpdateFactory.newLatLng(latLng));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,10));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
         mMap.addMarker(markerOptions);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMarkerClickListener(this);

@@ -43,11 +43,15 @@ dependencies {
     implementation 'com.google.maps.android:android-maps-utils:0.5+'
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.google.android.libraries.places:places:2.0.0'
 
     //FCM
     implementation 'com.google.firebase:firebase-auth:19.1.0'
     implementation 'com.google.firebase:firebase-firestore:21.2.0'
     implementation 'com.google.firebase:firebase-messaging:20.0.0'
     implementation 'com.google.android.material:material:1.0.0'
+
+    //Security Library
+    implementation "androidx.security:security-crypto:1.0.0-alpha02"
 }
 apply plugin: 'com.google.gms.google-services'

@@ -9,7 +9,30 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="@android:color/background_light">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <SearchView
+                android:id="@+id/search"
+                style="@android:style/Widget.Material.Light.SearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:background="#FFFFFF"
+                android:focusable="false"
+                android:iconifiedByDefault="false"
+                android:queryBackground="@color/common_google_signin_btn_text_dark_default"
+                android:queryHint="Search Location" />
+        </LinearLayout>
+
 
         <fragment
             android:id="@+id/map"
@@ -19,23 +42,7 @@
             android:layout_weight="1"
             tools:context=".MapsFragment" />
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:hint="Search">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/searchLocation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="viewStart"
-                android:textSize="14sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
@@ -53,6 +60,7 @@
                 android:hint="(DD/MM/YYYY)"
                 android:inputType="date"
                 android:textAlignment="center"
+                android:focusableInTouchMode="false"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -73,6 +81,7 @@
                 android:hint="(HH:MM)"
                 android:inputType="time"
                 android:textAlignment="center"
+                android:focusableInTouchMode="false"
                 android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
