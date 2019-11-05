@@ -256,83 +256,22 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     final Profile received_profile = new Profile();
                     try {
                         received_profile.setUserName(response.getString("username"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting username from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         JSONArray jsonArray = response.getJSONArray("interests");
                         int [] interests = new int[jsonArray.length()];
                         for (int i = 0; i < jsonArray.length(); i++){
                             interests[i] = jsonArray.getInt(i);
                         }
                         received_profile.setInterests(interests);
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting interests from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setAge(response.getInt("age"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting age from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setGender(response.getString( "gender"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting gender from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setEmail(response.getString("email"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting email from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setPassword(response.getString("password"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting password from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setDriver(response.getBoolean("isDriver"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting isDriver from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setUserID(response.getString("_id"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting userID from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setJoinedDate(response.getString("joinedDate"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting joined Date from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setFirstName(response.getString("firstName"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error getting First Name from received profile");
-                        e.printStackTrace();
-                    }
-
-                    try {
                         received_profile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
-                        Log.d(TAG, "Error getting Last Name from received profile");
                         e.printStackTrace();
                     }
 
