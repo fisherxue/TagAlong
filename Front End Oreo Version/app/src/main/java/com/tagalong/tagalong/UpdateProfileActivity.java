@@ -44,6 +44,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     private Context context;
     private Profile userProfile;
     private int[] interests = {2,2,2,2,2};
+    private Profile newUserProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -161,7 +162,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        final Profile newUserProfile = new Profile();
+        newUserProfile = new Profile();
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,17 +185,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 }
 
                 if (!ageEditText.getText().toString().isEmpty()) {
-                    if (Integer.parseInt(ageEditText.getText().toString()) < newUserProfile.minAgeRider) {
-                        Toast.makeText(context, "You are underage to register", Toast.LENGTH_LONG).show();
-                        allSet = false;
-                    }
-                    else if (Integer.parseInt(ageEditText.getText().toString()) > newUserProfile.maxAge) {
-                        Toast.makeText(context, "Please Enter Valid Age", Toast.LENGTH_LONG).show();
-                        allSet = false;
-                    }
-                    else {
-                        newUserProfile.setAge(Integer.parseInt(ageEditText.getText().toString()));
-                    }
+                    allSet = verifyAge(allSet);
                 }
                 else {
                     Toast.makeText(context, "Please Enter Age", Toast.LENGTH_LONG).show();
@@ -237,6 +228,22 @@ public class UpdateProfileActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean verifyAge(boolean allSetIn){
+        boolean allSet = allSetIn;
+        if (Integer.parseInt(ageEditText.getText().toString()) < newUserProfile.minAgeRider) {
+            Toast.makeText(context, "You are underage to register", Toast.LENGTH_LONG).show();
+            allSet = false;
+        }
+        else if (Integer.parseInt(ageEditText.getText().toString()) > newUserProfile.maxAge) {
+            Toast.makeText(context, "Please Enter Valid Age", Toast.LENGTH_LONG).show();
+            allSet = false;
+        }
+        else {
+            newUserProfile.setAge(Integer.parseInt(ageEditText.getText().toString()));
+        }
+        return  allSet;
     }
 
     private void sendProfile(Profile profile) {
