@@ -38,65 +38,20 @@ public class Trip implements Serializable {
     public Trip(JSONObject trip) {
         try {
             this.username = trip.getString("username");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.tripID = trip.getString("tripID");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.tripRoute = trip.getJSONObject("tripRoute");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.arrivalTime = (Date) trip.get("arrivalDate");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
                     .getLong("value");
             this.departureTime = (Date) arrivalTime.clone();
             this.departureTime.setTime(this.arrivalTime.getTime()-duration);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.departurePlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("start_address");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.arrivalPlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("end_address");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.userID = trip.getString("userID");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             this.isDriverTrip = trip.getBoolean("isDriverTrip");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        try {
             JSONArray taggedUsers = trip.getJSONArray("taggedUsers");
             this.taggedUsers = new String[taggedUsers.length()];
             for (int i = 0; i < taggedUsers.length(); i++){
@@ -105,7 +60,6 @@ public class Trip implements Serializable {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
     }
 
     public void setTripRoute(LatLng origin, LatLng destination) {
