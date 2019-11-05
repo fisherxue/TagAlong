@@ -185,7 +185,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 }
 
                 if (!ageEditText.getText().toString().isEmpty()) {
-                    allSet = varifyAge(allSet);
+                    allSet = verifyAge(allSet);
                 }
                 else {
                     Toast.makeText(context, "Please Enter Age", Toast.LENGTH_LONG).show();
@@ -230,7 +230,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
         });
     }
 
-    private boolean varifyAge(boolean allSet){
+    private boolean verifyAge(boolean allSetIn){
+        boolean allSet = allSetIn;
         if (Integer.parseInt(ageEditText.getText().toString()) < newUserProfile.minAgeRider) {
             Toast.makeText(context, "You are underage to register", Toast.LENGTH_LONG).show();
             allSet = false;
