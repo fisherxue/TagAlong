@@ -7,7 +7,7 @@ const debug = require("debug")("http /getTrips");
 
 const handleGetTrips = async (req, res) => {
 	
-	const userID = req.body;
+	const userID = req.body.userID;
 
 	debug("/getTrips hit");
 	debug("get userID", userID);
