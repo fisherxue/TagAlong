@@ -12,6 +12,8 @@ const handleGetMessages = async (req, res) => {
 
 	debug("get userID", userID);
 
+	Chat.findOne();
+
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {

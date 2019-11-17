@@ -7,7 +7,7 @@ const TripSchema = mongoose.Schema({
 		required: true
 	},
 	tripRoute: {
-		type: String,
+		type: mongoose.Schema.Types.Mixed,
 		required: true
 	},
 	taggedUsers: [{
