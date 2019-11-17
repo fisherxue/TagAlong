@@ -12,7 +12,6 @@ const handleGetMessages = async (req, res) => {
 
 	debug("get userID", userID);
 
-	Chat.findOne();
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
@@ -20,16 +19,22 @@ const handleGetMessages = async (req, res) => {
 				debug("user not found");
 				return res.status(400).send("Unable to find user");
 			} else {
-				const username = user.username;
-				Chat.findOne({ username }, (err, chat) => {
-					if (err) {
-						debug("chat not found");
-						res.status(400).send("chat not found");
-					} else {
-						debug("responded with chat");
-						res.json(chat);
-					}
-				});
+				if (user) {
+					const username = user.username;
+					Chat.findOne({ username }, (err, chat) => {
+						if (err) {
+							debug("chat not found");
+							res.status(400).send("chat not found");
+						} else {
+							debug("responded with chat");
+							res.json(chat);
+						}
+					});
+				}
+				else {
+					res.status(400).send("Unable to find user");
+				}
+				
 			}
 
 		});

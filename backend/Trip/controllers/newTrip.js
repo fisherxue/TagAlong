@@ -22,8 +22,7 @@ const sendNotif = async (user) => {
 			priority: "high",
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
-	
-		debug(firebaseToken);
+
 		firebase.messaging().sendToDevice(firebaseToken, payload, options)
 		.then((res) => {
 			debug(res.results);
@@ -33,7 +32,7 @@ const sendNotif = async (user) => {
 		});
 	}
 	else {
-		debug("failed to send");
+		debug("invalid firebaseToken");
 	}
 };
 
@@ -42,8 +41,6 @@ const notifyAllRiders = async (riderTrips, callback) => {
 		let username = trip.username;
 		debug(username, "USERNAME");
 		const user = await User.findOne({ username });
-
-		debug(user, "SADFASDFASDF");
 
 		if (user) {
 			debug("tried to send", user);
@@ -91,7 +88,6 @@ const handleCreateTrip = async (req, res) => {
 
 					trip.save((err) => {
 						debug(err);
-
 					});
 
 
@@ -111,6 +107,7 @@ const handleCreateTrip = async (req, res) => {
 							});
 							res.send(driverTrip);
 						}
+						
 						});
 						
 					} 
