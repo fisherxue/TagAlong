@@ -33,9 +33,11 @@ app.use(bodyParser.json());
 
 const users = require("./User/routes/users");
 const trips = require("./Trip/routes/triproutes");
+const chat = require("./Chat/routes/chatroutes");
 
 app.use("/users", users);
 app.use("/trips", trips);
+app.use("/chat", chat);
 
 
 app.listen(port, () =>

@@ -78,7 +78,7 @@ const handleCreateTrip = async (req, res) => {
 					username,
 					userID,
 					arrivalTime,
-					tripRoute: JSON.stringify(tripRoute),
+					tripRoute: tripRoute,
 					isDriverTrip,
 					isFulfilled: false
 				});
@@ -86,7 +86,7 @@ const handleCreateTrip = async (req, res) => {
 				debug(trip);
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
-					trip.tripRoute = JSON.stringify(resp.json);
+					trip.tripRoute = resp.json;
 
 
 					trip.save((err) => {
