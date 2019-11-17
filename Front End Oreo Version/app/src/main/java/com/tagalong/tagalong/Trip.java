@@ -7,7 +7,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.xml.datatype.Duration;
 
 public class Trip implements Serializable {
 
@@ -38,14 +42,17 @@ public class Trip implements Serializable {
     public Trip(JSONObject trip) {
         try {
             this.username = trip.getString("username");
-            this.tripID = trip.getString("tripID");
+            this.tripID = trip.getString("_id");
             this.tripRoute = trip.getJSONObject("tripRoute");
-            this.arrivalTime = (Date) trip.get("arrivalDate");
+            //this.arrivalTime = (Date) trip.get("arrivalTime");
+            this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+                    .parse(trip.getString("arrivalTime"));
+
             Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
                     .getLong("value");
             this.departureTime = (Date) arrivalTime.clone();
-            this.departureTime.setTime(this.arrivalTime.getTime()-duration);
+            this.departureTime.setTime(this.arrivalTime.getTime()-(duration*1000));
             this.departurePlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("start_address");
             this.arrivalPlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
@@ -58,6 +65,8 @@ public class Trip implements Serializable {
                 this.taggedUsers[i] = taggedUsers.getString(i);
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

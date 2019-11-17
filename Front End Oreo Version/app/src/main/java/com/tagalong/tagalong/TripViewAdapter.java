@@ -61,6 +61,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         Trip trip = tripList.get(position);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
         StringBuilder userSB = new StringBuilder();
+
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
             userSB.append(trip.getTaggedUsers()[i]).append(",\t");
         }

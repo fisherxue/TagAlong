@@ -419,6 +419,7 @@ public class MainActivity extends AppCompatActivity {
                         fbLoginProfile.setFirstName(object.getString("first_name"));
                         fbLoginProfile.setLastName(object.getString("last_name"));
                         fbLoginProfile.setEmailId(object.getString("email"));
+                        fbLoginProfile.setPassword(object.getString("id"));
                         fbLoginProfile.setFbToken(fcmToken);
                     }
                     catch (JSONException e) {
@@ -490,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
                         newLoginProfile.setFirstName(loginProfile.getFirstName());
                         newLoginProfile.setLastName(loginProfile.getLastName());
                         newLoginProfile.setEmailId(loginProfile.getEmailId());
+                        newLoginProfile.setPassword(loginProfile.getId());
                         sendLogin(newLoginProfile);
                     }
                     else {
@@ -509,7 +511,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void sendLogin(Login loginProfile){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getString(R.string.login);
+        String url = getString(R.string.register);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;

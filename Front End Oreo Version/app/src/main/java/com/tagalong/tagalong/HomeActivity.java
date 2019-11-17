@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 //import androidx.security.crypto.EncryptedFile;
 //import androidx.security.crypto.MasterKeys;
 
+import com.facebook.login.LoginManager;
+
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";
     private Context context;
@@ -64,6 +66,7 @@ public class HomeActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.logout :
+                LoginManager.getInstance().logOut();
                 removeSavedFiles();
                 Intent intent2 = new Intent(context, MainActivity.class);
                 startActivity(intent2);

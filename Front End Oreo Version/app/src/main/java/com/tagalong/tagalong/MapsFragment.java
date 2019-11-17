@@ -95,6 +95,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check and assign all inputs of user to profile
                 boolean allChecked = true;
                 if (arrivalDate.getResources().toString().isEmpty()) {
                     Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
@@ -160,6 +161,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     private void initializeSearch() {
 
+        //Parses string in search and finds location.
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {

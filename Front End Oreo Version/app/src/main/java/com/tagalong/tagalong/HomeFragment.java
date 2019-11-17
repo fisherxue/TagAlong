@@ -52,11 +52,13 @@ public class HomeFragment extends Fragment {
         String url = getString(R.string.getTripList);
         final Gson gson = new Gson();
         final String profileJson = gson.toJson(profile);
+        Log.d(TAG, "profileJson" + profileJson);
         JSONObject profileJsonObject;
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, profileJsonObject, new Response.Listener<JSONObject>() {
+            Log.d(TAG, "profileJsonObject" + profileJsonObject);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Received List of Trips for the user");
@@ -68,7 +70,7 @@ public class HomeFragment extends Fragment {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "Error: Could not get list of Trips");
-                    Log.d(TAG, "Error: " + error.toString());
+                    Log.d(TAG, "Error: " + error.getMessage());
                     Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
                 }
             });
@@ -91,8 +93,8 @@ public class HomeFragment extends Fragment {
         JSONArray tripListIN;
         tripList = new ArrayList<Trip>();
         try {
-            tripListIN = response.getJSONArray("trip"); // ASK IAN FOR CORRECT NAME
-
+            tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
+            Log.d(TAG, "Trip Array: " + tripListIN.toString());
             for (int i = 0; i < tripListIN.length(); i++){
                 this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
             }
