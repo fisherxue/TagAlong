@@ -1,11 +1,15 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
+const debug = require("debug")("http");
+
 
 
 const handleGetTrips = async (req, res) => {
 	
 	const userID = req.body;
+
+	debug("/getTrips hit");
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
