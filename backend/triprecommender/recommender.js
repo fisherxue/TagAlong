@@ -8,42 +8,12 @@ const mongoose = require("mongoose");
 const TripStore = require("../Trip/models/Trip");
 const UserStore = require("../User/models/user");
 
-/* Google Maps */
-// initialize maps client
-const googleMapsClient = require("@google/maps").createClient({
-	key: "AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ"
-});
-
-
 const MaxDriverBearingDiff = 20; // 20 deg
 const MaxDriverDistanceDiff = 2000; // 1km
 
-/* Get directions with waypoints */
-function getDirectionsWithWaypoints(req, callback) {
-	googleMapsClient.directions({
-		origin: req.origin,
-		destination: req.destination,
-		waypoints: req.waypoints,
-	}, function(err, response) {
-		if (err) {
-			throw err;
-		}
-		callback(response);
-	});
-}
-
-/* Get directions */
-function getDirections(req, callback) {
-	googleMapsClient.directions({
-		origin: req.origin,
-		destination: req.destination,
-	}, function(err, response) {
-		if (err) {
-			debug(err);
-		}
-		callback(response);
-	});
-}
+const Directions = require("./directions.js");
+const getDirections = Directions.getDirections;
+const getDirectionsWithWaypoints = Directions.getDirectionsWithWaypoints;
 
 /* TODO: port to functional programming with map-filter-reduce
  * Reduces down rider trips to those within some time constraint
@@ -159,7 +129,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		waypoints
 	};
 
-	getDirectionsWithWaypoints(req, function(res) {
+	getDirectionsWithWaypoints(req, function(err, res) {
 		callback(res);
 	});
 }
@@ -189,8 +159,6 @@ function getInterestSimilarity(user1, user2) {
 	magB = Math.pow(magB, 0.5);
 	similarity /= magA;
 	similarity /= magB;
-
-	console.log(similarity)
 
 	return similarity;
 }
@@ -310,12 +278,18 @@ function tripHandler(trip, callback) {
 		origin: startPoint,
 		destination: endPoint
 	};
-	getDirections(req, function(res) {
+	getDirections(req, function(err, res) {
 		callback(res);
 	});
 }
 
 module.exports = {
 	driverTripHandler,
-	tripHandler
+	tripHandler,
+	cutTripsByBearing,
+	cutTripsByDistance,
+	modifyTrip,
+	getInterestSimilarity, 
+	getRiderTripSimilarity,
+	getRiderTrips
 };
