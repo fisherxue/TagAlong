@@ -26,7 +26,9 @@ const handleGetTrips = async (req, res) => {
 						res.status(400).send("trip not found");
 					} else {
 						debug("responded with trips", trips);
-						res.json(trips);
+						res.json({
+							trips: trips
+						});
 					}
 				});
 			}
