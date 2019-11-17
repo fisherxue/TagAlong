@@ -11,7 +11,7 @@ const handleGetTrips = async (req, res) => {
 
 	debug("/getTrips hit");
 
-	if (mongoose.Types.ObjectId.isValids(userID)) {
+	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
 				debug("user not found");
