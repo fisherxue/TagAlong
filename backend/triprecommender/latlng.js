@@ -8,11 +8,26 @@ function toDegrees(val) {
     return val / Math.PI * 180;
 }
 
+function isValidLat(lat) {
+    return lat >= -90 && lat <= 90;
+}
+
+function isValidLng(lng) {
+    return lng >= -180 && lng <= 180;
+}
+
 /*
  * Given latitude and longitude in degrees,
  * returns distance between them in meters
  */ 
 function getLatLngDistance(lat1, lng1, lat2, lng2) {
+    if (typeof(lat1) !== "number" || typeof(lat2) !== "number" || typeof(lng1) !== "number" || typeof(lng2) !== "number") {
+        throw new TypeError("Invalid types, expected Number");
+    }
+    if (!isValidLat(lat1) || !isValidLat(lat2) || !isValidLng(lng1) || !isValidLng(lng2)) {
+        throw new RangeError("Invalid coordinates");
+    }
+
     let llat1 = toRadians(lat1);
     let llat2 = toRadians(lat2);
     let dlat = toRadians((lat2-lat1));
@@ -29,6 +44,13 @@ function getLatLngDistance(lat1, lng1, lat2, lng2) {
  * returns angle between them in degrees
  */
 function getLatLngBearing(lat1, lng1, lat2, lng2) {
+    if (typeof(lat1) !== "number" || typeof(lat2) !== "number" || typeof(lng1) !== "number" || typeof(lng2) !== "number") {
+        throw new TypeError("Invalid types, expected Number");
+    }
+    if (!isValidLat(lat1) || !isValidLat(lat2) || !isValidLng(lng1) || !isValidLng(lng2)) {
+        throw new RangeError("Invalid coordinates");
+    }
+
     let llat1 = toRadians(lat1);
     let llat2 = toRadians(lat2);
     let llng1 = toRadians(lng1);
@@ -49,6 +71,14 @@ function getLatLngBearing(lat1, lng1, lat2, lng2) {
  * lat3, lng3: C
  */ 
 function getLatLngShortestDistanceLinePoint(lat1, lng1, lat2, lng2, lat3, lng3) {
+    if (typeof(lat1) !== "number" || typeof(lat2) !== "number" || typeof(lng1) !== "number" || typeof(lng2) !== "number" || typeof(lat3) !== "number" || typeof(lng3) !== "number") {
+        throw new TypeError("Invalid types, expected Number");
+    }
+    if (!isValidLat(lat1) || !isValidLat(lat2) || !isValidLng(lng1) || !isValidLng(lng2) || !isValidLat(lat3) || !isValidLng(lng3)) {
+        throw new RangeError("Invalid coordinates");
+    }
+
+    
     let bearingAB = toRadians(getLatLngBearing(lat1, lng1, lat2, lng2));
     let bearingAC = toRadians(getLatLngBearing(lat1, lng1, lat3, lng3));
     let distanceAC = getLatLngDistance(lat1, lng1, lat3, lng3);
@@ -84,3 +114,5 @@ console.log(getLatLngBearing(test_A.lat, test_A.lng, test_B.lat, test_B.lng));
 console.log(getLatLngShortestDistanceLinePoint(test_A.lat, test_A.lng, 
         test_B.lat, test_B.lng, test_C.lat, test_C.lng));
 */
+
+console.log(getLatLngShortestDistanceLinePoint(18, 94, 12, 13, 17, 18, 19))

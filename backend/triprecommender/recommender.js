@@ -28,10 +28,10 @@ function getDirectionsWithWaypoints(req, callback) {
 		if (err) {
 			throw err;
 		}
-
 		callback(response);
 	});
 }
+
 /* Get directions */
 function getDirections(req, callback) {
 	googleMapsClient.directions({
@@ -76,18 +76,15 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 	}
 
 	let newDriverRoute = JSON.parse(driverTrip.tripRoute);
-
 	let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
 			newDriverRoute.routes[0].legs[0].end_location.lat,
 			newDriverRoute.routes[0].legs[0].end_location.lng);
 	let riderTripsBearing = [];
 
-
-
 	riderTrips.forEach(function(riderTrip) {
 		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
-		var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
+		let riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
 				newRiderRoute.routes[0].legs[0].start_location.lng,
 				newRiderRoute.routes[0].legs[0].end_location.lat,
 				newRiderRoute.routes[0].legs[0].end_location.lng);
@@ -154,7 +151,6 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		waypoints.push(endPoint);
 	});
 
-
 	let driverStartPoint = driverTrip.startLat + "," + driverTrip.startLng;
 	let driverEndPoint = driverTrip.endLat + "," + driverTrip.endLng;
 	let req = {
@@ -168,14 +164,6 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	});
 }
 
-function sumProducts(array1, array2) {
-    if(array1.length) {
-		return array1.pop() * array2.pop() + sumProducts(array1, array2);
-	}
-
-    return 0;
-}
-
 /*
  * Given two users, accesses their interest fields
  * and computes the similarity between their
@@ -186,30 +174,29 @@ function getInterestSimilarity(user1, user2) {
 	let magA = 0;
 	let magB = 0;
 
-	/* COSINE MATCHING FUNCTION */
-	let similarity = sumProducts(user1.interests.slice(), user2.interests.slice());
+	let similarity = 1;
+	let magA = 0;
+	let magB = 0;
 
-	magA = user1.interests.reduce(function(accumulator, currentValue) {
-		return accumulator + Math.pow(currentValue, 2);
-	}, 0);
-	magB = user2.interests.reduce(function(accumulator, currentValue) {
-		return accumulator + Math.pow(currentValue, 2);
-	}, 0);
+	/* COSINE MATCHING FUNCTION */
+	for (let i = 0; i < NumInterests; i++) {
+		similarity += user1.interests[parseInt(i, 10)] * user2.interests[parseInt(i, 10)];
+		magA += Math.pow(user1.interests[parseInt(i, 10)], 2);
+		magB += Math.pow(user2.interests[parseInt(i, 10)], 2);
+	}
 
 	magA = Math.pow(magA, 0.5);
 	magB = Math.pow(magB, 0.5);
 	similarity /= magA;
 	similarity /= magB;
 
-	debug(similarity);
+	console.log(similarity)
 
 	return similarity;
 }
 
 /*
  * Adds a field to riderTrip indicating similarity to given driver
- *
- *
  */
 async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
@@ -227,14 +214,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 				driverUser = user;
 				debug(driverUser);
 			}
-			
 		});
 	} else {
 		debug("invalid user id from driver trip");
 		debug(typeof driverTrip.userID, driverTrip.userID);
-
 	}
-	
 
 	riderTrips.forEach(async function(riderTrip) {
 		/* get the rider user matching the username */
@@ -247,16 +231,12 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 					riderUser = user;
 					debug(riderUser);
 				}
-				
-
 			});
-
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
 		} else {
 			debug("invalid user id from rider trip");
 			debug(typeof riderTrip.userID, riderTrip.userID);
 		}
-		
 	});
 
 	riderTrips = riderTrips.sort(function (a, b) {
@@ -279,8 +259,6 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	});
 
 	callback(riderTrips);
-
-
 }
 
 /*
@@ -298,7 +276,6 @@ async function getRiderTrips(driverTrip, callback) {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
 	});
-
 
 	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
@@ -320,7 +297,6 @@ function driverTripHandler(driverTrip, callback) {
 		});
 	});
 }
-
 
 /*
  * Handles all trips

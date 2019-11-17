@@ -5,7 +5,7 @@
   "scripts": {
     "start": "nodemon index.js",
     "debug": "DEBUG=* node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/.bin/jest"
   },
   "author": "",
   "license": "ISC",
@@ -22,6 +22,7 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "jest": "^24.9.0",
     "nodemon": "^1.19.4"
   },
   "description": ""
