@@ -10,6 +10,7 @@ const handleGetTrips = async (req, res) => {
 	const userID = req.body;
 
 	debug("/getTrips hit");
+	debug("get userID", userID);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
