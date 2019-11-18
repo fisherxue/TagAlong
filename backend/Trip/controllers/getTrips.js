@@ -1,32 +1,41 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
-const debug = require("debug")("http");
+const debug = require("debug")("http /getTrips");
 
 
 
 const handleGetTrips = async (req, res) => {
 	
-	const userID = req.body;
+	debug(req.body);
+
+	const userID = req.body.userID;
 
 	debug("/getTrips hit");
+	debug("get userID", userID);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
+				debug("user not found");
 				return res.status(400).send("Unable to find user");
 			} else {
 				TripStore.find({ userID }, (err, trips) => {
 					if (err) {
+						debug("trip not found");
 						res.status(400).send("trip not found");
 					} else {
-						res.json(trips);
+						debug("responded with trips", trips);
+						res.json({
+							trips: trips
+						});
 					}
 				});
 			}
 
 		});
 	} else {
+		debug("invalid userID");
 		return res.status(400).send("Invalid userID");
 	}
 

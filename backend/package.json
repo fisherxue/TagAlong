@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "DEBUG=* nodemon index.js",
     "debug": "DEBUG=* node index.js",
     "test": "node_modules/.bin/jest"
   },
@@ -22,8 +22,13 @@
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
+    "@shelf/jest-mongodb": "^1.1.3",
     "jest": "^24.9.0",
-    "nodemon": "^1.19.4"
+    "nodemon": "^1.19.4",
+    "supertest": "^4.0.2"
   },
-  "description": ""
+  "description": "",
+  "jest": {
+    "testEnvironment": "node"
+  }
 }

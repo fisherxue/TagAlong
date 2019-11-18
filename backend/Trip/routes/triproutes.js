@@ -1,18 +1,14 @@
 const express = require("express");
 const router = express.Router();
 
-// User Model
-const TripStore = require("../models/Trip");
-
 // Controllers
 const createTrip = require("../controllers/newTrip");
 const delTrip = require("../controllers/delTrip");
 const acceptTrip = require("../controllers/acceptTrip");
 const getTrips = require("../controllers/getTrips");
 
-router.get("/myTrips", getTrips.handleGetTrips);
+router.post("/myTrips", getTrips.handleGetTrips);
 router.post("/newTrip", createTrip.handleCreateTrip);
-// router.put("/updateTrip", )
 router.delete("/delTrip", delTrip.handleDelTrip);
 router.post("/acceptTrip", acceptTrip.handleAcceptTrip);
 

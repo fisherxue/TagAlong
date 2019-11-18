@@ -161,6 +161,8 @@ function getInterestSimilarity(user1, user2) {
 	similarity /= magA;
 	similarity /= magB;
 
+	debug(similarity);
+
 	return similarity;
 }
 
