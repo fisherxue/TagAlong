@@ -53,7 +53,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Conversation conversation = conversationList.get(position);
-        holder.displayMessage.setText(conversation.getMessage());
+        if (conversation.getUserName().equals(currentUser.getUserName())){
+            holder.displayMessage.setText(conversation.getMessage());
+        }
+        else {
+            holder.displayMessage.setText(conversation.getUserName() + ": " + conversation.getMessage());
+        }
+
 
     }
 
@@ -64,7 +70,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (currentUser.getUserName().equals(conversationList.get(position).getUserID())){
+        if (currentUser.getUserName().equals(conversationList.get(position).getUserName())){
             return MSG_RIGHT;
         }
         else {

@@ -45,7 +45,7 @@ public class Trip implements Serializable {
         try {
             this.username = trip.getString("username");
             this.tripID = trip.getString("_id");
-            //this.roomID = trip.getString("roomID");
+            this.roomID = "5dd22a57def6b90cac23a3a9";
             this.tripRoute = trip.getJSONObject("tripRoute");
             //this.arrivalTime = (Date) trip.get("arrivalTime");
             this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")

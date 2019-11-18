@@ -58,9 +58,6 @@ public class MessageActivity extends AppCompatActivity {
         sendMessage = (ImageButton) findViewById(R.id.sendButton);
         messageToSend = (EditText) findViewById(R.id.sendMessage);
 
-        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
-                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
-        );
     }
 
     @Override
@@ -88,11 +85,16 @@ public class MessageActivity extends AppCompatActivity {
                 initChat();
             }
         };
+
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
+        );
     }
 
     private void sendMSG(String message){
-        Conversation newConversation = new Conversation(profile.getUserID(),message);
-
+        Conversation newConversation = new Conversation(message);
+        newConversation.setRoomID(ID);
+        newConversation.setUserID(profile.getUserID());
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = getString(R.string.sendMessage);
         final Gson gson = new Gson();
@@ -146,11 +148,11 @@ public class MessageActivity extends AppCompatActivity {
         List<Conversation> conversationList = new ArrayList<>();
         List<String> usernames = new ArrayList<>();
         try {
-            conversationListIn = response.getJSONArray("chat"); // ASK IAN FOR CORRECT NAME
-            userListIn = response.getJSONArray("usernames");
+            conversationListIn = response.getJSONArray("messages"); // ASK IAN FOR CORRECT NAME
+            userListIn = response.getJSONArray("users");
             for (int i = 0; i < conversationListIn.length(); i++){
-                Conversation conversationNew = new Conversation(conversationListIn.getJSONObject(i).getString("userID"),
-                        conversationListIn.getJSONObject(i).getString("message"));
+                Conversation conversationNew = new Conversation(conversationListIn.getJSONObject(i).getString("message"));
+                conversationNew.setUserName(conversationListIn.getJSONObject(i).getString("username"));
                 conversationList.add(conversationNew);
             }
             for (int i = 0; i < userListIn.length(); i++) {
@@ -174,6 +176,7 @@ public class MessageActivity extends AppCompatActivity {
 
         try {
             chatJsonObject = new JSONObject(chatJson);
+            Log.d(TAG,chatJsonObject.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, chatJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
