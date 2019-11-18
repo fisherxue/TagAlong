@@ -75,7 +75,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 		return [];
 	}
 
-	let newDriverRoute = JSON.parse(driverTrip.tripRoute);
+	let newDriverRoute = driverTrip.tripRoute;
 
 	let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
@@ -86,7 +86,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 
 
 	riderTrips.forEach(function(riderTrip) {
-		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
+		let newRiderRoute = riderTrip.tripRoute;
 		var riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
 				newRiderRoute.routes[0].legs[0].start_location.lng,
 				newRiderRoute.routes[0].legs[0].end_location.lat,
@@ -111,10 +111,10 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 		return [];
 	}
 
-	let newDriverRoute = JSON.parse(driverTrip.tripRoute);
+	let newDriverRoute = driverTrip.tripRoute;
 
 	riderTrips.forEach(function(riderTrip) {
-		let newRiderRoute = JSON.parse(riderTrip.tripRoute);
+		let newRiderRoute = riderTrip.tripRoute;
 		let riderDistanceStart = LatLng.getLatLngShortestDistanceLinePoint(
 			newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
@@ -264,19 +264,6 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	});
 
 	debug(riderTrips, "OK");
-
-	riderTrips = riderTrips.slice(0, 1); // should slice by driver car size
-
-	let tripID = riderTrips[0]._id;
-	let update = riderTrips[0];
-
-	update.isFulfilled = true;
-
-	await TripStore.findByIdAndUpdate(tripID, update, {new: true}, (err) => {
-		if (err) {
-			debug(err);
-		}
-	});
 
 	callback(riderTrips);
 

@@ -65,7 +65,7 @@ const handleCreateTrip = async (req, res) => {
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
-				return res.status(400).send("Unable to find user");
+				res.status(400).send("Unable to find user");
 			}
 			else {
 
@@ -85,18 +85,51 @@ const handleCreateTrip = async (req, res) => {
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 					trip.tripRoute = resp.json;
 
-
 					trip.save((err) => {
 						debug(err);
 					});
 
 
 					if (isDriverTrip) {
-						debug("DRIVER TRIP");
+						debug("Trip is a DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
 						if (typeof riderTrips === "undefined") {
 							res.status(300).send("NOTHING");
 						} else {
+
+							riderTrips = riderTrips.slice(0, 4); // should slice by driver car size
+
+							riderTrips.forEach(async (ridertrip) => {
+								const tripID = ridertrip._id;
+								const update = ridertrip;
+
+								update.isFulfilled = true;
+
+								await TripStore.findByIdAndUpdate(tripID, update, {new: true}, (err) => {
+									if (err) {
+										debug(err);
+									}
+								});
+							} );
+
+							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
+								driverTrip.tripRoute = res;
+								// add riders to driver trips
+
+								riderTrips.forEach(async (ridertrip) => {
+									driverTrip.taggedUsers.push(ridertrip.username);
+								})
+
+								await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
+									if (err) {
+										debug(err);
+									}
+								})
+							})
+
+
+
+
 							notifyAllRiders(riderTrips, (err) => {
 								if (err) {
 									res.status(400).json("unable to find user");
@@ -105,9 +138,10 @@ const handleCreateTrip = async (req, res) => {
 									res.send("Sent succesfully");
 								}
 							});
+
 							res.send(driverTrip);
 						}
-						
+
 						});
 						
 					} 
@@ -119,7 +153,7 @@ const handleCreateTrip = async (req, res) => {
 			}
 		});
 	} else {
-		return res.status(400).send("Invalid userID");
+		res.status(400).send("Invalid userID");
 	}
 
 };
