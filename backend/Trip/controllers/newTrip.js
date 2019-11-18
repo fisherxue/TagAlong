@@ -111,7 +111,7 @@ const handleCreateTrip = async (req, res) => {
 									}
 								});
 							} );
-
+							debug("is trip valid", riderTrips);
 							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
 								driverTrip.tripRoute = res;
 								// add riders to driver trips

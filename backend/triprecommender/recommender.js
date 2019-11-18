@@ -113,7 +113,8 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  */
 function modifyTrip(driverTrip, riderTrips, callback) {
 	let waypoints = [];
-
+	debug("modify trip drivers", driverTrip);
+	debug("modify trip riders", riderTrips);
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.startLat + "," + riderTrip.startLng;
 		let endPoint = riderTrip.endLat + "," + riderTrip.endLng;
@@ -128,6 +129,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		destination: driverEndPoint,
 		waypoints
 	};
+	debug("req to directions with waypoints:", req);
 
 	getDirectionsWithWaypoints(req, function(err, res) {
 		if (err) {
@@ -150,7 +152,7 @@ function getInterestSimilarity(user1, user2) {
 	let magB = 0;
 
 	/* COSINE MATCHING FUNCTION */
-	for (let i = 0; i < NumInterests; i++) {
+	for (let i = 0; i < 5; i++) {
 		similarity += user1.interests[parseInt(i, 10)] * user2.interests[parseInt(i, 10)];
 		magA += Math.pow(user1.interests[parseInt(i, 10)], 2);
 		magB += Math.pow(user2.interests[parseInt(i, 10)], 2);
@@ -233,6 +235,7 @@ async function getRiderTrips(driverTrip, callback) {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
 	});
+	debug("raw rider trips:", riderTrips);
 
 	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
@@ -247,6 +250,7 @@ async function getRiderTrips(driverTrip, callback) {
  */
 function driverTripHandler(driverTrip, callback) {
 	getRiderTrips(driverTrip, function(riderTrips) {
+		debug("riderTrips:", riderTrips);
 		riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
 			callback(riderTrips, driverTrip);
 		});
@@ -278,5 +282,6 @@ module.exports = {
 	driverTripHandler,
 	tripHandler,
 	cutTripsByBearing,
-	cutTripsByDistance
+	cutTripsByDistance,
+	modifyTrip
 };
