@@ -134,7 +134,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 			debug(err);
 			throw err;
 		}
-		callback(res);
+		callback(res.json);
 	});
 }
 
