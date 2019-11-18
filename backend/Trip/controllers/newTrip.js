@@ -65,7 +65,7 @@ const handleCreateTrip = async (req, res) => {
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
-				return res.status(400).send("Unable to find user");
+				res.status(400).send("Unable to find user");
 			}
 			else {
 
@@ -84,7 +84,6 @@ const handleCreateTrip = async (req, res) => {
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 					trip.tripRoute = resp.json;
-
 
 					trip.save((err) => {
 						debug(err);
@@ -107,7 +106,7 @@ const handleCreateTrip = async (req, res) => {
 							});
 							res.send(driverTrip);
 						}
-						
+
 						});
 						
 					} 
@@ -119,7 +118,7 @@ const handleCreateTrip = async (req, res) => {
 			}
 		});
 	} else {
-		return res.status(400).send("Invalid userID");
+		res.status(400).send("Invalid userID");
 	}
 
 };
