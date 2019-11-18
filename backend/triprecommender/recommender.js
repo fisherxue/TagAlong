@@ -265,19 +265,6 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	debug(riderTrips, "OK");
 
-	riderTrips = riderTrips.slice(0, 1); // should slice by driver car size
-
-	let tripID = riderTrips[0]._id;
-	let update = riderTrips[0];
-
-	update.isFulfilled = true;
-
-	await TripStore.findByIdAndUpdate(tripID, update, {new: true}, (err) => {
-		if (err) {
-			debug(err);
-		}
-	});
-
 	callback(riderTrips);
 
 
