@@ -118,6 +118,7 @@ const handleCreateTrip = async (req, res) => {
 
 								riderTrips.forEach(async (ridertrip) => {
 									driverTrip.taggedUsers.push(ridertrip.username);
+									debug(ridertrip.username, "added to driver trip");
 								})
 
 								await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
