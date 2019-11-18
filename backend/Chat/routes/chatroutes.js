@@ -7,8 +7,7 @@ const getMessages = require("../controllers/getMessages");
 const newRoom = require("../controllers/newRoom");
 
 
-
-router.get("/getMessages", getMessages.handleGetMessages);
+router.post("/getMessages", getMessages.handleGetMessages);
 router.post("/sendMessage", sendMessage.handleSendMessages);
 router.post("/newRoom", newRoom.handleNewRoom);
 
