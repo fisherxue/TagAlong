@@ -115,14 +115,14 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	let waypoints = [];
 
 	riderTrips.forEach(function(riderTrip) {
-		let startPoint = riderTrip.startLat + "," + riderTrip.startLng;
-		let endPoint = riderTrip.endLat + "," + riderTrip.endLng;
+		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
+		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
 		waypoints.push(startPoint);
 		waypoints.push(endPoint);
 	});
 
-	let driverStartPoint = driverTrip.startLat + "," + driverTrip.startLng;
-	let driverEndPoint = driverTrip.endLat + "," + driverTrip.endLng;
+	let driverStartPoint = driverTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].start_location.lng;
+	let driverEndPoint = driverTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].end_location.lng;
 	let req = {
 		origin: driverStartPoint,
 		destination: driverEndPoint,
