@@ -341,5 +341,6 @@ function tripHandler(trip, callback) {
 
 module.exports = {
 	driverTripHandler,
-	tripHandler
+	tripHandler,
+	modifyTrip
 };
