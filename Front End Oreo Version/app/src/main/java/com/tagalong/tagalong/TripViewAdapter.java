@@ -93,14 +93,15 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         holder.map.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:implement this method
+                Intent intent = new Intent(context, TripDisplay.class);
+                intent.putExtra("tripRoute", trip.getTripRoute().toString());
+                context.startActivity(intent);
             }
         });
 
         holder.chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:implement this method
                 Intent intent = new Intent(context, MessageActivity.class);
                 intent.putExtra("profile", profile);
                 intent.putExtra("ID", trip.getRoomID());
