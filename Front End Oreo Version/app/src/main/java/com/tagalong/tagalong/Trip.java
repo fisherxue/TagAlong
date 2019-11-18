@@ -25,6 +25,7 @@ public class Trip implements Serializable {
     private String arrivalPlace;
     private String userID;
     private String[] taggedUsers;
+    private String roomID;
 
     public Trip(){
        tripID = "not assigned";
@@ -36,6 +37,7 @@ public class Trip implements Serializable {
        departurePlace = "not assigned";
        arrivalPlace = "not assigned";
        userID = "not assigned";
+       roomID = "not assigned";
        taggedUsers = new String[]{"not assigned"};
     }
 
@@ -43,6 +45,7 @@ public class Trip implements Serializable {
         try {
             this.username = trip.getString("username");
             this.tripID = trip.getString("_id");
+            //this.roomID = trip.getString("roomID");
             this.tripRoute = trip.getJSONObject("tripRoute");
             //this.arrivalTime = (Date) trip.get("arrivalTime");
             this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
@@ -105,6 +108,10 @@ public class Trip implements Serializable {
         return isDriverTrip;
     }
 
+    public void setRoomID(String roomID) {
+        this.roomID = roomID;
+    }
+
     public void setArrivalTime(Date arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
@@ -139,5 +146,9 @@ public class Trip implements Serializable {
 
     public String[] getTaggedUsers() {
         return taggedUsers;
+    }
+
+    public String getRoomID() {
+        return roomID;
     }
 }

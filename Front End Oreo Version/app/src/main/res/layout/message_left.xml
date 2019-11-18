@@ -10,7 +10,7 @@
         android:text="Hello"
         android:padding="8dp"
         android:textColor="#fff"
-        android:id="@+id/display_message"
+        android:id="@+id/displayMessage"
         android:textSize="16sp"/>
 
 

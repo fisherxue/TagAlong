@@ -10,6 +10,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -71,6 +72,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private TextInputEditText arrivalTime;
     private SearchView locationSearch;
     //private PlacesClient placesClient;
+    private final String TAG = "MapFragment";
 
 
     @Override
@@ -298,7 +300,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println(error.toString());
+                    Log.d(TAG, "Error: while sending trip");
+                    Log.d(TAG, "Error: " + error.toString());
                     Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
                 }
             });

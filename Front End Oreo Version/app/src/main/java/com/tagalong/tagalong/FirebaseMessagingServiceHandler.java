@@ -26,6 +26,7 @@ import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 // TODO probably worth mentioning this code is literally from Google
 
@@ -43,6 +44,7 @@ import androidx.core.app.NotificationCompat;
 public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
 
     private static final String TAG = "FirebaseMessagingServiceHandler";
+    public static final String REQUEST_ACCEPT = "request_accept";
 
     /**
      * Called when message is received.
@@ -103,6 +105,10 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
                 manager.createNotificationChannel(channel);
             }
             manager.notify(0, builder.build());
+
+            LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getBaseContext());
+            Intent intent2 = new Intent(REQUEST_ACCEPT);
+            broadcastManager.sendBroadcast(intent2);
 
         }
 

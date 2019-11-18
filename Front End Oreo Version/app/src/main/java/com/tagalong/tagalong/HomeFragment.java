@@ -84,14 +84,14 @@ public class HomeFragment extends Fragment {
     private void initTripView(){
         Log.d(TAG,"initializing TripView");
         RecyclerView recyclerView = view.findViewById(R.id.home_frag_recycler_view);
-        TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList);
+        TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
         recyclerView.setAdapter(tripViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
     private void setTripList (JSONObject response){
         JSONArray tripListIN;
-        tripList = new ArrayList<Trip>();
+        tripList = new ArrayList<>();
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
             Log.d(TAG, "Trip Array: " + tripListIN.toString());

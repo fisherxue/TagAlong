@@ -9,4 +9,7 @@
     <string name="updateProfile">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/updateProfile</string>
     <string name="login">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/login</string>
     <string name="getTripList">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/myTrips</string>
+    <string name="getChatList">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/getMessages</string>
+    <string name="sendMessage">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/sendMessage</string>
+    <string name="deleteTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/</string>
 </resources>
