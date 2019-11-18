@@ -13,22 +13,30 @@ const handleRegister = async (req, res) => {
 
 	if (user) {
 		return res.status(400).send("User already exists.");
-	} else {
-		user = new User({
-			username,
-			email,
-			joinedDate: new Date(),
-			password: bcrypt.hashSync(password, 10),
-			fbToken
+	} 
+	else {
+		if (password) {
+			user = new User({
+				username,
+				email,
+				joinedDate: new Date(),
+				password: bcrypt.hashSync(password, 10),
+				fbToken
 
-		});
-		await user.save((err) => {
-			if (err) {
-				res.status(400).send("ERROR MISSING FIELD");
-			} else {
-				res.send(user);
-			}
-		});
+			});
+			await user.save((err) => {
+				if (err) {
+					res.status(400).send("ERROR MISSING FIELD");
+				} else {
+					res.send(user);
+				}
+			});
+		}
+		else {
+			res.status(400).send("ERROR MISSING PASSWORD");
+		}
+
+		
 	}
 };
 
