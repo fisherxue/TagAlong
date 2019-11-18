@@ -1,3 +1,4 @@
+/*
 // initialize maps client
 const googleMapsClient = require('@google/maps').createClient({
     key: "AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ"
@@ -8,6 +9,7 @@ const fs = require('fs')
  * TODO: figure out what datetime object it takes
  * Abstraction in case we have to change underlying API
  */ 
+/*
 function getDirections(req, callback) {
     googleMapsClient.directions({
     origin: req.origin,
@@ -30,3 +32,4 @@ getDirections(inputs, function(err, response) {
 	var json = JSON.stringify(response.json, null, 2);
 	fs.writeFile('data.json', json, 'utf8', function(err) {});
 });
+*/

@@ -141,9 +141,6 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  */
 function getInterestSimilarity(user1, user2) {
 
-	let magA = 0;
-	let magB = 0;
-
 	let similarity = 1;
 	let magA = 0;
 	let magB = 0;
@@ -279,17 +276,15 @@ function tripHandler(trip, callback) {
 		destination: endPoint
 	};
 	getDirections(req, function(err, res) {
+		if (err) {
+			debug(err);
+			throw err;
+		}
 		callback(res);
 	});
 }
 
 module.exports = {
 	driverTripHandler,
-	tripHandler,
-	cutTripsByBearing,
-	cutTripsByDistance,
-	modifyTrip,
-	getInterestSimilarity, 
-	getRiderTripSimilarity,
-	getRiderTrips
+	tripHandler
 };

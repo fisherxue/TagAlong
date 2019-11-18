@@ -114,5 +114,3 @@ console.log(getLatLngBearing(test_A.lat, test_A.lng, test_B.lat, test_B.lng));
 console.log(getLatLngShortestDistanceLinePoint(test_A.lat, test_A.lng, 
         test_B.lat, test_B.lng, test_C.lat, test_C.lng));
 */
-
-console.log(getLatLngShortestDistanceLinePoint(18, 94, 12, 13, 17, 18, 19))

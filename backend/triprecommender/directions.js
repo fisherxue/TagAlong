@@ -11,9 +11,6 @@ function getDirectionsWithWaypoints(req, callback) {
 		destination: req.destination,
 		waypoints: req.waypoints,
 	}, function(err, response) {
-		if (err) {
-			debug(err);
-		}
 		callback(err, response);
 	});
 }
@@ -24,9 +21,6 @@ function getDirections(req, callback) {
 		origin: req.origin,
 		destination: req.destination,
 	}, function(err, response) {
-		if (err) {
-			debug(err);
-		}
 		callback(err, response);
 	});
 }
