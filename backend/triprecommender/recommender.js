@@ -112,13 +112,17 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  * rider trip start and end
  */
 function modifyTrip(driverTrip, riderTrips, callback) {
+	if (riderTrips.length < 1 || riderTrips === undefined) {
+		callback(driverTrip.tripRoute);
+		return;
+	}
 	let waypoints = [];
 
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
-		waypoints.push(startPoint);
-		waypoints.push(endPoint);
+		waypoints.push({location: startPoint, stopover: false});
+		waypoints.push({location: endPoint, stopover: false});
 	});
 
 	let driverStartPoint = driverTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].start_location.lng;
@@ -128,13 +132,13 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		destination: driverEndPoint,
 		waypoints
 	};
-
+	
 	getDirectionsWithWaypoints(req, function(err, res) {
 		if (err) {
 			debug(err);
 			throw err;
 		}
-		callback(res.json);
+		callback(res);
 	});
 }
 
@@ -144,12 +148,16 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  * interests using the Cosine similarity
  */
 function getInterestSimilarity(user1, user2) {
+	if (user1.interests === undefined || user2.interests === undefined || user1.interests.length != 5 || user2.interests.length != 5) {
+		throw new RangeError("RangeError: user interests invalid");
+	}
 
 	let similarity = 1;
 	let magA = 0;
 	let magB = 0;
 
 	/* COSINE MATCHING FUNCTION */
+	const NumInterests = 5;
 	for (let i = 0; i < NumInterests; i++) {
 		similarity += user1.interests[parseInt(i, 10)] * user2.interests[parseInt(i, 10)];
 		magA += Math.pow(user1.interests[parseInt(i, 10)], 2);
@@ -173,6 +181,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	if (typeof riderTrips === "undefined") {
 		callback([]);
+		return;
+	}
+	if (typeof driverTrip === "undefined") {
+		callback([]);
+		return;
 	}
 	/* get the driver user matching the username */
 	let driverUser;
@@ -278,5 +291,9 @@ module.exports = {
 	driverTripHandler,
 	tripHandler,
 	cutTripsByBearing,
-	cutTripsByDistance
+	cutTripsByDistance,
+	modifyTrip,
+	getInterestSimilarity,
+	getRiderTripSimilarity,
+	getRiderTrips
 };
