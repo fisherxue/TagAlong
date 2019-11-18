@@ -9,4 +9,5 @@
     <string name="updateProfile">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/updateProfile</string>
     <string name="login">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/login</string>
     <string name="getTripList">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/myTrips</string>
+    <string name="title_activity_trip_display">Map</string>
 </resources>

@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment {
 
     private void setTripList (JSONObject response){
         JSONArray tripListIN;
-        tripList = new ArrayList<Trip>();
+        tripList = new ArrayList<>();
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
             Log.d(TAG, "Trip Array: " + tripListIN.toString());
