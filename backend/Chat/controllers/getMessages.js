@@ -8,10 +8,9 @@ const handleGetMessages = async (req, res) => {
 	debug("/getMessages hit");
 	debug(req.body);
 
-	const userID = req.body.userID;
+	const { userID, roomID } = req.body;
 
 	debug("get userID", userID);
-
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
@@ -20,8 +19,7 @@ const handleGetMessages = async (req, res) => {
 				return res.status(400).send("Unable to find user");
 			} else {
 				if (user) {
-					const username = user.username;
-					Chat.findOne({ username }, (err, chat) => {
+					Chat.findById(roomID, (err, chat) => {
 						if (err) {
 							debug("chat not found");
 							res.status(400).send("chat not found");
