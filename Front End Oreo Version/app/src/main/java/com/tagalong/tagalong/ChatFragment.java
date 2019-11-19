@@ -57,12 +57,10 @@ public class ChatFragment extends Fragment {
         RequestQueue queue = Volley.newRequestQueue(context);
         final Gson gson = new Gson();
         final String profileJson = gson.toJson(profile);
-        Log.d(TAG, "profileJson" + profileJson);
         JSONObject profileJsonObject;
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            Log.d(TAG, "profileJsonObject" + profileJsonObject);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
@@ -105,7 +103,6 @@ public class ChatFragment extends Fragment {
         tripList = new ArrayList<>();
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
-            Log.d(TAG, "Trip Array: " + tripListIN.toString());
             for (int i = 0; i < tripListIN.length(); i++){
                 if (isDriver){
                     this.tripList.add(new Trip(tripListIN.getJSONObject(i)));

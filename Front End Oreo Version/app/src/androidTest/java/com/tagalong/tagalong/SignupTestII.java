@@ -17,6 +17,8 @@ import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import java.util.concurrent.TimeUnit;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -59,7 +61,7 @@ public class SignupTestII {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("fisher"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("fisher3"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.password),
@@ -81,8 +83,6 @@ public class SignupTestII {
                         isDisplayed()));
         appCompatEditText3.perform(replaceText("xu"), closeSoftKeyboard());
 
-        pressBack();
-
         ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.Email),
                         childAtPosition(
@@ -91,10 +91,10 @@ public class SignupTestII {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("fisher@xu.com"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("fisher3@xu.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.Email), withText("fisher@xu.com"),
+                allOf(withId(R.id.Email), withText("fisher3@xu.com"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
@@ -112,6 +112,12 @@ public class SignupTestII {
                                 5),
                         isDisplayed()));
         appCompatButton2.perform(click());
+
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction appCompatEditText6 = onView(
                 allOf(withId(R.id.firstName),

@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.doubleClick;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
@@ -42,14 +42,14 @@ public class MainActivityTest {
 
 
     @Test
-    public void testSignUp() {
+    public void testASignUp() {
         onView(withId(R.id.signup_button)).perform(click());
 
-        onView(withId(R.id.username)).perform(typeText("yash4"));
+        onView(withId(R.id.username)).perform(typeText("yash2"));
         onView(withId(R.id.password)).perform(typeText("xd"));
         onView(withId(R.id.password2)).perform(typeText("xd"));
         closeSoftKeyboard();
-        onView(withId(R.id.Email)).perform(typeText("yash103@byronz.com"));
+        onView(withId(R.id.Email)).perform(typeText("yash2@ashok.com"));
         closeSoftKeyboard();
         onView(withId(R.id.nextbutton)).perform(click());
         try {
@@ -57,11 +57,12 @@ public class MainActivityTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onView(withId(R.id.firstName)).perform(typeText("Chun Ru"));
-        onView(withId(R.id.lastName)).perform(typeText("Wong"));
+        onView(withId(R.id.firstName)).perform(typeText("Yash"));
+        onView(withId(R.id.lastName)).perform(typeText("Sardhara"));
         onView(withId(R.id.gender)).perform(typeText("Female"));
-        onView(withId(R.id.age)).perform(typeText("96"));
+        onView(withId(R.id.age)).perform(typeText("100"));
         onView(withId(R.id.isDriver)).perform(click());
+        //onView(withId(R.id.carCapacity)).perform(typeText("3"));
         closeSoftKeyboard();
         onView(withId(R.id.seekMusic)).perform(swipeRight());
         onView(withId(R.id.seekSpeed)).perform(swipeRight());
@@ -74,7 +75,7 @@ public class MainActivityTest {
 
 
     @Test
-    public void testLoginLogout() {
+    public void testBLoginLogout() {
         onView(withId(R.id.userNameLogin)).perform(typeText("bwong"));
         onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
         closeSoftKeyboard();
@@ -94,5 +95,49 @@ public class MainActivityTest {
         onView(withId(R.id.userNameLogin)).perform(typeText("bwong"));
         onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
         closeSoftKeyboard();
+        onView(withId(R.id.login_button)).perform(click());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withId(R.id.nav_maps)).perform(click());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        onView(withId(R.id.map)).perform(click());
+/*
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+ */
+        //pressImeActionButton();
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        closeSoftKeyboard();
+        onView(withId(R.id.arrivalDate)).perform(click());
+        onView(withText("21")).perform(click());
+
+        /*
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //onView(withId(R.id.arrivalTime)).perform(typeText("11:00"));
+        //closeSoftKeyboard();
+        //onView(withId(R.id.To)).perform(click());
+        pressBack();
+        onView(withId(R.id.logout)).perform(click());
+
+         */
     }
 }

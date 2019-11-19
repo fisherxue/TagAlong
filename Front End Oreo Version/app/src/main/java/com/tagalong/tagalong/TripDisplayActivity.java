@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,7 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
     String trip;
     LatLng origin;
     LatLng destination;
+    private final String TAG = "TripDisplayActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +103,7 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
             options.color(Color.RED);
             options.width(10);
             options.addAll(PolyUtil.decode(directionsList[i]));
-
+            Log.d(TAG,"Trip is displayed.");
             mMap.addPolyline(options);
         }
     }
