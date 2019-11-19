@@ -41,7 +41,7 @@ const getDirectionsWithWaypoints = Directions.getDirectionsWithWaypoints;
  * TESTED WORKING NO EDGE CASE TESTS DONE
  */
 function cutTripsByBearing(driverTrip, riderTrips) {
-	if (typeof riderTrips === undefined || typeof driverTrip === "undefined" || riderTrips === []) {
+	if (typeof riderTrips === "undefined" || typeof driverTrip === "undefined" || riderTrips === []) {
 		return [];
 	}
 
@@ -195,29 +195,26 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 		if (err) {
 			debug(err);
 		} else {
-			driverUser = user;
 			debug(driverUser);
 		}
 	});
 
 	for (const riderTrip of riderTrips) {
 		let riderUser;
-		await UserStore.findById(riderTrip.userID, (err, user) => {
+		riderUser = await UserStore.findById(riderTrip.userID, (err, user) => {
 			if (err) {
 				debug(err);
 			} else {
-				riderUser = user;
-
-				if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
-					riderTrips = riderTrips.filter((value, index, arr) => {
-						return value != riderTrip;
-					});
-				} else {
-					riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
-				}
 				debug(riderUser);
 			}
 		});
+		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
+			riderTrips = riderTrips.filter((value, index, arr) => {
+				return value != riderTrip;
+			});
+		} else {
+			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+		}
 	}
 	
 	riderTrips = riderTrips.sort(function (a, b) {
@@ -264,7 +261,7 @@ async function getRiderTrips(driverTrip, callback) {
 function driverTripHandler(driverTrip, callback) {
 	getRiderTrips(driverTrip, function(riderTrips) {
 		debug("riderTrips:", riderTrips);
-		riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
+		getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
 			callback(riderTrips, driverTrip);
 		});
 	});
