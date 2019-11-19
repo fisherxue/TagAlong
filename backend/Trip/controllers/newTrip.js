@@ -76,10 +76,6 @@ const handleCreateTrip = async (req, res) => {
 					isFulfilled: false
 				});
 
-				if (isDriverTrip) {
-					trip.isFulfilled = true;
-				}
-
 				debug(trip);
 
 				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
@@ -119,7 +115,8 @@ const handleCreateTrip = async (req, res) => {
 								debug(ridertrip.username, "added to driver trip");
 							})
 					
-
+							driverTrip.isFulfilled = true;
+							debug(driverTrip, "driverTrip update");
 							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
 								if (err) {
 									debug(err);
