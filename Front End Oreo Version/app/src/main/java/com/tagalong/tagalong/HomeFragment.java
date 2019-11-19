@@ -3,6 +3,7 @@ package com.tagalong.tagalong;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,11 +31,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HomeFragment extends Fragment {
-    private final String TAG = "HomeFragment";
+    private final String TAG = "My Trips Fragment";
     private List<Trip> tripList;
     private View view;
     private Context context;
     private Profile profile;
+
+    private TimingLogger timingLogger;
 
     @Nullable
     @Override
@@ -43,6 +46,7 @@ public class HomeFragment extends Fragment {
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
+        timingLogger = new TimingLogger(TAG, "My Trips Activity - Loading Trip Cards");
         initTripList();
         return view;
     }
@@ -56,12 +60,14 @@ public class HomeFragment extends Fragment {
         JSONObject profileJsonObject;
 
         try {
+            timingLogger.addSplit("initTripList - Send Request to get list of trips");
             profileJsonObject = new JSONObject((profileJson));
             Log.d(TAG, "profileJsonObject" + profileJsonObject);
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Received List of Trips for the user");
+                    timingLogger.addSplit("initTripList - Got list of trips");
                     setTripList(response);
                     initTripView();
                 }
@@ -69,6 +75,7 @@ public class HomeFragment extends Fragment {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    timingLogger.addSplit("initTripList - Got Error");
                     Log.d(TAG, "Error: Could not get list of Trips");
                     Log.d(TAG, "Error: " + error.getMessage());
                     Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
@@ -83,6 +90,8 @@ public class HomeFragment extends Fragment {
     }
     private void initTripView(){
         Log.d(TAG,"initializing TripView");
+        timingLogger.addSplit("initTripView - Start Adapter");
+        timingLogger.dumpToLog();
         RecyclerView recyclerView = view.findViewById(R.id.home_frag_recycler_view);
         TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
         recyclerView.setAdapter(tripViewAdapter);
@@ -92,6 +101,7 @@ public class HomeFragment extends Fragment {
     private void setTripList (JSONObject response){
         JSONArray tripListIN;
         tripList = new ArrayList<>();
+        timingLogger.addSplit("setTripList - creating tripList");
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
             Log.d(TAG, "Trip Array: " + tripListIN.toString());
@@ -100,7 +110,7 @@ public class HomeFragment extends Fragment {
                     this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
                 }
             }
-
+            timingLogger.addSplit("setTripList - created tripList");
         } catch (JSONException e) {
             e.printStackTrace();
         }

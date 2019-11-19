@@ -72,6 +72,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     }
 
     private void initializeSeekBar(){
+        Log.d(TAG,"Initializing SeekBars");
         musicSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -156,6 +157,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 //Nothing To be Done
             }
         });
+        Log.d(TAG,"SeekBars Initialized");
     }
 
     @Override
@@ -169,33 +171,41 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 boolean allSet = true;
 
                 if (!firstNameEditText.getText().toString().isEmpty()) {
+                    Log.d(TAG,"First name set");
                     newUserProfile.setFirstName(firstNameEditText.getText().toString());
                 }
                 else {
                     Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"First name not set");
                 }
 
                 if (!lastNameEditText.getText().toString().isEmpty()) {
                     newUserProfile.setLastName(lastNameEditText.getText().toString());
+                    Log.d(TAG,"Last name set");
                 }
                 else {
                     Toast.makeText(context, "Please Enter Last Name", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"Last name not set");
                 }
 
                 if (!ageEditText.getText().toString().isEmpty()) {
                     allSet = verifyAge(allSet);
+                    Log.d(TAG,"Age set");
                 }
                 else {
                     Toast.makeText(context, "Please Enter Age", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"Age not set");
                 }
 
                 if (!genderEditText.getText().toString().isEmpty()){
                     newUserProfile.setGender(genderEditText.getText().toString());
+                    Log.d(TAG,"Gender set");
                 } else {
                     Toast.makeText(context, "Please Enter Gender", Toast.LENGTH_LONG).show();
+                    Log.d(TAG,"Gender not set");
                     allSet = false;
                 }
 
@@ -205,14 +215,17 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     newUserProfile.setDriver(true);
                     if (!carCapacityEditText.getText().toString().isEmpty()){
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
+                        Log.d(TAG,"Car capacity and Driver set");
                     } else {
                         Toast.makeText(context, "Please Enter Car Capacity", Toast.LENGTH_LONG).show();
+                        Log.d(TAG,"Car capacity not set");
                         allSet = false;
                     }
                 }
                 else if (isDriverSwitch.isChecked() && newUserProfile.getAge() < newUserProfile.minAgeDriver) {
                     Toast.makeText(context, "You are underage to be a driver \n Please register as a rider", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"Age Requirements not met to be driver");
                 }
 
                 newUserProfile.setInterests(interests);
@@ -231,6 +244,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
     }
 
     private boolean verifyAge(boolean allSetIn){
+        Log.d(TAG,"verifying user age");
         boolean allSet = allSetIn;
         if (Integer.parseInt(ageEditText.getText().toString()) < newUserProfile.minAgeRider) {
             Toast.makeText(context, "You are underage to register", Toast.LENGTH_LONG).show();
@@ -254,12 +268,13 @@ public class UpdateProfileActivity extends AppCompatActivity {
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
         try {
+            Log.d(TAG,"Sending user profile information");
             profileJsonObject = new JSONObject((profileJson));
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Update Profile Successful", Toast.LENGTH_LONG).show();
-
+                    Log.d(TAG,"Successfully updated user profile");
                     final Profile received_profile = new Profile();
                     try {
                         received_profile.setUserName(response.getString("username"));
@@ -279,9 +294,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
                         received_profile.setFirstName(response.getString("firstName"));
                         received_profile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.d(TAG,"Error while retrieving profile");
+                        Log.d(TAG,"Error" + e.toString());
                     }
 
+                    Log.d(TAG,"Successfully Retrieved profile");
                     Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
                     intent.putExtra("profile", received_profile);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
