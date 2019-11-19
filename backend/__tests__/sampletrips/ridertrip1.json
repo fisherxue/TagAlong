@@ -1,0 +1,420 @@
+{ 
+   "_id":"5dd3aaa00389fd5bf3b6a527",
+   "taggedUsers":[ 
+
+   ],
+   "username":"bwong5",
+   "userID":"5dd36c81b458db53e031819b",
+   "arrivalTime":"2019-11-26T10:20:00.000Z",
+   "tripRoute":{ 
+      "geocoded_waypoints":[ 
+         { 
+            "geocoder_status":"OK",
+            "place_id":"ChIJmcLsI8pyhlQRFt78KtcMDC0",
+            "types":[ 
+               "premise"
+            ]
+         },
+         { 
+            "geocoder_status":"OK",
+            "place_id":"ChIJk7GFbCpyhlQRwQvJcRYTGGo",
+            "types":[ 
+               "street_address"
+            ]
+         }
+      ],
+      "routes":[ 
+         { 
+            "bounds":{ 
+               "northeast":{ 
+                  "lat":49.2846045,
+                  "lng":-123.1204463
+               },
+               "southwest":{ 
+                  "lat":49.25397940000001,
+                  "lng":-123.2498426
+               }
+            },
+            "copyrights":"Map data ©2019 Google",
+            "legs":[ 
+               { 
+                  "distance":{ 
+                     "text":"12.9 km",
+                     "value":12918
+                  },
+                  "duration":{ 
+                     "text":"27 mins",
+                     "value":1602
+                  },
+                  "end_address":"925 Bute St, Vancouver, BC V6E 1Y7, Canada",
+                  "end_location":{ 
+                     "lat":49.2844432,
+                     "lng":-123.1293542
+                  },
+                  "start_address":"Fred Kaiser Bldg, 2332 Main Mall, Vancouver, BC V6T 1Z4, Canada",
+                  "start_location":{ 
+                     "lat":49.2625997,
+                     "lng":-123.2498426
+                  },
+                  "steps":[ 
+                     { 
+                        "distance":{ 
+                           "text":"0.1 km",
+                           "value":128
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":46
+                        },
+                        "end_location":{ 
+                           "lat":49.2631899,
+                           "lng":-123.2483719
+                        },
+                        "html_instructions":"Head <b>northeast</b> on <b>Applied Science Ln</b> toward <b>E Mall S</b>",
+                        "polyline":{ 
+                           "points":"grtkHnfgoVQo@Su@AAAAEA?AGOAIAA?A?C@G?C?AAA[qAAASY?AGU"
+                        },
+                        "start_location":{ 
+                           "lat":49.2625997,
+                           "lng":-123.2498426
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"1.1 km",
+                           "value":1115
+                        },
+                        "duration":{ 
+                           "text":"3 mins",
+                           "value":165
+                        },
+                        "end_location":{ 
+                           "lat":49.25427269999999,
+                           "lng":-123.241399
+                        },
+                        "html_instructions":"Turn <b>right</b> onto <b>E Mall S</b>",
+                        "maneuver":"turn-right",
+                        "polyline":{ 
+                           "points":"}utkHh}foVtBaBt@c@z@q@ZS`@YhAq@NIbAs@DAh@a@HGDCHGBCvAgANMxAaANKLMzEoDjCwBhBwAjByAVU|DyCvBaBROFEVQLILGLEHAH?F?"
+                        },
+                        "start_location":{ 
+                           "lat":49.2631899,
+                           "lng":-123.2483719
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.4 km",
+                           "value":427
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":49
+                        },
+                        "end_location":{ 
+                           "lat":49.2555856,
+                           "lng":-123.2365129
+                        },
+                        "html_instructions":"At the roundabout, take the <b>3rd</b> exit onto <b>W 16th Ave</b>",
+                        "maneuver":"roundabout-right",
+                        "polyline":{ 
+                           "points":"e~rkHvqeoV@@B@@@B?B?B?B?@?BABA@ABABE@CBC@C@E?C@E?C@E?C?C?A?E?EAC?EACAEACACACCCAAAAGKGOEKEMQy@I[Oe@aA_ESw@eB{H]uAKi@"
+                        },
+                        "start_location":{ 
+                           "lat":49.25427269999999,
+                           "lng":-123.241399
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"5.0 km",
+                           "value":5020
+                        },
+                        "duration":{ 
+                           "text":"7 mins",
+                           "value":434
+                        },
+                        "end_location":{ 
+                           "lat":49.257588,
+                           "lng":-123.1684114
+                        },
+                        "html_instructions":"At the roundabout, take the <b>2nd</b> exit and stay on <b>W 16th Ave</b>",
+                        "maneuver":"roundabout-right",
+                        "polyline":{ 
+                           "points":"mfskHdsdoV@E@C?C@E?C?I?EAC?EAC?CACACACCCCEECA?AAA?AAOUEGCKOm@Mc@S{@Qq@_A}DQm@e@eBeAuDUaAMg@Kc@EUg@gCOw@QiA]aCMiA[uCAQGs@Gq@Eo@Eo@Eu@Co@Cs@Cu@As@EsB@sF@{E@{E?C?u@@aC@kEB{E@{E@aFB_GB_HBmIBiI@mB?}B?g@BeDFwL@iDB{EB}EBqGB}E@mB@gB@oB?{@@eD@eD?C@mBFoL@}@@mBBuGD{E?q@BqI?oB@mBBiEBsD?m@@mB?i@BwE@{E@a@?k@?wC@iD@gA@sBByE@mB@u@?oBBsGFeJBsG?OBwBBaK?}C@sA@qC"
+                        },
+                        "start_location":{ 
+                           "lat":49.2555856,
+                           "lng":-123.2365129
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"1.6 km",
+                           "value":1628
+                        },
+                        "duration":{ 
+                           "text":"3 mins",
+                           "value":178
+                        },
+                        "end_location":{ 
+                           "lat":49.2571739,
+                           "lng":-123.1460015
+                        },
+                        "html_instructions":"Continue straight to stay on <b>W 16th Ave</b>",
+                        "maneuver":"straight",
+                        "polyline":{ 
+                           "points":"}rskHpiwnVBcCB}FDuHJaC?GAECWB[?W@]@_@?_A@w@?u@DyMBeD@mBBgE@mB@mB?mBBmC@eD@w@?iB@_A?]?I@mA?[?m@?k@B}B@gEFaNFwM"
+                        },
+                        "start_location":{ 
+                           "lat":49.257588,
+                           "lng":-123.1684114
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.4 km",
+                           "value":414
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":55
+                        },
+                        "end_location":{ 
+                           "lat":49.2608943,
+                           "lng":-123.1458714
+                        },
+                        "html_instructions":"Turn <b>left</b> onto <b>Burrard St</b>",
+                        "maneuver":"turn-left",
+                        "polyline":{ 
+                           "points":"ipskHn}rnV_@?Y?C?a@A[AaAAG?qAA}AAc@Aw@AwAC}AC_BC"
+                        },
+                        "start_location":{ 
+                           "lat":49.2571739,
+                           "lng":-123.1460015
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.5 km",
+                           "value":523
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":75
+                        },
+                        "end_location":{ 
+                           "lat":49.2607461,
+                           "lng":-123.1386671
+                        },
+                        "html_instructions":"Turn <b>right</b> onto <b>W 12th Ave</b>",
+                        "maneuver":"turn-right",
+                        "polyline":{ 
+                           "points":"qgtkHt|rnV?mBDkJBaFBY@W@gA?IBqA?c@@sF@cB@qC"
+                        },
+                        "start_location":{ 
+                           "lat":49.2608943,
+                           "lng":-123.1458714
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"1.7 km",
+                           "value":1677
+                        },
+                        "duration":{ 
+                           "text":"3 mins",
+                           "value":188
+                        },
+                        "end_location":{ 
+                           "lat":49.2739378,
+                           "lng":-123.1309245
+                        },
+                        "html_instructions":"Turn <b>left</b> onto <b>Granville St</b>/<wbr/><b>BC-99 N</b><div style=\"font-size:0.9em\">Continue to follow BC-99 N</div>",
+                        "maneuver":"turn-left",
+                        "polyline":{ 
+                           "points":"uftkHtoqnVQAoDEuDEyD?QA{@?kBCmDEgAAq@?UA?AA??ASIsBEOAi@?i@A{@Cg@C_AI_AKSAOEa@KQIIEi@Y_@WQQIKMQa@m@a@m@S[Q[m@eAo@eAMWGKAAUa@e@w@e@w@Q[e@y@c@w@S]y@yAy@wAWc@Ua@y@yAk@_Ai@_AIO[k@KQIMIQEG]i@m@}@"
+                        },
+                        "start_location":{ 
+                           "lat":49.2607461,
+                           "lng":-123.1386671
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"1.0 km",
+                           "value":1007
+                        },
+                        "duration":{ 
+                           "text":"3 mins",
+                           "value":170
+                        },
+                        "end_location":{ 
+                           "lat":49.2796667,
+                           "lng":-123.1204463
+                        },
+                        "html_instructions":"Keep <b>right</b> to stay on <b>BC-99 N</b>, follow signs for <b>Nanaimo &amp; Gibsons</b>/<wbr/><b>Whistler</b>",
+                        "maneuver":"keep-right",
+                        "polyline":{ 
+                           "points":"cyvkHf_pnVSk@ACIYGSMq@Mq@?AKs@AM]gCE_@CUCQGe@EWESESEMyAmCWi@a@u@qE}HqA{BeAeB{@{AqE_IcCiEkAoB"
+                        },
+                        "start_location":{ 
+                           "lat":49.2739378,
+                           "lng":-123.1309245
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.5 km",
+                           "value":527
+                        },
+                        "duration":{ 
+                           "text":"2 mins",
+                           "value":141
+                        },
+                        "end_location":{ 
+                           "lat":49.2831716,
+                           "lng":-123.1252116
+                        },
+                        "html_instructions":"Turn <b>left</b> onto <b>Smithe St</b>",
+                        "maneuver":"turn-left",
+                        "polyline":{ 
+                           "points":"}|wkHx}mnV}@~A_A`BcAnBy@|A}@vA[f@c@t@EF}@~AeApBMROREHGFEFA@GFGHIFGFIDIFIDGDE@UH_@J"
+                        },
+                        "start_location":{ 
+                           "lat":49.2796667,
+                           "lng":-123.1204463
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.1 km",
+                           "value":97
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":22
+                        },
+                        "end_location":{ 
+                           "lat":49.2839039,
+                           "lng":-123.1258962
+                        },
+                        "html_instructions":"Continue onto <b>Haro St</b>",
+                        "polyline":{ 
+                           "points":"yrxkHp{nnVQFQHQHOLMJA@KLC@MPMROZ"
+                        },
+                        "start_location":{ 
+                           "lat":49.2831716,
+                           "lng":-123.1252116
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.1 km",
+                           "value":110
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":23
+                        },
+                        "end_location":{ 
+                           "lat":49.2832087,
+                           "lng":-123.1269759
+                        },
+                        "html_instructions":"Turn <b>left</b> onto <b>Thurlow St</b>",
+                        "maneuver":"turn-left",
+                        "polyline":{ 
+                           "points":"kwxkHz_onV`AjBfAjB"
+                        },
+                        "start_location":{ 
+                           "lat":49.2839039,
+                           "lng":-123.1258962
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"0.2 km",
+                           "value":220
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":41
+                        },
+                        "end_location":{ 
+                           "lat":49.2846045,
+                           "lng":-123.1291165
+                        },
+                        "html_instructions":"Turn <b>right</b> at the 2nd cross street onto <b>Barclay St</b>",
+                        "maneuver":"turn-right",
+                        "polyline":{ 
+                           "points":"asxkHrfonV}B`Es@lAcBzC"
+                        },
+                        "start_location":{ 
+                           "lat":49.2832087,
+                           "lng":-123.1269759
+                        },
+                        "travel_mode":"DRIVING"
+                     },
+                     { 
+                        "distance":{ 
+                           "text":"25 m",
+                           "value":25
+                        },
+                        "duration":{ 
+                           "text":"1 min",
+                           "value":15
+                        },
+                        "end_location":{ 
+                           "lat":49.2844432,
+                           "lng":-123.1293542
+                        },
+                        "html_instructions":"Turn <b>left</b> at the 1st cross street onto <b>Bute St</b><div style=\"font-size:0.9em\">Destination will be on the right</div>",
+                        "maneuver":"turn-left",
+                        "polyline":{ 
+                           "points":"w{xkH~sonV^l@"
+                        },
+                        "start_location":{ 
+                           "lat":49.2846045,
+                           "lng":-123.1291165
+                        },
+                        "travel_mode":"DRIVING"
+                     }
+                  ],
+                  "traffic_speed_entry":[ 
+
+                  ],
+                  "via_waypoint":[ 
+
+                  ]
+               }
+            ],
+            "overview_polyline":{ 
+               "points":"grtkHnfgoVi@iBECIY?O]yAU]GUtBaBt@c@vAeAjBkAbCaB\\WfBuAhBmAhF}DtFoExLkJ`Aq@ZMRANDN?JELOFe@Ge@[k@g@oBqAeFyBsJi@_CBI@WIc@OMUYg@eBwByIoCeKiAyFo@kEi@_FWgDSiEEiBEsB@sFBwL?y@HeWRmt@p@a|AL}SDaRPy_@BuLHqNBcKJyRFgTJgRDuHJaCAMCWB[@u@BmEVmk@FyOD_LNy\\y@?cCE{EEmIMDyMBaFBYB_BB{ADmOaEGoJEgJKyBAUCUKwEIcBG_CUc@Gs@Us@_@q@i@{AyBcCcEqDmG_IgNsC_Fm@}@Sk@K]c@yBgAoIKg@_B{Cy@_BcHyLwMkUkAoB}@~AcCpEy@|A}@vA_A|AwClFc@l@[Ze@ZcA\\c@Pa@V_@\\[d@OZ`AjBfAjB}B`EwChF^l@"
+            },
+            "summary":"W 16th Ave",
+            "warnings":[ 
+
+            ],
+            "waypoint_order":[ 
+
+            ]
+         }
+      ],
+      "status":"OK"
+   },
+   "isDriverTrip":false,
+   "isFulfilled":false,
+   "__v":0
+}

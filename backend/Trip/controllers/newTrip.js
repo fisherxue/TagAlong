@@ -60,7 +60,7 @@ const handleCreateTrip = async (req, res) => {
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
-			if (err) {
+			if (!user) {
 				res.status(400).send("Unable to find user");
 			}
 			else {
@@ -114,7 +114,7 @@ const handleCreateTrip = async (req, res) => {
 							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
 								driverTrip.tripRoute = res;
 								// add riders to driver trips
-
+								console.log(riderTrips);
 								riderTrips.forEach(async (ridertrip) => {
 									driverTrip.taggedUsers.push(ridertrip.username);
 									debug(ridertrip.username, "added to driver trip");
