@@ -510,6 +510,17 @@ describe("getRiderTrips", () => {
             });
         });
     });
+    it('should return something of correct length on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTrips(driverTrip, (res) => {
+                    expect(res[1]._id).toBe(riderTrips[2]._id);
+                    expect(res[0]._id).toBe(riderTrips[0]._id);
+                    done();
+                });
+            });
+        });
+    });
 });
 
 describe("driverTripHandler", () => {
@@ -563,6 +574,13 @@ describe("driverTripHandler", () => {
     it('should be function', () => {
         expect(typeof recommender.driverTripHandler).toBe("function");
     });
+    it('should return empty array when driverTrips is empty', async done => {
+        let driverTrip;
+        recommender.driverTripHandler(driverTrip, (res) => {
+            expect(res).toStrictEqual([]);
+            done();
+        });
+    })
     it('should return object on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
             addMockUsers(() => {
