@@ -1,15 +1,5 @@
 matrix:
   include:
-    - language: node_js
-      node_js: 
-        - 12
-      services:
-        - mongodb
-      script:
-        - cd backend
-        - npm update
-        - npm test
-
     - language: android
       dist: trusty
       android: 
@@ -33,3 +23,14 @@ matrix:
         script:
           - cd 'Front End Oreo Version'
           - gradle build connectedCheck
+    - language: node_js
+      node_js: 
+        - 12
+      services:
+        - mongodb
+      script:
+        - cd backend
+        - npm update
+        - npm test
+
+
