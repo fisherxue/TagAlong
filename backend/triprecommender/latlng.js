@@ -77,7 +77,6 @@ function getLatLngShortestDistanceLinePoint(lat1, lng1, lat2, lng2, lat3, lng3) 
     if (!isValidLat(lat1) || !isValidLat(lat2) || !isValidLng(lng1) || !isValidLng(lng2) || !isValidLat(lat3) || !isValidLng(lng3)) {
         throw new RangeError("Invalid coordinates");
     }
-
     
     let bearingAB = toRadians(getLatLngBearing(lat1, lng1, lat2, lng2));
     let bearingAC = toRadians(getLatLngBearing(lat1, lng1, lat3, lng3));

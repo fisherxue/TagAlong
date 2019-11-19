@@ -13,7 +13,6 @@ const createUpdateObject = (req) => {
 		...age && { age },
 		...gender && { gender },
 		...email && { email },
-		...email && { email },
 		...carCapacity && { carCapacity },
 		...fbToken && { fbToken }
 	};
@@ -36,12 +35,10 @@ const handleProfileUpdate = async (req, res) => {
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 
 		await User.findByIdAndUpdate(userID, update, { new: true }, (err, user) => {
-			if (err) {
-				res.status(400).send(err);
-			} else {
-				debug("user updated");
-				res.json(user);
-			}
+			
+			debug("user updated");
+			res.json(user);
+
 		});
 	} else {
 		res.status(400).send("Invalid userID");

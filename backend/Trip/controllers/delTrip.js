@@ -6,14 +6,14 @@ const mongoose = require("mongoose");
 const handleDelTrip = async (req, res) => {
 	
 	const userID = req.body.userID;
-	const tripid = req.body.tripid;
+	const tripID = req.body.tripID;
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
 			if (err) {
 				return res.status(400).send("Unable to find user");
 			} else {
-				TripStore.findByIdAndDelete(tripid, (err) => {
+				TripStore.findByIdAndDelete(tripID, (err) => {
 					if (err) {
 						res.status(400).send("trip not found");
 					} else {

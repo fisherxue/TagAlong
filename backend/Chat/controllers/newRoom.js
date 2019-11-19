@@ -9,20 +9,22 @@ const handleNewRoom = async (req, res) => {
 
 	const users = req.body.users;
 
-	chat = new Chat({
-		users,
-		messages: []
-	});
+	if (users) {
+		chat = new Chat({
+			users,
+			messages: []
+		});
 
-	await chat.save((err) => {
-		if (err) {
-			debug(err);
-			res.status(400).send("ERROR CREATING NEW ROOM");
-		}
-		else {
-			res.send(chat);
-		}
-	})
+		await chat.save();
+		res.send(chat);
+
+	}
+	else {
+		res.status(400).send("No users supplied");
+	}
+
+	
+
 }
 
 module.exports = {
