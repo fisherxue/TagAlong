@@ -14,7 +14,7 @@ const databaseName = 'triproutestest';
 
 beforeAll(async () => {
 	const url = `mongodb://127.0.0.1/${databaseName}`;
-  	await mongoose.connect(url, { useNewUrlParser: true })
+  	await mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 })
 
@@ -221,7 +221,9 @@ describe('testing trips', () => {
             username: "bwong",
             email: "bwong@demo.com",
             password: "demodemodemo",
-            fbToken: ""
+            fbToken: "",
+            isDriverTrip: false,
+            interests: [5,5,5,5,5]
         });
 
         await user1.save();
@@ -231,7 +233,10 @@ describe('testing trips', () => {
             username: "bwong5",
             email: "bwong5@demo.com",
             password: "demodemodemo",
-            fbToken: ""
+            fbToken: "",
+            isDriverTrip: false,
+            interests: [5,5,5,5,5]
+
         });
 
         await user2.save();
@@ -241,7 +246,10 @@ describe('testing trips', () => {
             username: "bwong2",
             email: "bwong2@demo.com",
             password: "demodemodemo",
-            fbToken: ""
+            fbToken: "",
+            isDriverTrip: false,
+            interests: [5,5,5,5,5]
+
         });
 
         await user3.save();
@@ -252,14 +260,16 @@ describe('testing trips', () => {
             username: "bwong1",
             email: "bwong1@demo.com",
             password: "demodemodemo",
-            fbToken: ""
+            fbToken: "",
+            isDriverTrip: true,
+            interests: [5,5,5,5,5]
         });
 
         await user4.save().then((user) => {
             driver = user;
         });
 
-        
+
         riderTrip1 = new TripStore(ridertrip1);
         await riderTrip1.save();
         riderTrip2 = new TripStore(ridertrip2);

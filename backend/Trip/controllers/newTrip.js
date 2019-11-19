@@ -90,7 +90,7 @@ const handleCreateTrip = async (req, res) => {
 						debug("Trip is a DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
 						if (typeof riderTrips === "undefined") {
-							res.status(300).send("NOTHING");
+							return res.status(300).send("NOTHING");
 						} else {
 
 							riderTrips = riderTrips.slice(0, 4); // should slice by driver car size
