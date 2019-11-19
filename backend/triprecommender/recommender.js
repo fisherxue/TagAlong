@@ -259,6 +259,9 @@ async function getRiderTrips(driverTrip, callback) {
  * Gets the applicable rider trips
  */
 function driverTripHandler(driverTrip, callback) {
+	if (typeof driverTrip === "undefined") {
+		callback([], driverTrip);
+	}
 	getRiderTrips(driverTrip, function(riderTrips) {
 		debug("riderTrips:", riderTrips);
 		getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
