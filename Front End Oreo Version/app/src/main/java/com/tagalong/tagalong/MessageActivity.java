@@ -36,14 +36,12 @@ import java.util.List;
 public class MessageActivity extends AppCompatActivity {
 
     private Context context;
-    private final String TAG = "ChatActivity";
+    private static final String TAG = "MessageActivity";
 
     private ImageButton sendMessage;
     private EditText messageToSend;
     private Profile profile;
     private String ID;
-
-    private MessageAdapter messageAdapter;
     private Chat chat;
     private BroadcastReceiver receiver;
 
@@ -52,6 +50,7 @@ public class MessageActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message);
+        Log.d(TAG, "message activity created");
         context = this;
         profile = (Profile) getIntent().getSerializableExtra("profile");
         ID =  getIntent().getStringExtra("ID");
@@ -92,6 +91,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void sendMSG(String message){
+        Log.d(TAG, "Sending Message");
         Conversation newConversation = new Conversation(message);
         newConversation.setRoomID(ID);
         newConversation.setUserID(profile.getUserID());
@@ -106,6 +106,7 @@ public class MessageActivity extends AppCompatActivity {
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url,conversationJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
+                    Log.d(TAG, "Message Sent successfully");
                     Log.d(TAG, "Received List of Messages for the chat");
                     setConversationList(response);
                     initChatView();
@@ -123,7 +124,7 @@ public class MessageActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "JsonException building conversation " + e.getMessage());
         }
 
     }
@@ -141,6 +142,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void setConversationList (JSONObject response){
+        Log.d(TAG,"Setting chat list");
         chat = new Chat(ID);
         chat.setUserID(profile.getUserID());
         JSONArray conversationListIn;
@@ -160,7 +162,7 @@ public class MessageActivity extends AppCompatActivity {
                 usernames.add(username);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "JsonException building conversation " + e.getMessage());
         }
 
         chat.setConversationList(conversationList);
@@ -168,6 +170,7 @@ public class MessageActivity extends AppCompatActivity {
     }
 
     private void initChat(){
+        Log.d(TAG, "Initializing Chat");
         RequestQueue queue = Volley.newRequestQueue(context);
         String url = getString(R.string.getChatList);
         final Gson gson = new Gson();
@@ -175,6 +178,7 @@ public class MessageActivity extends AppCompatActivity {
         JSONObject chatJsonObject;
 
         try {
+            Log.d(TAG, "Retrieving list of messages");
             chatJsonObject = new JSONObject(chatJson);
             Log.d(TAG,chatJsonObject.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, chatJsonObject, new Response.Listener<JSONObject>() {
@@ -197,7 +201,7 @@ public class MessageActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "JsonException building conversation " + e.getMessage());
         }
     }
 
