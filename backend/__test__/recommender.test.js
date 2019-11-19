@@ -8,6 +8,71 @@ const TripStore = require("../Trip/models/Trip");
 const UserStore = require("../User/models/user");
 
 jest.mock("../triprecommender/directions.js");
+jest.mock("../triprecommender/latlng.js");
+
+
+function addMockUsers(callback) {
+    fs.readFile("./__test__/users/driverUser1.json", "utf8", (err, data) => {
+        user = JSON.parse(data);
+        user = UserStore(user);
+        user.save((err, res) => {
+            fs.readFile("./__test__/users/riderUser1.json", "utf8", (err, data1) => {
+                user = JSON.parse(data1);
+                user = UserStore(user);
+                user.save((err, res) => {
+                    fs.readFile("./__test__/users/riderUser2.json", "utf8", (err, data2) => {
+                        user = JSON.parse(data2);
+                        user = UserStore(user);
+                        user.save((err, res) => {
+                            fs.readFile("./__test__/users/riderUser3.json", "utf8", (err, data3) => {
+                                user = JSON.parse(data3);
+                                user = UserStore(user);
+                                user.save((err, res) => {
+                                    callback();
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+} 
+
+function addMockTrips(callback) {
+    let driverTrip;
+    let riderTrips = [];
+    let trip;
+    fs.readFile("./__test__/trips/driverTrip1.json", "utf8", (err, data) => {
+        trip = JSON.parse(data);
+        driverTrip = trip;
+        trip = TripStore(trip);
+        trip.save((err, res) => {
+            fs.readFile("./__test__/trips/riderTrip1.json", "utf8", (err, data1) => {
+                trip = JSON.parse(data1);
+                riderTrips.push(trip);
+                trip = TripStore(trip);
+                trip.save((err, res) => {
+                    fs.readFile("./__test__/trips/riderTrip2.json", "utf8", (err, data2) => {
+                        trip = JSON.parse(data2);
+                        riderTrips.push(trip);
+                        trip = TripStore(trip);
+                        trip.save((err, res) => {
+                            fs.readFile("./__test__/trips/riderTrip3.json", "utf8", (err, data3) => {
+                                trip = JSON.parse(data3);
+                                riderTrips.push(trip);
+                                trip = TripStore(trip);
+                                trip.save((err, res) => {
+                                    callback(driverTrip, riderTrips);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
 
 describe("cutTripsByBearing", () => {
     it('should exist', () => {
@@ -290,7 +355,6 @@ describe("getRiderTripSimilarity", () => {
         // Closes the Mongoose connection
         await mongoose.connection.close();
     });
-
     it('should exist', () => {
         expect(recommender.getRiderTripSimilarity).toBeDefined();
     });
@@ -305,20 +369,69 @@ describe("getRiderTripSimilarity", () => {
             done();
         });
     });
-    it('should return something on correct input', async done => {
-        let driverTrip;
-        let riderTrips = [];
-        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
-            driverTrip = JSON.parse(data);
-            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
-                riderTrips.push(JSON.parse(data1));
-                data = TripStore(JSON.parse(data));
-                data.save((err, res) => {
-                    TripStore.findById(data._id, (err, res) => {
-                        console.log(res);
+    it('should return empty array on incorrect driver input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                let dt;
+                recommender.getRiderTripSimilarity(dt, riderTrips, (res) => {
+                    expect(res).toHaveLength(0);
+                    done();
+                });
+            });
+        });
+    });
+    it('should ignore bad user-trip relationship on bad userID in trip', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                let userId = riderTrips[0].userID;
+                riderTrips[0].userID = mongoose.Types.ObjectId(1);
+                TripStore.findByIdAndUpdate({userID: userId}, riderTrips[0], () => {
+                    recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
+                        expect(res).toHaveLength(2);
                         done();
-
                     });
+                });
+            });
+        });
+    });
+    it('should return something on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
+                    expect(res).toHaveLength(3);
+                    done();
+                });
+            });
+        });
+    });
+    it('should return something with similarity measure on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
+                    expect(res[0].similarityWithDriver).toBeDefined();
+                    done();
+                });
+            });
+        });
+    });
+    it('should return correctly ordered result on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
+                    expect(res[0].similarityWithDriver).toBeGreaterThanOrEqual(res[1].similarityWithDriver);
+                    expect(res[1].similarityWithDriver).toBeGreaterThanOrEqual(res[2].similarityWithDriver);
+                    done();
+                });
+            });
+        });
+    });
+    it('should return correctly similarity on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
+                    expect(res[0].similarityWithDriver).toBeGreaterThan(1.0);
+                    expect(res[0].similarityWithDriver).toBeLessThan(1.05);
+                    done();
                 });
             });
         });
@@ -326,20 +439,149 @@ describe("getRiderTripSimilarity", () => {
 });
 
 describe("getRiderTrips", () => {
+    beforeAll(async () => {
+        const url = `mongodb://127.0.0.1/${databaseName}`;
+        await mongoose.connect(url, { useNewUrlParser: true });
+    });
+
+    async function removeAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            await collection.deleteMany();
+        }
+    }
+    
+    afterEach(async () => {
+        await removeAllCollections();
+    });
+
+    async function dropAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            try {
+            await collection.drop();
+            } catch (error) {
+            // This error happens when you try to drop a collection that's already dropped. Happens infrequently. 
+            // Safe to ignore. 
+            if (error.message === 'ns not found') return;
+        
+            // This error happens when you use it.todo.
+            // Safe to ignore. 
+            if (error.message.includes('a background operation is currently running')) return;
+        
+            console.log(error.message);
+            }
+        }
+    }
+    
+    // Disconnect Mongoose
+    afterAll(async () => {
+        await dropAllCollections();
+        // Closes the Mongoose connection
+        await mongoose.connection.close();
+    });
     it('should exist', () => {
         expect(recommender.getRiderTrips).toBeDefined();
     });
     it('should be function', () => {
         expect(typeof recommender.getRiderTrips).toBe("function");
     });
+    it('should return empty array on incorrect input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                let dt;
+                recommender.getRiderTrips(dt, (res) => {
+                    expect(res).toHaveLength(0);
+                    expect(res).toStrictEqual([]);
+                    done();
+                });
+            });
+        });
+    });
+    it('should return something of correct length on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.getRiderTrips(driverTrip, (res) => {
+                    expect(res).toHaveLength(2);
+                    done();
+                });
+            });
+        });
+    });
 });
 
 describe("driverTripHandler", () => {
+    beforeAll(async () => {
+        const url = `mongodb://127.0.0.1/${databaseName}`;
+        await mongoose.connect(url, { useNewUrlParser: true });
+    });
+
+    async function removeAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            await collection.deleteMany();
+        }
+    }
+    
+    afterEach(async () => {
+        await removeAllCollections();
+    });
+
+    async function dropAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            try {
+            await collection.drop();
+            } catch (error) {
+            // This error happens when you try to drop a collection that's already dropped. Happens infrequently. 
+            // Safe to ignore. 
+            if (error.message === 'ns not found') return;
+        
+            // This error happens when you use it.todo.
+            // Safe to ignore. 
+            if (error.message.includes('a background operation is currently running')) return;
+        
+            console.log(error.message);
+            }
+        }
+    }
+    
+    // Disconnect Mongoose
+    afterAll(async () => {
+        await dropAllCollections();
+        // Closes the Mongoose connection
+        await mongoose.connection.close();
+    });
+
     it('should exist', () => {
         expect(recommender.driverTripHandler).toBeDefined();
     });
     it('should be function', () => {
         expect(typeof recommender.driverTripHandler).toBe("function");
+    });
+    it('should return object on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.driverTripHandler(driverTrip, (res) => {
+                    expect(typeof res).toBe("object");
+                    done();
+                });
+            });
+        });
+    });
+    it('should return json routes object on correct input', async done => {
+        addMockTrips((driverTrip, riderTrips) => {
+            addMockUsers(() => {
+                recommender.driverTripHandler(driverTrip, (rds, drs) => {
+                    expect(rds[0].tripRoute.routes).toBeDefined();
+                    done();
+                });
+            });
+        });
     });
 });
 

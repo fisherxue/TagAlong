@@ -74,7 +74,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 function cutTripsByDistance(driverTrip, riderTrips) {
 	let riderTripsDistance = [];
 
-	if (typeof riderTrips === "undefined") {
+	if (typeof riderTrips === "undefined" || driverTrip === "undefined") {
 		return [];
 	}
 
@@ -190,39 +190,34 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	/* get the driver user matching the username */
 	let driverUser;
 
-	if (mongoose.Types.ObjectId.isValid(driverTrip.userID)) {
-		await UserStore.findById(driverTrip.userID, (err, user) => {
-			if (err) {
-				debug(err);
-			} else {
-				driverUser = user;
-				debug(driverUser);
-			}
-		});
-	} else {
-		debug("invalid user id from driver trip");
-		debug(typeof driverTrip.userID, driverTrip.userID);
-	}
-
-	riderTrips.forEach(async function(riderTrip) {
-		/* get the rider user matching the username */
-		let riderUser;
-		if (mongoose.Types.ObjectId.isValid(riderTrip.userID)) {
-			await UserStore.findById(riderTrip.userID, (err, user) => {
-				if (err) {
-					debug(err);
-				} else {
-					riderUser = user;
-					debug(riderUser);
-				}
-			});
-			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+	await UserStore.findById(driverTrip.userID, (err, user) => {
+		if (err) {
+			debug(err);
 		} else {
-			debug("invalid user id from rider trip");
-			debug(typeof riderTrip.userID, riderTrip.userID);
+			driverUser = user;
+			debug(driverUser);
 		}
 	});
 
+	for (const riderTrip of riderTrips) {
+		let riderUser;
+		await UserStore.findById(riderTrip.userID, (err, user) => {
+			if (err) {
+				debug(err);
+			} else {
+				riderUser = user;
+				debug(riderUser);
+			}
+		});
+		if (riderUser === "undefined" || riderUser === null || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
+			riderTrips = riderTrips.filter((value, index, arr) => {
+				return value != riderTrip;
+			});
+		} else {
+			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+		}
+	}
+	
 	riderTrips = riderTrips.sort(function (a, b) {
 		return b.similarityWithDriver - a.similarityWithDriver;
 	});
@@ -236,6 +231,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
  * are reasonable for the driver
  */
 async function getRiderTrips(driverTrip, callback) {
+	if (typeof driverTrip === "undefined") {
+		callback([]);
+		return;
+	}
+	
 	let riderTrips;
 
 	await TripStore.find({}, (err, trips) => {
