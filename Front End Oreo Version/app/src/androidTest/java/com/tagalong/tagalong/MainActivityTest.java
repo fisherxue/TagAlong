@@ -13,9 +13,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.concurrent.TimeUnit;
+
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.doubleClick;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -36,6 +39,7 @@ public class MainActivityTest {
     public ActivityTestRule<MainActivity> mainActivityActivityTestRule = new ActivityTestRule<>(MainActivity.class);
 
 
+
     @Test
     public void testSignUp() {
         onView(withId(R.id.signup_button)).perform(click());
@@ -47,7 +51,11 @@ public class MainActivityTest {
         onView(withId(R.id.Email)).perform(typeText("chunru73@byronz.com"));
         closeSoftKeyboard();
         onView(withId(R.id.nextbutton)).perform(click());
-        onView(withId(R.id.nextbutton)).check(matches(isDisplayed()));
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -58,24 +66,14 @@ public class MainActivityTest {
         onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
         closeSoftKeyboard();
         onView(withId(R.id.login_button)).perform(click());
-        onView(withId(R.id.login_button)).check(matches(not(isDisplayed())));
-        /*
-        onView(withId(R.id.bottom_navigation)).check(matches(isDisplayed()));
-        onView(withId(R.id.edit)).perform(click());
-        onView(withId(R.id.firstName)).perform(typeText("Chun Ru"));
-        onView(withId(R.id.lastName)).perform(typeText("Wong"));
-        onView(withId(R.id.gender)).perform(typeText("Male"));
-        onView(withId(R.id.age)).perform(typeText("69"));
-        onView(withId(R.id.carCapacity)).perform(typeText("0"));
-        onView(withId(R.id.seekMusic)).perform(swipeRight());
-        onView(withId(R.id.seekSpeed)).perform(swipeRight());
-        onView(withId(R.id.seekSmoking)).perform(swipeLeft());
-        onView(withId(R.id.seekFragrance)).perform(swipeRight());
-        onView(withId(R.id.seekChatting)).perform(swipeLeft());
-        onView(withId(R.id.submit)).perform(click());
-        onView(withText("YOUR PROFILE")).check(matches(isDisplayed()));
+        //onView(withId(R.id.bottom_navigation)).check(matches(isDisplayed()));
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-         */
+        onView(withId(R.id.logout)).perform(doubleClick());
 
     }
 
