@@ -210,7 +210,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 				debug(riderUser);
 			}
 		});
-		if (typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
+		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
 			riderTrips = riderTrips.filter((value, index, arr) => {
 				return value != riderTrip;
 			});
