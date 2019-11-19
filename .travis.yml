@@ -5,4 +5,5 @@ matrix:
         - 12
       script:
         - cd backend
+        - ls
         - npm test

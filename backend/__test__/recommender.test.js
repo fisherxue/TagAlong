@@ -1,6 +1,12 @@
 const recommender = require("../triprecommender/recommender.js");
 const fs = require("fs");
 
+const mongoose = require('mongoose');
+const databaseName = 'test';
+
+const TripStore = require("../Trip/models/Trip");
+const UserStore = require("../User/models/user");
+
 jest.mock("../triprecommender/directions.js");
 
 describe("cutTripsByBearing", () => {
@@ -15,15 +21,16 @@ describe("cutTripsByBearing", () => {
         let riderTrips;
         expect(recommender.cutTripsByBearing(driverTrip, riderTrips)).toHaveLength(0);
     });
-    it('should return empty on null inputs for ridertrips', () => {
+    it('should return empty on null inputs for ridertrips', async done => {
         let driverTrip;
         let riderTrips;
         fs.readFile("./triprecommender/__test__/driverTrip1.json", "utf8", (err, data) => {
             driverTrip = data;
             expect(recommender.cutTripsByBearing(driverTrip, riderTrips)).toHaveLength(0);
+            done();
         });
     });
-    it('should return correct value', () => {
+    it('should return correct value', async done => {
         let driverTrip;
         let riderTrips = [];
         fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
@@ -35,6 +42,7 @@ describe("cutTripsByBearing", () => {
                     fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
                         expect(recommender.cutTripsByBearing(driverTrip, riderTrips)).toHaveLength(3);
+                        done();
                     });
                 });
             });
@@ -54,15 +62,16 @@ describe("cutTripsByDistance", () => {
         let riderTrips;
         expect(recommender.cutTripsByDistance(driverTrip, riderTrips)).toHaveLength(0);
     });
-    it('should return empty on null inputs for ridertrips', () => {
+    it('should return empty on null inputs for ridertrips', async done => {
         let driverTrip;
         let riderTrips;
         fs.readFile("./triprecommender/__test__/driverTrip1.json", "utf8", (err, data) => {
             driverTrip = data;
             expect(recommender.cutTripsByDistance(driverTrip, riderTrips)).toHaveLength(0);
+            done();
         });
     });
-    it('should return correct value', () => {
+    it('should return correct value', async done => {
         let driverTrip;
         let riderTrips = [];
         fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
@@ -74,6 +83,7 @@ describe("cutTripsByDistance", () => {
                     fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
                         expect(recommender.cutTripsByDistance(driverTrip, riderTrips)).toHaveLength(3);
+                        done();
                     });
                 });
             });
@@ -223,11 +233,64 @@ describe("getInterestSimilarity", () => {
         }
         expect(recommender.getInterestSimilarity(user1, user2)).toBeGreaterThan(0.65);
         expect(recommender.getInterestSimilarity(user1, user2)).toBeLessThan(0.66);
-
+    });
+    it('should return correct output on valid input', () => {
+        let user1 = {
+            interests: [1, 2, 3, 4, 5]
+        }
+        let user2 = {
+            interests: [1, 2, 3, 4, 5]
+        }
+        expect(recommender.getInterestSimilarity(user1, user2)).toBeGreaterThan(1.0);
+        expect(recommender.getInterestSimilarity(user1, user2)).toBeLessThan(1.02);
     });
 });
 
 describe("getRiderTripSimilarity", () => {
+    beforeAll(async () => {
+        const url = `mongodb://127.0.0.1/${databaseName}`;
+        await mongoose.connect(url, { useNewUrlParser: true });
+    });
+
+    async function removeAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            await collection.deleteMany();
+        }
+    }
+    
+    afterEach(async () => {
+        await removeAllCollections();
+    });
+
+    async function dropAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            try {
+            await collection.drop();
+            } catch (error) {
+            // This error happens when you try to drop a collection that's already dropped. Happens infrequently. 
+            // Safe to ignore. 
+            if (error.message === 'ns not found') return;
+        
+            // This error happens when you use it.todo.
+            // Safe to ignore. 
+            if (error.message.includes('a background operation is currently running')) return;
+        
+            console.log(error.message);
+            }
+        }
+    }
+    
+    // Disconnect Mongoose
+    afterAll(async () => {
+        await dropAllCollections();
+        // Closes the Mongoose connection
+        await mongoose.connection.close();
+    });
+
     it('should exist', () => {
         expect(recommender.getRiderTripSimilarity).toBeDefined();
     });
@@ -242,6 +305,24 @@ describe("getRiderTripSimilarity", () => {
             done();
         });
     });
+    it('should return something on correct input', async done => {
+        let driverTrip;
+        let riderTrips = [];
+        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
+            driverTrip = JSON.parse(data);
+            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+                riderTrips.push(JSON.parse(data1));
+                data = TripStore(JSON.parse(data));
+                data.save((err, res) => {
+                    TripStore.findById(data._id, (err, res) => {
+                        console.log(res);
+                        done();
+
+                    });
+                });
+            });
+        });
+    });
 });
 
 describe("getRiderTrips", () => {
@@ -252,11 +333,16 @@ describe("getRiderTrips", () => {
         expect(typeof recommender.getRiderTrips).toBe("function");
     });
 });
-/*
-describe("driverTripHandler", () => {
 
+describe("driverTripHandler", () => {
+    it('should exist', () => {
+        expect(recommender.driverTripHandler).toBeDefined();
+    });
+    it('should be function', () => {
+        expect(typeof recommender.driverTripHandler).toBe("function");
+    });
 });
-*/
+
 
 describe("tripHandler", () => {
     it('should exist', () => {
