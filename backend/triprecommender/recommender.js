@@ -111,7 +111,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  * Modify the driver trip by adding waypoints for each
  * rider trip start and end
  */
-function modifyTrip(driverTrip, riderTrips, callback) {
+async function modifyTrip(driverTrip, riderTrips) {
 	if (riderTrips.length < 1 || riderTrips === undefined) {
 		callback(driverTrip.tripRoute);
 		return;
@@ -141,7 +141,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 			debug(err);
 			throw err;
 		}
-		callback(res.json);
+		return res.json;
 	});
 }
 

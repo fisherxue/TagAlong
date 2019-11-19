@@ -33,9 +33,10 @@ const sendNotif = async (user) => {
 };
 
 const notifyAllRiders = async (riderTrips, callback) => {
-	for(const trip of riderTrips) {
+	riderTrips.forEach(async trip => {
 		let username = trip.username;
 		debug(username, "USERNAME");
+
 		const user = await User.findOne({ username });
 
 		if (user) {
@@ -45,8 +46,7 @@ const notifyAllRiders = async (riderTrips, callback) => {
 		else {
 			callback(Error("Unable to find user"));
 		}
-
-	}
+	})
 };
 
 
@@ -93,7 +93,6 @@ const handleCreateTrip = async (req, res) => {
 						if (typeof riderTrips === "undefined") {
 							return res.status(300).send("NOTHING");
 						} else {
-
 							riderTrips = riderTrips.slice(0, 4); // should slice by driver car size
 
 							riderTrips.forEach(async (ridertrip) => {
@@ -109,29 +108,22 @@ const handleCreateTrip = async (req, res) => {
 								});
 							} );
 
-
-
 							
-							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
-								driverTrip.tripRoute = res;
-								// add riders to driver trips
+							driverTrip.tripRoute = await tripRecommender.modifyTrip(driverTrip, riderTrips);
 
-								riderTrips.forEach(async (ridertrip) => {
-									driverTrip.taggedUsers.push(ridertrip.username);
-									debug(ridertrip.username, "added to driver trip");
-								})
-
-								await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
-									if (err) {
-										debug(err);
-									}
-								})
+							riderTrips.forEach(ridertrip => {
+								driverTrip.taggedUsers.push(ridertrip.username);
+								debug(ridertrip.username, "added to driver trip");
 							})
-
-
-
-
+								
+							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
+								if (err) {
+									debug(err);
+								}
+							})
+							
 							notifyAllRiders(riderTrips, (err) => {
+
 								if (err) {
 									res.status(400).json("unable to find user");
 								}
