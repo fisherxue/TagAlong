@@ -116,14 +116,15 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		callback(driverTrip.tripRoute);
 		return;
 	}
+
 	let waypoints = [];
 	debug("modify trip drivers", driverTrip);
 	debug("modify trip riders", riderTrips);
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
-		waypoints.push({location: startPoint, stopover: false});
-		waypoints.push({location: endPoint, stopover: false});
+		waypoints.push(startPoint);
+		waypoints.push(endPoint);
 	});
 
 	let driverStartPoint = driverTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].start_location.lng;
@@ -134,12 +135,13 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		waypoints
 	};
 	debug("req to directions with waypoints:", req);	
-	getDirectionsWithWaypoints(req, function(err, res) {
+
+	getDirectionsWithWaypoints(req, (err, res) => {
 		if (err) {
 			debug(err);
 			throw err;
 		}
-		callback(res);
+		callback(res.json);
 	});
 }
 
@@ -192,11 +194,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	let driverUser;
 
 	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
-		if (err) {
-			debug(err);
-		} else {
-			debug(driverUser);
-		}
+		// if (err) {
+		// 	debug(err);
+		// } else {
+		// 	debug(driverUser);
+		// }
 	});
 
 	for (const riderTrip of riderTrips) {
@@ -216,6 +218,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
 		}
 	}
+
 	
 	riderTrips = riderTrips.sort(function (a, b) {
 		return b.similarityWithDriver - a.similarityWithDriver;
@@ -240,6 +243,8 @@ async function getRiderTrips(driverTrip, callback) {
 	await TripStore.find({}, (err, trips) => {
 		if (err) {
 			debug(err);
+			callback([]);
+			return;
 		}
 		riderTrips = trips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);

@@ -89,6 +89,7 @@ const handleCreateTrip = async (req, res) => {
 					if (isDriverTrip) {
 						debug("Trip is a DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
+
 						if (typeof riderTrips === "undefined") {
 							return res.status(300).send("NOTHING");
 						} else {
@@ -114,7 +115,7 @@ const handleCreateTrip = async (req, res) => {
 							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
 								driverTrip.tripRoute = res;
 								// add riders to driver trips
-								console.log(riderTrips);
+
 								riderTrips.forEach(async (ridertrip) => {
 									driverTrip.taggedUsers.push(ridertrip.username);
 									debug(ridertrip.username, "added to driver trip");

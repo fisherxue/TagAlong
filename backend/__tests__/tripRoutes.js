@@ -58,6 +58,7 @@ afterAll(async () => {
 })
 
 describe('testing trips', () => {
+    /*
     it('should create a new rider trip', async (done) => {
         user1 = new User({
             username: "chatdemouser13",
@@ -213,6 +214,7 @@ describe('testing trips', () => {
 
         done();
     })
+    */
 
     it('new driver trip should match with 3 other user trips', async (done) => {
         
