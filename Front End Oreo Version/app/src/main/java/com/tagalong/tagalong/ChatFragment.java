@@ -44,13 +44,17 @@ public class ChatFragment extends Fragment {
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
-        initTripList();
+        if (profile.getDriver()){
+            initTripList(getString(R.string.getTripList), true);
+        }
+        else {
+            initTripList(getString(R.string.getTripList), false);
+        }
         return view;
     }
 
-    private void initTripList(){
+    private void initTripList(String url, final Boolean isDriver){
         RequestQueue queue = Volley.newRequestQueue(context);
-        String url = getString(R.string.getTripList);
         final Gson gson = new Gson();
         final String profileJson = gson.toJson(profile);
         Log.d(TAG, "profileJson" + profileJson);
@@ -63,8 +67,8 @@ public class ChatFragment extends Fragment {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Received List of Trips for the user");
-                    setTripList(response);
-                    initTripView();
+                    setTripList(response, isDriver);
+                    initTripView(isDriver);
                 }
 
             }, new Response.ErrorListener() {
@@ -82,22 +86,35 @@ public class ChatFragment extends Fragment {
             e.printStackTrace();
         }
     }
-    private void initTripView(){
+    private void initTripView(Boolean isDriver){
         Log.d(TAG,"initializing TripView");
-        RecyclerView recyclerView = view.findViewById(R.id.home_frag_recycler_view);
-        TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
-        recyclerView.setAdapter(tripViewAdapter);
+        RecyclerView recyclerView = view.findViewById(R.id.proposed_trip_recycler_view);
+        if (isDriver){
+            TripProposedDriverAdapter tripViewAdapter = new TripProposedDriverAdapter(context, this.tripList, profile);
+            recyclerView.setAdapter(tripViewAdapter);
+        }
+        else {
+            TripProposedRiderAdapter tripViewAdapter = new TripProposedRiderAdapter(context, this.tripList, profile);
+            recyclerView.setAdapter(tripViewAdapter);
+        }
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
-    private void setTripList (JSONObject response){
+    private void setTripList (JSONObject response, Boolean isDriver){
         JSONArray tripListIN;
         tripList = new ArrayList<>();
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
             Log.d(TAG, "Trip Array: " + tripListIN.toString());
             for (int i = 0; i < tripListIN.length(); i++){
-                this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                if (isDriver){
+                    this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                }
+                else {
+                    if(!tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
+                        this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                    }
+                }
             }
 
         } catch (JSONException e) {

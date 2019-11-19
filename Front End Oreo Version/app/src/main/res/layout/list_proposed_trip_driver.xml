@@ -90,7 +90,20 @@
                 android:orientation="horizontal"
                 >
                 <Button
-                    android:id="@+id/Accept"
+                    android:id="@+id/map"
+                    style="@style/Widget.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:backgroundTint="@color/map"
+                    android:text="Map" />
+
+                <Button
+                    android:id="@+id/accept"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -103,7 +116,7 @@
                     android:text="Accept" />
 
                 <Button
-                    android:id="@+id/Reject"
+                    android:id="@+id/reject"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_weight="1"

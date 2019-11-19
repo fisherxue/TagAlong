@@ -102,6 +102,9 @@ public class HomeActivity extends AppCompatActivity {
 
                         case R.id.nav_chat:
                             frag = new ChatFragment();
+                            Bundle bundle2 = new Bundle();
+                            bundle2.putSerializable("profile", userProfile);
+                            frag.setArguments(bundle2);
                             break;
 
                         default:

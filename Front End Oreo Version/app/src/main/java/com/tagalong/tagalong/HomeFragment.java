@@ -96,7 +96,9 @@ public class HomeFragment extends Fragment {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
             Log.d(TAG, "Trip Array: " + tripListIN.toString());
             for (int i = 0; i < tripListIN.length(); i++){
-                this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                if(tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
+                    this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                }
             }
 
         } catch (JSONException e) {

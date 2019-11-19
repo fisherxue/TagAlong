@@ -148,7 +148,7 @@ public class ExternalAPITest {
         button2.perform(scrollTo(), click());
 
         pressBack();
-        
+
         ViewInteraction button5 = onView(
                 allOf(withId(R.id.To), withText("Find Route"),
                         childAtPosition(
