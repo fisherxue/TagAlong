@@ -89,7 +89,6 @@ const handleCreateTrip = async (req, res) => {
 					if (isDriverTrip) {
 						debug("Trip is a DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
-
 						if (typeof riderTrips === "undefined") {
 							return res.status(300).send("NOTHING");
 						} else {
@@ -110,12 +109,14 @@ const handleCreateTrip = async (req, res) => {
 
 							
 							driverTrip.tripRoute = await tripRecommender.modifyTrip(driverTrip, riderTrips);
-
+							console.log(driverTrip)
 							riderTrips.forEach(ridertrip => {
 								driverTrip.taggedUsers.push(ridertrip.username);
 								debug(ridertrip.username, "added to driver trip");
 							})
 								
+							driverTrip.isFulfilled = true;
+							
 							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
 								if (err) {
 									debug(err);

@@ -113,7 +113,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  */
 async function modifyTrip(driverTrip, riderTrips) {
 	if (riderTrips.length < 1 || riderTrips === undefined) {
-		return;
+		return driverTrip.tripRoute;
 	}
 
 	let waypoints = [];
