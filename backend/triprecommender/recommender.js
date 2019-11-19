@@ -191,7 +191,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	/* get the driver user matching the username */
 	let driverUser;
 
-	await UserStore.findById(driverTrip.userID, (err, user) => {
+	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
 		if (err) {
 			debug(err);
 		} else {
@@ -207,16 +207,17 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 				debug(err);
 			} else {
 				riderUser = user;
+
+				if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
+					riderTrips = riderTrips.filter((value, index, arr) => {
+						return value != riderTrip;
+					});
+				} else {
+					riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
+				}
 				debug(riderUser);
 			}
 		});
-		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
-			riderTrips = riderTrips.filter((value, index, arr) => {
-				return value != riderTrip;
-			});
-		} else {
-			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
-		}
 	}
 	
 	riderTrips = riderTrips.sort(function (a, b) {
