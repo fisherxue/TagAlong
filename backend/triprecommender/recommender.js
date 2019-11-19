@@ -113,7 +113,6 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  */
 async function modifyTrip(driverTrip, riderTrips) {
 	if (riderTrips.length < 1 || riderTrips === undefined) {
-		callback(driverTrip.tripRoute);
 		return;
 	}
 
@@ -137,10 +136,6 @@ async function modifyTrip(driverTrip, riderTrips) {
 	debug("req to directions with waypoints:", req);	
 
 	getDirectionsWithWaypoints(req, (err, res) => {
-		if (err) {
-			debug(err);
-			throw err;
-		}
 		return res.json;
 	});
 }
@@ -194,20 +189,16 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	let driverUser;
 
 	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
-		// if (err) {
-		// 	debug(err);
-		// } else {
-		// 	debug(driverUser);
-		// }
+		if (user) {
+			debug(user);
+		}
 	});
 
 	for (const riderTrip of riderTrips) {
 		let riderUser;
 		riderUser = await UserStore.findById(riderTrip.userID, (err, user) => {
-			if (err) {
-				debug(err);
-			} else {
-				debug(riderUser);
+			if (user) {
+				debug(user);
 			}
 		});
 		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
@@ -241,11 +232,6 @@ async function getRiderTrips(driverTrip, callback) {
 	let riderTrips;
 
 	await TripStore.find({}, (err, trips) => {
-		if (err) {
-			debug(err);
-			callback([]);
-			return;
-		}
 		riderTrips = trips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
@@ -288,10 +274,7 @@ function tripHandler(trip, callback) {
 		destination: endPoint
 	};
 	getDirections(req, function(err, res) {
-		if (err) {
-			debug(err);
-			throw err;
-		}
+
 		callback(res);
 	});
 }

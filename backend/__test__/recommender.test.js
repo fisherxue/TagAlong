@@ -166,12 +166,11 @@ describe("modifyTrip", () => {
     it('should return driverTrip if no riderTrips', async done => {
         let driverTrip;
         let riderTrips = [];
-        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
+        fs.readFile("./__test__/driverTrip1.json", "utf8", async (err, data) => {
             driverTrip = JSON.parse(data);
-            recommender.modifyTrip(driverTrip, riderTrips, (res) => {
-                expect(res).toBe(driverTrip.tripRoute);
-                done();
-            });
+            let res = await recommender.modifyTrip(driverTrip, riderTrips);
+            expect(res).toBe(driverTrip.tripRoute);
+            done();
         });
     });
     it('should return json with one riderTrip', async done => {
@@ -179,12 +178,11 @@ describe("modifyTrip", () => {
         let riderTrips = [];
         fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
             driverTrip = JSON.parse(data);
-            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+            fs.readFile("./__test__/riderTrip1.json", "utf8", async (err, data1) => {
                 riderTrips.push(JSON.parse(data1));
-                recommender.modifyTrip(driverTrip, riderTrips, (res) => {
-                    expect(typeof res).toBe("object");
-                    done();
-                });
+                let res = await recommender.modifyTrip(driverTrip, riderTrips);
+                expect(typeof res).toBe("object");
+                done();
             });
         });
     });
@@ -193,12 +191,11 @@ describe("modifyTrip", () => {
         let riderTrips = [];
         fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
             driverTrip = JSON.parse(data);
-            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+            fs.readFile("./__test__/riderTrip1.json", "utf8", async (err, data1) => {
                 riderTrips.push(JSON.parse(data1));
-                recommender.modifyTrip(driverTrip, riderTrips, (res) => {
-                    expect(res.routes).toBeDefined();
-                    done();
-                });
+                let res = await recommender.modifyTrip(driverTrip, riderTrips);
+                expect(res.routes).toBeDefined();
+                done();
             });
         });
     });
@@ -211,12 +208,11 @@ describe("modifyTrip", () => {
                 riderTrips.push(JSON.parse(data1));
                 fs.readFile("./__test__/riderTrip2.json", "utf8", (err, data2) => {
                     riderTrips.push(JSON.parse(data2));
-                    fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
+                    fs.readFile("./__test__/riderTrip3.json", "utf8", async (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
-                        recommender.modifyTrip(driverTrip, riderTrips, (res) => {
-                            expect(typeof res).toBe("object");
-                            done();
-                        });
+                        let res = recommender.modifyTrip(driverTrip, riderTrips);
+                        expect(typeof res).toBe("object");
+                        done();
                     });
                 });
             });
@@ -233,11 +229,10 @@ describe("modifyTrip", () => {
                     riderTrips.push(JSON.parse(data2));
                     fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
-                        recommender.modifyTrip(driverTrip, riderTrips, (res) => {
-                            fs.readFile("./__test__/outputTrip1.json", "utf8", (err, out) => {
-                                expect(res).toStrictEqual(JSON.parse(out));
-                                done();
-                            });
+                        fs.readFile("./__test__/outputTrip1.json", "utf8", async (err, out) => {
+                            let res = await recommender.modifyTrip(driverTrip, riderTrips);
+                            expect(res).toStrictEqual(JSON.parse(out));
+                            done();
 
                         });
                     });
