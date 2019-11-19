@@ -79,21 +79,19 @@ describe('testing registration', () => {
 
 	it('second registration should fail with duplicate email', async (done) => {
 
-		const demouser2 = {
+		user = new User({
 			username: "demo2",
 			email: "demo2@demo.com",
 			password: "demodemodemo"
-		}
+		});
+
+		await user.save();
 
 		const demouser2_dup = {
 			username: "demo2dup",
 			email: "demo2@demo.com",
 			password: "demodemodemo"
 		}
-
-		await request.post("/users/register")
-			.send(demouser2)
-			.expect(200);
 
 		const res = await request.post("/users/register")
 			.send(demouser2_dup)
