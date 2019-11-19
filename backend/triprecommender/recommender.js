@@ -158,12 +158,8 @@ function getInterestSimilarity(user1, user2) {
 	let magB = 0;
 
 	/* COSINE MATCHING FUNCTION */
-<<<<<<< HEAD
-	for (let i = 0; i < 5; i++) {
-=======
 	const NumInterests = 5;
 	for (let i = 0; i < NumInterests; i++) {
->>>>>>> 9de56e72b88c31dcedcd2eded613d545e8e7fe6b
 		similarity += user1.interests[parseInt(i, 10)] * user2.interests[parseInt(i, 10)];
 		magA += Math.pow(user1.interests[parseInt(i, 10)], 2);
 		magB += Math.pow(user2.interests[parseInt(i, 10)], 2);
