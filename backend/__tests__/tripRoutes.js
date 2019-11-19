@@ -58,7 +58,6 @@ afterAll(async () => {
 })
 
 describe('testing trips', () => {
-    /*
     it('should create a new rider trip', async (done) => {
         user1 = new User({
             username: "chatdemouser13",
@@ -214,23 +213,102 @@ describe('testing trips', () => {
 
         done();
     })
-    */
 
-    it('new driver trip should match with 3 other user trips', async (done) => {
+    // it('new driver trip should match with 3 other user trips', async (done) => {
         
+    //     user1 = new User({
+    //         _id: "5dd36a75b458db53e031818e",
+    //         username: "bwong",
+    //         email: "bwong@demo.com",
+    //         password: "demodemodemo",
+    //         fbToken: "",
+    //         isDriverTrip: false,
+    //         interests: [5,5,5,5,5]
+    //     });
+
+    //     await user1.save();
+
+    //     user2 = new User({
+    //         _id: "5dd36c81b458db53e031819b",
+    //         username: "bwong5",
+    //         email: "bwong5@demo.com",
+    //         password: "demodemodemo",
+    //         fbToken: "",
+    //         isDriverTrip: false,
+    //         interests: [5,5,5,5,5]
+
+    //     });
+
+    //     await user2.save();
+
+    //     user3 = new User({
+    //         _id: "5dd36b0fb458db53e0318192",
+    //         username: "bwong2",
+    //         email: "bwong2@demo.com",
+    //         password: "demodemodemo",
+    //         fbToken: "",
+    //         isDriverTrip: false,
+    //         interests: [5,5,5,5,5]
+
+    //     });
+
+    //     await user3.save();
+
+    //     let driver;
+
+    //     user4 = new User({
+    //         username: "bwong1",
+    //         email: "bwong1@demo.com",
+    //         password: "demodemodemo",
+    //         fbToken: "",
+    //         isDriverTrip: true,
+    //         interests: [5,5,5,5,5]
+    //     });
+
+    //     await user4.save().then((user) => {
+    //         driver = user;
+    //     });
+
+
+    //     riderTrip1 = new TripStore(ridertrip1);
+    //     await riderTrip1.save();
+    //     riderTrip2 = new TripStore(ridertrip2);
+    //     await riderTrip2.save();
+    //     riderTrip3 = new TripStore(ridertrip3);
+    //     await riderTrip3.save();
+
+    //     const res = await request.post("/trips/newTrip")
+    //         .send({
+    //            "arrivalPlace":"not assigned",
+    //            "arrivalTime":"Nov 26, 2019 10:20:00",
+    //            "departurePlace":"not assigned",
+    //            "departureTime":"Nov 19, 2019 00:42:59",
+    //            "isDriverTrip":true,
+    //            "roomID":"not assigned",
+    //            "taggedUsers":[
+    //               "not assigned"
+    //            ],
+    //            "tripID":"not assigned",
+    //            "tripRoute":{
+    //               "nameValuePairs":{
+    //                  "origin":"49.262158,-123.2500847",
+    //                  "destination":"49.28284681397363,-123.12324184924364"
+    //               }
+    //            },
+    //            "userID": driver._id,
+    //            "username": driver.username
+    //         }).expect(200);
+
+    //     expect(res.body.taggedUsers).toEqual(expect.arrayContaining(["bwong", "bwong5", "bwong2"]));
+
+
+    //     done();
+
+    // })
+
+
+    it('gettrips for valid user', async (done) => {
         user1 = new User({
-            _id: "5dd36a75b458db53e031818e",
-            username: "bwong",
-            email: "bwong@demo.com",
-            password: "demodemodemo",
-            fbToken: "",
-            isDriverTrip: false,
-            interests: [5,5,5,5,5]
-        });
-
-        await user1.save();
-
-        user2 = new User({
             _id: "5dd36c81b458db53e031819b",
             username: "bwong5",
             email: "bwong5@demo.com",
@@ -241,12 +319,42 @@ describe('testing trips', () => {
 
         });
 
-        await user2.save();
+        await user1.save();
 
-        user3 = new User({
-            _id: "5dd36b0fb458db53e0318192",
-            username: "bwong2",
-            email: "bwong2@demo.com",
+        riderTrip1 = new TripStore(ridertrip1);
+        await riderTrip1.save();
+
+        const res = await request.post("/trips/myTrips")
+            .send({
+                userID: user1._id
+            })
+            .expect(200);
+
+        expect(res.body).toBeTruthy();
+        expect(res.body.trips).toHaveLength(1);
+
+        done();
+
+    });
+
+    it('gettrips for invalid userid', async (done) => {
+        const res = await request.post("/trips/myTrips")
+            .send({
+                userID: "f"
+            })
+            .expect(400);
+
+        expect(res.text).toBe("Invalid userID");
+
+        done();
+    });
+
+    it('gettrips for user with no trips', async (done) => {
+
+        user1 = new User({
+            _id: "5dd36c81b458db53e031819b",
+            username: "bwong5",
+            email: "bwong5@demo.com",
             password: "demodemodemo",
             fbToken: "",
             isDriverTrip: false,
@@ -254,58 +362,110 @@ describe('testing trips', () => {
 
         });
 
-        await user3.save();
+        await user1.save();
 
-        let driver;
-
-        user4 = new User({
-            username: "bwong1",
-            email: "bwong1@demo.com",
-            password: "demodemodemo",
-            fbToken: "",
-            isDriverTrip: true,
-            interests: [5,5,5,5,5]
-        });
-
-        await user4.save().then((user) => {
-            driver = user;
-        });
-
-
-        riderTrip1 = new TripStore(ridertrip1);
-        await riderTrip1.save();
-        riderTrip2 = new TripStore(ridertrip2);
-        await riderTrip2.save();
-        riderTrip3 = new TripStore(ridertrip3);
-        await riderTrip3.save();
-
-        const res = await request.post("/trips/newTrip")
+        const res = await request.post("/trips/myTrips")
             .send({
-               "arrivalPlace":"not assigned",
-               "arrivalTime":"Nov 26, 2019 10:20:00",
-               "departurePlace":"not assigned",
-               "departureTime":"Nov 19, 2019 00:42:59",
-               "isDriverTrip":true,
-               "roomID":"not assigned",
-               "taggedUsers":[
-                  "not assigned"
-               ],
-               "tripID":"not assigned",
-               "tripRoute":{
-                  "nameValuePairs":{
-                     "origin":"49.262158,-123.2500847",
-                     "destination":"49.28284681397363,-123.12324184924364"
-                  }
-               },
-               "userID": driver._id,
-               "username": driver.username
-            }).expect(200);
+                userID: "5dd36c81b458db53e031819b"
+            })
+            .expect(200);
 
-        expect(res.body.taggedUsers).toEqual(expect.arrayContaining(["bwong", "bwong5", "bwong2"]));
-
+        expect(res.body.trips).toHaveLength(0);
 
         done();
+    })
 
+    it('gettrips for valid userid but user not found', async (done) => {
+        const res = await request.post("/trips/myTrips")
+            .send({
+                userID: "5dd36c81b458db53e031819b"
+            })
+            .expect(400);
+
+        expect(res.text).toBe("Unable to find user");
+
+        done();
+    })
+
+    it('deltrips for valid user', async (done) => {
+
+      user1 = new User({
+          _id: "5dd36c81b458db53e031819b",
+          username: "bwong5",
+          email: "bwong5@demo.com",
+          password: "demodemodemo",
+          fbToken: "",
+          isDriverTrip: false,
+          interests: [5,5,5,5,5]
+
+      });
+
+      await user1.save();
+
+      riderTrip1 = new TripStore(ridertrip1);
+      await riderTrip1.save();
+
+      const res = await request.del("/trips/delTrip")
+            .send({
+                userID: user1._id,
+                tripID: riderTrip1._id
+            })
+            .expect(200);
+
+      expect(res.body).toBe("trip successfully deleted");
+
+      done();
+    });
+
+    it('deltrip for valid user id but no user found', async (done) => {
+      const res = await request.del("/trips/delTrip")
+            .send({
+                userID: "5dd3aaa00389fd5bf3b6a528",
+                tripID: riderTrip1._id
+            })
+            .expect(400);
+
+      expect(res.text).toBe("Unable to find user");
+
+      done();
+    });
+
+    it('deltrip for a invalid trip', async (done) => {
+      user1 = new User({
+          _id: "5dd36c81b458db53e031819b",
+          username: "bwong5",
+          email: "bwong5@demo.com",
+          password: "demodemodemo",
+          fbToken: "",
+          isDriverTrip: false,
+          interests: [5,5,5,5,5]
+
+      });
+
+      await user1.save();
+
+      const res = await request.del("/trips/delTrip")
+        .send({
+            userID: user1._id,
+            tripID: ""
+        })
+        .expect(400);
+
+      expect(res.text).toBe("trip not found");
+      done();
+
+    });
+
+    it('deltrip with invalid userID', async (done) => {
+      const res = await request.del("/trips/delTrip")
+        .send({
+            userID: "",
+            tripID: ""
+        })
+        .expect(400);
+
+      expect(res.text).toBe("Invalid userID");
+      done();
     })
 
 })

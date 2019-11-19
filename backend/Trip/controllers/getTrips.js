@@ -16,21 +16,16 @@ const handleGetTrips = async (req, res) => {
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
-			if (err) {
+			if (user) {
+				TripStore.find({ userID }, (err, trips) => {
+					debug("responded with trips", trips);
+					res.json({
+						trips: trips
+					});
+				});
+			} else {
 				debug("user not found");
 				return res.status(400).send("Unable to find user");
-			} else {
-				TripStore.find({ userID }, (err, trips) => {
-					if (err) {
-						debug("trip not found");
-						res.status(400).send("trip not found");
-					} else {
-						debug("responded with trips", trips);
-						res.json({
-							trips: trips
-						});
-					}
-				});
 			}
 
 		});

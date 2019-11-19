@@ -10,7 +10,7 @@ const handleDelTrip = async (req, res) => {
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, (err, user) => {
-			if (err) {
+			if (!user) {
 				return res.status(400).send("Unable to find user");
 			} else {
 				TripStore.findByIdAndDelete(tripID, (err) => {
