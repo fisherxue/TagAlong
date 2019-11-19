@@ -277,9 +277,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
         try {
             tripJSONObject = new JSONObject(tripJson);
-
-
-
+            Log.d(TAG,tripJSONObject.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, tripJSONObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
