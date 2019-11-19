@@ -117,7 +117,8 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		return;
 	}
 	let waypoints = [];
-
+	debug("modify trip drivers", driverTrip);
+	debug("modify trip riders", riderTrips);
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
@@ -132,7 +133,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 		destination: driverEndPoint,
 		waypoints
 	};
-	
+	debug("req to directions with waypoints:", req);	
 	getDirectionsWithWaypoints(req, function(err, res) {
 		if (err) {
 			debug(err);
@@ -246,6 +247,7 @@ async function getRiderTrips(driverTrip, callback) {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
 	});
+	debug("raw rider trips:", riderTrips);
 
 	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
@@ -260,6 +262,7 @@ async function getRiderTrips(driverTrip, callback) {
  */
 function driverTripHandler(driverTrip, callback) {
 	getRiderTrips(driverTrip, function(riderTrips) {
+		debug("riderTrips:", riderTrips);
 		riderTrips = getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
 			callback(riderTrips, driverTrip);
 		});

@@ -8,13 +8,10 @@ const User = require("../models/user");
 const register = require("../controllers/register");
 const login =  require("../controllers/login");
 const updateProfile = require("../controllers/updateProfile");
-const updateFBtoken = require("../controllers/updateFBtoken");
 
 
 router.post("/register", register.handleRegister);
 router.post("/login", login.handleLogin);
 router.put("/updateProfile", updateProfile.handleProfileUpdate);
-router.post("/updateFBtoken", updateFBtoken.handleFBtokenUpdate);
-
 
 module.exports = router;
