@@ -2,6 +2,9 @@ package com.tagalong.tagalong;
 
 import android.content.Context;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.contrib.RecyclerViewActions;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -11,6 +14,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onData;
@@ -75,6 +80,20 @@ public class EspressoTest {
         //onView(withId(R.id.nav_chat)).perform(click());
         //onView(withText("Successfully Logged In")).check(matches(isDisplayed()));
         //onView(withId(R.id.bottom_navigation)).check(matches(isDisplayed()));
+
+    }
+    @Test
+    public void testChat() {
+        onView(withId(R.id.userNameLogin)).perform(typeText("bwong"));
+        onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
+        closeSoftKeyboard();
+        onView(withId(R.id.login_button)).perform(click());
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        //onView(ViewMatchers.withId(R.id.home_frag_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(1, ))
 
     }
 
