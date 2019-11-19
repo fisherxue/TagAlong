@@ -19,8 +19,7 @@ const sendChatNotif = async (user, message) => {
 			priority: "high",
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
-	
-		debug(firebaseToken);
+
 		firebase.messaging().sendToDevice(firebaseToken, payload, options)
 		.then((res) => {
 			debug(res.results);
@@ -57,48 +56,35 @@ const handleSendMessages = async (req, res) => {
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 		await User.findById(userID, async (err, user) => {
-			if (err) {
-				debug("user not found");
-				res.status(400).send("Unable to find user");
-			} else {
-				if (user) {
-					const username = user.username;
+			if (user) {
+				const username = user.username;
 
-					if (mongoose.Types.ObjectId.isValid(roomID)) {
-						await Chat.findById(roomID, async (err, chat) => {
-							if (chat) {
-								chat.messages.push({
-									username: username,
-									message: message
-								})
-								chat.save(async (err) => {
-									if (err) {
-										res.status(400).send("failed to send message");
-									}
-									else {
-										res.send(chat);
-										await notifyUsers(chat.users, message);
-									}
-									
-								})
-							}
-							else {
-								debug("chat room not found");
-								res.status(400).send("chat room not found");
-							}
-							
-						})
-					}
-					else {
-						debug("invalid roomID");
-						res.status(400).send("Invalid room ID");
-					}
-
+				if (mongoose.Types.ObjectId.isValid(roomID)) {
+					await Chat.findById(roomID, async (err, chat) => {
+						if (chat) {
+							chat.messages.push({
+								username: username,
+								message: message
+							})
+							await chat.save();
+							res.send(chat);
+							await notifyUsers(chat.users, message);
+						}
+						else {
+							debug("chat room not found");
+							res.status(400).send("chat room not found");
+						}
+						
+					})
 				}
 				else {
-					res.status(400).send("Unable to find user");
+					debug("invalid roomID");
+					res.status(400).send("Invalid room ID");
 				}
-				
+
+			}
+			else {
+				res.status(400).send("Unable to find user");
 			}
 
 		});

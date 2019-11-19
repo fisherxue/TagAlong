@@ -24,11 +24,7 @@ const sendNotif = async (user) => {
 		};
 
 		firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.then((res) => {
-			debug(res.results);
-		})
 		.catch((err) => {
-			debug(err);
 		});
 	}
 	else {
@@ -111,6 +107,8 @@ const handleCreateTrip = async (req, res) => {
 									}
 								});
 							} );
+
+
 
 							tripRecommender.modifyTrip(driverTrip, riderTrips, async (res) => {
 								driverTrip.tripRoute = res;

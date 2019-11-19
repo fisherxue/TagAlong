@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=* nodemon index.js",
-    "debug": "DEBUG=* node index.js",
-    "test": "node_modules/.bin/jest"
+    "start": "DEBUG=* nodemon server.js",
+    "debug": "DEBUG=* node server.js",
+    "test": "jest --collect-coverage"
   },
   "author": "",
   "license": "ISC",
