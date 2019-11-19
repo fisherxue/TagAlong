@@ -207,8 +207,6 @@ describe('testing login', () => {
 
 		const user = await User.findOne({email: demouser6.email});
 
-		console.log(user._id);
-
 		const res2 = await request.put("/users/updateProfile")
 			.send({
 				userID: user._id,
@@ -223,8 +221,6 @@ describe('testing login', () => {
 				isDriver: false
 			})
 			.expect(200);
-
-		console.log(res.body);
 
 		expect(res2.body._id).toEqual(user._id.toString());
 		expect(res2.body.firstName).toBe("demo");
