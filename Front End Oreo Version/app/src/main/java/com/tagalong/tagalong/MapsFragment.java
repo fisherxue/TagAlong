@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -477,5 +478,14 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         System.out.println(longitude);
         System.out.println(end_latitude);
         System.out.println(end_longitude);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra("profile", userProfile);
+        startActivity(intent);
+        MapsFragment.this.finish();
     }
 }
