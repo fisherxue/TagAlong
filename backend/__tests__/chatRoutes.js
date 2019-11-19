@@ -3,6 +3,7 @@ const app = require("../index.js");
 const mongoose = require('mongoose');
 const request = supertest(app);
 const User = require("../User/models/user");
+const Chat = require("../Chat/models/Chat");
 
 const databaseName = 'chatroutestest';
 
@@ -61,35 +62,32 @@ describe('testing chat', () => {
 	it('should create a new room with 3 demo users with no messages', async (done) => {
 
 		// Registration of 3 new users
-		const chatdemouser1 = {
+		user1 = new User({
 			username: "chatdemouser1",
 			email: "chatdemouser1@demo.com",
 			password: "demodemodemo"
-		};
+		});
 
-		const chatdemouser2 = {
+		await user1.save();
+
+		user2 = new User({
 			username: "chatdemouser2",
 			email: "chatdemouser2@demo.com",
 			password: "demodemodemo"
-		};
+		});
 
-		const chatdemouser3 = {
+		await user2.save();
+
+		user3 = new User({
 			username: "chatdemouser3",
 			email: "chatdemouser3@demo.com",
 			password: "demodemodemo"
-		};
+		});
 
+		await user3.save();
 
-		await request.post("/users/register")
-				.send(chatdemouser1);
-		await request.post("/users/register")
-				.send(chatdemouser2);
-		await request.post("/users/register")
-				.send(chatdemouser3);
+		const users = [user1.username, user2.username, user3.username];
 
-
-		const users = [chatdemouser1.username, chatdemouser2.username, chatdemouser3.username];
-		
 		const res = await request.post("/chat/newRoom")
 			.send({
 				users: users
@@ -117,53 +115,59 @@ describe('testing chat', () => {
 	it('demo1 should send a message to the chat', async (done) => {
 
 		// Registration of 3 new users
-		const chatdemouser4 = {
+		user1 = new User({
 			username: "chatdemouser4",
 			email: "chatdemouser4@demo.com",
 			password: "demodemodemo",
 			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		});
 
-		const chatdemouser5 = {
+		let newuser;
+
+		await user1.save()
+			.then((user) => {
+				newuser = user;
+			});
+
+		user2 = new User({
 			username: "chatdemouser5",
 			email: "chatdemouser5@demo.com",
 			password: "demodemodemo",
 			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		});
 
-		const chatdemouser6 = {
+		await user2.save();
+
+		user3 = new User({
 			username: "chatdemouser6",
 			email: "chatdemouser6@demo.com",
 			password: "demodemodemo",
 			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		});
 
+		await user3.save();
 
-		const user4res = await request.post("/users/register")
-				.send(chatdemouser4);
-		const user5res = await request.post("/users/register")
-				.send(chatdemouser5);
-		const user6res = await request.post("/users/register")
-				.send(chatdemouser6);
-
-		const user4 = user4res.body;
-		const user5 = user5res.body;
-		const user6 = user6res.body;
-
-		const users = [chatdemouser4.username, chatdemouser5.username, chatdemouser6.username];
+		const users = [user1.username, user2.username, user3.username];
 
 		// Create a new Chat Room
-		const res = await request.post("/chat/newRoom")
-			.send({
-				users: users
-			})
-			.expect(200);
 
-		const roomID = res.body._id;
+		chat = new Chat({
+			users: users,
+			messages: []
+		})
+
+		let chatroom;
+		await chat.save()
+			.then((chat) => {
+				chatroom = chat;
+			});
+
+
+		const roomID = chatroom._id;
 
 		const res2 = await request.post("/chat/sendMessage")
 			.send({
-				userID: user4._id,
+				userID: newuser._id,
 				roomID: roomID,
 				message: "hello"
 			})
@@ -171,7 +175,7 @@ describe('testing chat', () => {
 		
 		expect(res2.body).toBeTruthy();
 		expect(res2.body.users).toEqual(expect.arrayContaining(users));
-		expect(res2.body.messages[0].username).toBe(user4.username);
+		expect(res2.body.messages[0].username).toBe(user1.username);
 		expect(res2.body.messages[0].message).toBe("hello");
 
 
@@ -180,59 +184,29 @@ describe('testing chat', () => {
 
 	it('sending a message to a invalid roomID', async (done) => {
 		// Registration of 3 new users
-		const chatdemouser7 = {
+		user1 = new User({
 			username: "chatdemouser7",
 			email: "chatdemouser7@demo.com",
 			password: "demodemodemo",
 			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		});
 
-		const chatdemouser8 = {
-			username: "chatdemouser8",
-			email: "chatdemouser8@demo.com",
-			password: "demodemodemo",
-			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		let newuser;
 
-		const chatdemouser9 = {
-			username: "chatdemouser9",
-			email: "chatdemouser9@demo.com",
-			password: "demodemodemo",
-			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
-		};
+		await user1.save()
+			.then((user) => {
+				newuser = user;
+			});
 
-
-		const user7res = await request.post("/users/register")
-				.send(chatdemouser7);
-		const user8res = await request.post("/users/register")
-				.send(chatdemouser8);
-		const user9res = await request.post("/users/register")
-				.send(chatdemouser9);
-
-		const user7 = user7res.body;
-		const user8 = user8res.body;
-		const user9 = user9res.body;
-
-		const users = [chatdemouser7.username, chatdemouser8.username, chatdemouser9.username];
-
-		// Create a new Chat Room
-		const res = await request.post("/chat/newRoom")
+		const res = await request.post("/chat/sendMessage")
 			.send({
-				users: users
-			})
-			.expect(200);
-
-		const roomID = res.body._id;
-
-		const res2 = await request.post("/chat/sendMessage")
-			.send({
-				userID: user7._id,
+				userID: newuser._id,
 				roomID: "0",
 				message: "hello"
 			})
 			.expect(400); 
 		
-		expect(res2.text).toBe("Invalid room ID");
+		expect(res.text).toBe("Invalid room ID");
 
 		done();
 	})
@@ -267,23 +241,25 @@ describe('testing chat', () => {
 
 	})
 
-	it('sending a message to to a invalid roomID', async (done) => {
+	it('sending a message to to a valid roomID but unfound room', async (done) => {
 		
-		const chatdemouser10 = {
+		user1 = new User({
 			username: "chatdemouser10",
 			email: "chatdemouser10@demo.com",
 			password: "demodemodemo",
 			fbToken: ""
-		};
+		});
 
-		const user10res = await request.post("/users/register")
-			.send(chatdemouser10);
+		let newuser;
 
-		const user10 = user10res.body;
+		await user1.save()
+			.then((user) => {
+				newuser = user;
+			});
 
 		const res = await(request.post("/chat/sendMessage"))
 			.send({
-				userID: user10._id,
+				userID: newuser._id,
 				roomID: "5dd334aa82dbf7805559b74a",
 				message: "home"
 			})
@@ -298,46 +274,48 @@ describe('testing chat', () => {
 
 
 	it('gets message for proper user and room', async (done) => {
-		const chatdemouser12 = {
+		user1 = new User({
 			username: "chatdemouser12",
 			email: "chatdemouser12@demo.com",
 			password: "demodemodemo",
 			fbToken: ""
-		};
+		});
 
-		const user12res = await request.post("/users/register")
-			.send(chatdemouser12);
+		let newuser;
 
-		const user12 = user12res.body;
+		await user1.save()
+			.then((user) => {
+				newuser = user;
+			});
 
-		// Create a new Chat Room
-		const res = await request.post("/chat/newRoom")
-			.send({
-				users: [user12.username]
-			})
-			.expect(200);
-
-		const roomID = res.body._id;
-
-		const res2 = await(request.post("/chat/sendMessage"))
-			.send({
-				userID: user12._id,
-				roomID: roomID,
+		chat = new Chat({
+			users: [user1.username],
+			messages: [{
+				username: user1.username,
 				message: "home"
-			})
-			.expect(200);
+			}]
+		})
 
-		const res3 = await(request.post("/chat/getMessages"))
+		let chatroom;
+
+		await chat.save()
+			.then((chat) => {
+				chatroom = chat;
+			})
+
+		const roomID = chatroom._id;
+
+		const res = await(request.post("/chat/getMessages"))
 			.send({
-				userID: user12._id,
+				userID: user1._id,
 				roomID: roomID
 			})
 			.expect(200);
 
-		expect(res3.body).toBeTruthy();
-		expect(res3.body.users).toEqual(expect.arrayContaining([user12.username]));
-		expect(res3.body.messages[0].message).toBe("home");
-		expect(res3.body.messages[0].username).toBe(user12.username);
+		expect(res.body).toBeTruthy();
+		expect(res.body.users).toEqual(expect.arrayContaining([user1.username]));
+		expect(res.body.messages[0].message).toBe("home");
+		expect(res.body.messages[0].username).toBe(user1.username);
 
 			
 		done();
@@ -370,22 +348,23 @@ describe('testing chat', () => {
 
 	it('attempt to get message from invalid roomID but valid user', async (done) => {
 		
-		const chatdemouser13 = {
+		user1 = new User({
 			username: "chatdemouser13",
 			email: "chatdemouser13@demo.com",
 			password: "demodemodemo",
 			fbToken: ""
-		};
+		});
 
-		const user13res = await request.post("/users/register")
-			.send(chatdemouser13)
-			.expect(200);
+		let newuser;
 
-		const user13 = user13res.body;
+		await user1.save()
+			.then((user) => {
+				newuser = user;
+			});
 
 		const res = await(request.post("/chat/getMessages"))
 			.send({
-				userID: user13._id,
+				userID: user1._id,
 				roomID: ""
 			})
 			.expect(400);

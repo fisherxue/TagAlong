@@ -2,6 +2,7 @@ const supertest = require('supertest')
 const app = require("../index.js");
 const mongoose = require('mongoose');
 const request = supertest(app);
+const bcrypt = require("bcryptjs");
 const User = require("../User/models/user");
 
 
@@ -121,22 +122,24 @@ describe('testing registration', () => {
 describe('testing login', () => {
 
 	it('should succeeds with correct credentials', async (done) => {
-		const demouser3 = {
+		user = new User({
 			username: "demo3",
 			email: "demo3@demo.com",
-			password: "demodemodemo"
-		}
-		await request.post("/users/register")
-			.send(demouser3)
-			.expect(200);
+			password: bcrypt.hashSync("demodemodemo", 10)
+		});
+
+		await user.save();
 
 		const res = await request.post("/users/login")
-			.send(demouser3)
+			.send({
+				username: "demo3",
+				password: "demodemodemo"
+			})
 			.expect(200);
 
 		expect(res.body).toBeTruthy();
-		expect(res.body.username).toBe(demouser3.username);
-		expect(res.body.email).toBe(demouser3.email);
+		expect(res.body.username).toBe("demo3");
+		expect(res.body.email).toBe("demo3@demo.com");
 
 
 		done();
@@ -144,15 +147,15 @@ describe('testing login', () => {
 
 
 	it('should fail with incorrect credentials', async (done) => {
-		const demouser4 = {
+
+
+		user = new User({
 			username: "demo4",
 			email: "demo4@demo.com",
-			password: "demodemodemo"
-		}
+			password: bcrypt.hashSync("demodemodemo", 10)
+		});
 
-		await request.post("/users/register")
-			.send(demouser4)
-			.expect(200);
+		await user.save();
 
 		const res = await request.post("/users/login")
 			.send({
@@ -193,17 +196,16 @@ describe('testing login', () => {
 	})
 
 	it('update profile of new user', async (done) => {
-		const demouser6 = {
+		
+		user1 = new User({
 			username: "demo6",
 			email: "demo6@demo.com",
 			password: "demodemodemo"
-		}
+		});
 
-		const res = await request.post("/users/register")
-			.send(demouser6)
-			.expect(200);
+		await user1.save();
 
-		const user = await User.findOne({email: demouser6.email});
+		const user = await User.findOne({email: "demo6@demo.com"});
 
 		const res2 = await request.put("/users/updateProfile")
 			.send({
