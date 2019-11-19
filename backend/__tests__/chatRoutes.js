@@ -7,10 +7,6 @@ const Chat = require("../Chat/models/Chat");
 
 const databaseName = 'chatroutestest';
 
-let user1;
-let user2;
-let user3;
-
 beforeAll(async () => {
 	const url = `mongodb://127.0.0.1/${databaseName}`;
   	await mongoose.connect(url, { useNewUrlParser: true })
