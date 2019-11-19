@@ -10,6 +10,7 @@ function getDirectionsWithWaypoints(req, callback) {
 		origin: req.origin,
 		destination: req.destination,
 		waypoints: req.waypoints,
+		optimize: true,
 	}, function(err, response) {
 		callback(err, response);
 	});
