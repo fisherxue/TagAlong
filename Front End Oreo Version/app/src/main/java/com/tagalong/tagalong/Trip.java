@@ -7,7 +7,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.xml.datatype.Duration;
 
 public class Trip implements Serializable {
 
@@ -21,6 +25,7 @@ public class Trip implements Serializable {
     private String arrivalPlace;
     private String userID;
     private String[] taggedUsers;
+    private String roomID;
 
     public Trip(){
        tripID = "not assigned";
@@ -32,20 +37,25 @@ public class Trip implements Serializable {
        departurePlace = "not assigned";
        arrivalPlace = "not assigned";
        userID = "not assigned";
+       roomID = "not assigned";
        taggedUsers = new String[]{"not assigned"};
     }
 
     public Trip(JSONObject trip) {
         try {
             this.username = trip.getString("username");
-            this.tripID = trip.getString("tripID");
+            this.tripID = trip.getString("_id");
+            this.roomID = "5dd3a4d20389fd5bf3b6a51e";
             this.tripRoute = trip.getJSONObject("tripRoute");
-            this.arrivalTime = (Date) trip.get("arrivalDate");
+            //this.arrivalTime = (Date) trip.get("arrivalTime");
+            this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+                    .parse(trip.getString("arrivalTime"));
+
             Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
                     .getLong("value");
             this.departureTime = (Date) arrivalTime.clone();
-            this.departureTime.setTime(this.arrivalTime.getTime()-duration);
+            this.departureTime.setTime(this.arrivalTime.getTime()-(duration*1000));
             this.departurePlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("start_address");
             this.arrivalPlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
@@ -58,6 +68,8 @@ public class Trip implements Serializable {
                 this.taggedUsers[i] = taggedUsers.getString(i);
             }
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -96,6 +108,10 @@ public class Trip implements Serializable {
         return isDriverTrip;
     }
 
+    public void setRoomID(String roomID) {
+        this.roomID = roomID;
+    }
+
     public void setArrivalTime(Date arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
@@ -130,5 +146,9 @@ public class Trip implements Serializable {
 
     public String[] getTaggedUsers() {
         return taggedUsers;
+    }
+
+    public String getRoomID() {
+        return roomID;
     }
 }

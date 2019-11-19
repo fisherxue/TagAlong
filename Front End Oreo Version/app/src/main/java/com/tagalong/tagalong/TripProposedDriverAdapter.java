@@ -26,15 +26,16 @@ import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import io.opencensus.common.ToDoubleFunction;
 
-public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
+public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposedDriverAdapter.ViewHolder> {
 
     private final String TAG = "Trip View Adapter";
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
 
-    public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
+    public TripProposedDriverAdapter(Context context, List<Trip> tripList, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
@@ -43,8 +44,8 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private Button map;
-        private Button chat;
-        private Button delete;
+        private Button accept;
+        private Button reject;
         private TextView departurePlace;
         private TextView arrivalPlace;
         private TextView departureTime;
@@ -55,8 +56,8 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             map = itemView.findViewById(R.id.map);
-            chat = itemView.findViewById(R.id.chat);
-            delete = itemView.findViewById(R.id.delete);
+            accept = itemView.findViewById(R.id.accept);
+            reject = itemView.findViewById(R.id.reject);
             departurePlace = itemView.findViewById(R.id.departurePlace);
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
             departureTime = itemView.findViewById(R.id.departureClock);
@@ -68,7 +69,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_proposed_trip_driver, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -99,51 +100,17 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
             }
         });
 
-        holder.chat.setOnClickListener(new View.OnClickListener() {
+        holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("profile", profile);
-                intent.putExtra("ID", trip.getRoomID());
-                intent.putExtra("users", trip.getTaggedUsers());
-                context.startActivity(intent);
+                //TODo: Write Acceptance
             }
         });
 
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestQueue queue = Volley.newRequestQueue(context);
-                String url = context.getString(R.string.deleteTrip);
-                final Gson gson = new Gson();
-                final String tripJson = gson.toJson(trip);
-                JSONObject tripJsonObject;
-                try {
-                    tripJsonObject = new JSONObject((tripJson));
-                    Log.d(TAG, "profileJsonObject" + tripJsonObject);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, tripJsonObject, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Trip Deleted");
-                            tripList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, tripList.size());
-                        }
-
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "Error: Could delete Trips");
-                            Log.d(TAG, "Error: " + error.getMessage());
-                            Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
-                        }
-                    });
-
-                    queue.add(jsonObjectRequest);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                //TODo: Write Rejection
             }
         });
     }

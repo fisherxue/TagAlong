@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 //import androidx.security.crypto.EncryptedFile;
 //import androidx.security.crypto.MasterKeys;
 
+import com.facebook.login.LoginManager;
+
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "HomeActivity";
     private Context context;
@@ -35,8 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home2);
 
         context = this;
-        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
-        System.out.println(userProfile.getUserID());
+        userProfile = (Profile) getIntent().getSerializableExtra("profile");
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
@@ -59,11 +60,14 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.profile :
+                Log.d(TAG,"Visualizing User Profile.");
                 Intent intent = new Intent(context, ViewProfileActivity.class);
                 intent.putExtra("profile", userProfile);
                 startActivity(intent);
                 break;
             case R.id.logout :
+                Log.d(TAG,"Logging out of account.");
+                LoginManager.getInstance().logOut();
                 removeSavedFiles();
                 Intent intent2 = new Intent(context, MainActivity.class);
                 startActivity(intent2);
@@ -85,6 +89,7 @@ public class HomeActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()){
 
                         case R.id.nav_home:
+                            Log.d(TAG,"Opening HomeFragment");
                             frag = new HomeFragment();
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("profile", userProfile);
@@ -92,13 +97,19 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_maps:
+                            Log.d(TAG,"Opening MapsFragment");
                             Intent intent = new Intent(context, MapsFragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
+                            HomeActivity.this.finish();
                             break;
 
                         case R.id.nav_chat:
+                            Log.d(TAG,"Opening ChatFragment");
                             frag = new ChatFragment();
+                            Bundle bundle2 = new Bundle();
+                            bundle2.putSerializable("profile", userProfile);
+                            frag.setArguments(bundle2);
                             break;
 
                         default:

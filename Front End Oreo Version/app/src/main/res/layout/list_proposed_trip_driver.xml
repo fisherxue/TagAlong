@@ -81,53 +81,52 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginBottom="8dp"
-                    android:text="TagAlong " />
+                    android:text="TagAlong" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="horizontal"
                 >
-
                 <Button
                     android:id="@+id/map"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="8dp"
                     app:backgroundTint="@color/map"
-                    android:text="map" />
+                    android:text="Map" />
 
                 <Button
-                    android:id="@+id/chat"
+                    android:id="@+id/accept"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="8dp"
                     app:backgroundTint="@color/chat"
-                    android:text="chat" />
+                    android:text="Accept" />
 
                 <Button
-                    android:id="@+id/delete"
+                    android:id="@+id/reject"
                     style="@style/Widget.MaterialComponents.Button"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
+                    android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="8dp"
                     app:backgroundTint="@color/delete"
-                    android:text="Delete" />
+                    android:text="Reject" />
 
             </LinearLayout>
         </LinearLayout>
