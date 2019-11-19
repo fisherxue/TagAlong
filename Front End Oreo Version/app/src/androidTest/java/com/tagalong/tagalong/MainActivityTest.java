@@ -19,6 +19,7 @@ import static androidx.test.espresso.Espresso.closeSoftKeyboard;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.doubleClick;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeLeft;
 import static androidx.test.espresso.action.ViewActions.swipeRight;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -44,11 +45,11 @@ public class MainActivityTest {
     public void testSignUp() {
         onView(withId(R.id.signup_button)).perform(click());
 
-        onView(withId(R.id.username)).perform(typeText("wong8"));
+        onView(withId(R.id.username)).perform(typeText("yash4"));
         onView(withId(R.id.password)).perform(typeText("xd"));
         onView(withId(R.id.password2)).perform(typeText("xd"));
         closeSoftKeyboard();
-        onView(withId(R.id.Email)).perform(typeText("chunru73@byronz.com"));
+        onView(withId(R.id.Email)).perform(typeText("yash103@byronz.com"));
         closeSoftKeyboard();
         onView(withId(R.id.nextbutton)).perform(click());
         try {
@@ -56,25 +57,42 @@ public class MainActivityTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        onView(withId(R.id.firstName)).perform(typeText("Chun Ru"));
+        onView(withId(R.id.lastName)).perform(typeText("Wong"));
+        onView(withId(R.id.gender)).perform(typeText("Female"));
+        onView(withId(R.id.age)).perform(typeText("96"));
+        onView(withId(R.id.isDriver)).perform(click());
+        closeSoftKeyboard();
+        onView(withId(R.id.seekMusic)).perform(swipeRight());
+        onView(withId(R.id.seekSpeed)).perform(swipeRight());
+        onView(withId(R.id.seekSmoking)).perform(scrollTo()).perform(swipeLeft());
+        onView(withId(R.id.seekFragrance)).perform(scrollTo()).perform(swipeRight());
+        onView(withId(R.id.seekChatting)).perform(scrollTo()).perform(swipeLeft());
+        onView(withId(R.id.submit)).perform(scrollTo()).perform(click());
+        onView(withId(R.id.logout)).perform(click());
     }
 
 
     @Test
-    public void testLogin() {
+    public void testLoginLogout() {
         onView(withId(R.id.userNameLogin)).perform(typeText("bwong"));
         onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
         closeSoftKeyboard();
         onView(withId(R.id.login_button)).perform(click());
-        //onView(withId(R.id.bottom_navigation)).check(matches(isDisplayed()));
         try {
             TimeUnit.SECONDS.sleep(1);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        onView(withId(R.id.logout)).perform(doubleClick());
+        onView(withId(R.id.logout)).perform(click());
 
     }
 
+    @Test
+    public void testMaps() {
+        onView(withId(R.id.userNameLogin)).perform(typeText("bwong"));
+        onView(withId(R.id.passwordLogin)).perform(typeText("xd"));
+        closeSoftKeyboard();
+    }
 }
