@@ -137,8 +137,7 @@ describe('testing chat', () => {
 		user3 = new User({
 			username: "chatdemouser6",
 			email: "chatdemouser6@demo.com",
-			password: "demodemodemo",
-			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
+			password: "demodemodemo"
 		});
 
 		await user3.save();

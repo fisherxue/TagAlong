@@ -20,13 +20,13 @@ const sendChatNotif = async (user, message) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 
-		firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.then((res) => {
-			debug(res.results);
-		})
-		.catch((err) => {
-			debug(err);
-		});
+		firebase.messaging().sendToDevice(firebaseToken, payload, options);
+		// .then((res) => {
+		// 	debug(res.results);
+		// })
+		// .catch((err) => {
+		// 	debug(err);
+		// });
 	}
 	else {
 		debug("invalid firebaseToken");
