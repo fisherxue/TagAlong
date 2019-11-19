@@ -37,8 +37,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home2);
 
         context = this;
-        userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
-        System.out.println(userProfile.getUserID());
+        userProfile = (Profile) getIntent().getSerializableExtra("profile");
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
@@ -98,6 +97,7 @@ public class HomeActivity extends AppCompatActivity {
                             Intent intent = new Intent(context, MapsFragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
+                            HomeActivity.this.finish();
                             break;
 
                         case R.id.nav_chat:
