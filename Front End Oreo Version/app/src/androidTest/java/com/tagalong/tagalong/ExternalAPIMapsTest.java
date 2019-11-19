@@ -19,6 +19,8 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import java.util.concurrent.TimeUnit;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -78,6 +80,12 @@ public class ExternalAPIMapsTest {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction textView = onView(
                 allOf(withId(R.id.logout), withContentDescription("Logout"),
@@ -153,6 +161,13 @@ public class ExternalAPIMapsTest {
                         isDisplayed()));
         searchAutoComplete2.perform(pressImeActionButton());
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         ViewInteraction textInputEditText = onView(
                 allOf(withId(R.id.arrivalDate),
                         childAtPosition(
@@ -163,6 +178,13 @@ public class ExternalAPIMapsTest {
                         isDisplayed()));
         textInputEditText.perform(click());
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         ViewInteraction button = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
@@ -171,6 +193,13 @@ public class ExternalAPIMapsTest {
                                         0),
                                 3)));
         button.perform(scrollTo(), click());
+
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         ViewInteraction textInputEditText2 = onView(
                 allOf(withId(R.id.arrivalTime),
@@ -182,6 +211,13 @@ public class ExternalAPIMapsTest {
                         isDisplayed()));
         textInputEditText2.perform(click());
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
         ViewInteraction button2 = onView(
                 allOf(withId(android.R.id.button1), withText("OK"),
                         childAtPosition(
@@ -191,7 +227,11 @@ public class ExternalAPIMapsTest {
                                 3)));
         button2.perform(scrollTo(), click());
 
-        pressBack();
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction editText = onView(
                 allOf(withId(R.id.arrivalDate), withText("30/11/2019"),

@@ -61,7 +61,7 @@ public class SignupTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("yasardh"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("yasardh1"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.password),
@@ -93,7 +93,8 @@ public class SignupTest {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("yash@google.com"), closeSoftKeyboard());
+
+        appCompatEditText4.perform(replaceText("yash1@google.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.Email), withText("yash@google.com"),
