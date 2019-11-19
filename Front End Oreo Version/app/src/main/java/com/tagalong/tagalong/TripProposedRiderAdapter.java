@@ -27,14 +27,14 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
+public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedRiderAdapter.ViewHolder> {
 
     private final String TAG = "Trip View Adapter";
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
 
-    public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
+    public TripProposedRiderAdapter(Context context, List<Trip> tripList, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
@@ -43,7 +43,6 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     public class ViewHolder extends RecyclerView.ViewHolder{
 
         private Button map;
-        private Button chat;
         private Button delete;
         private TextView departurePlace;
         private TextView arrivalPlace;
@@ -55,7 +54,6 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             map = itemView.findViewById(R.id.map);
-            chat = itemView.findViewById(R.id.chat);
             delete = itemView.findViewById(R.id.delete);
             departurePlace = itemView.findViewById(R.id.departurePlace);
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
@@ -68,7 +66,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_proposed_trip_rider, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -95,17 +93,6 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
             public void onClick(View view) {
                 Intent intent = new Intent(context, TripDisplayActivity.class);
                 intent.putExtra("tripRoute", trip.getTripRoute().toString());
-                context.startActivity(intent);
-            }
-        });
-
-        holder.chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("profile", profile);
-                intent.putExtra("ID", trip.getRoomID());
-                intent.putExtra("users", trip.getTaggedUsers());
                 context.startActivity(intent);
             }
         });

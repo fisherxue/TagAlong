@@ -70,6 +70,7 @@ public class DataParser {
 
         return polylines;
     }
+
     public String getPath(JSONObject googlePathJson){
         String polyline = "";
         try {

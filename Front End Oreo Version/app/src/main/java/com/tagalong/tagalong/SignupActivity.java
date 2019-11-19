@@ -62,37 +62,45 @@ public class SignupActivity extends AppCompatActivity {
 
                        if (!usernameEditText.getText().toString().isEmpty()) {
                            newUserLogin.setUsername(usernameEditText.getText().toString());
+                           Log.d(TAG,"Username set");
                        }
                        else {
                            Toast.makeText(context, "Please Enter Username", Toast.LENGTH_LONG).show();
                            allSet = false;
+                           Log.d(TAG,"Username not set");
                        }
 
                        if (!passwordEditText.getText().toString().isEmpty()) {
                            if (passwordEditText.getText().toString().equals(passwordConfirmET.getText().toString())) {
                                newUserLogin.setPassword(passwordEditText.getText().toString());
+                               Log.d(TAG,"Password set");
                            }
                            else {
                                Toast.makeText(context, "Passwords Do Not Match", Toast.LENGTH_LONG).show();
                                allSet = false;
+                               Log.d(TAG,"Passwords do not match");
                            }
                        }
                        else {
                            Toast.makeText(context, "Please Enter Password", Toast.LENGTH_LONG).show();
                            allSet = false;
+                           Log.d(TAG,"Password not set");
                        }
 
                        if (!emailEditText.getText().toString().isEmpty()) {
                            if (emailEditText.getText().toString().matches("^(.+)@(.+)$")) {
                                newUserLogin.setEmailId(emailEditText.getText().toString());
+                               Log.d(TAG,"Email Set");
                            }
                            else {
                                Toast.makeText(context, "Please Enter Valid Email", Toast.LENGTH_LONG).show();
                                allSet = false;
+                               Log.d(TAG,"Email not valid");
                            }
                        } else {
                            Toast.makeText(context, "Please Enter Email", Toast.LENGTH_LONG).show();
                            allSet = false;
+                           Log.d(TAG,"Email not set");
                        }
 
                        newUserLogin.setFbToken(login.getFbToken());
@@ -115,6 +123,7 @@ public class SignupActivity extends AppCompatActivity {
         JSONObject profileJsonObject;
 
         try {
+            Log.d(TAG,"Registering login information");
             profileJsonObject = new JSONObject((loginProfileJson));
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
@@ -158,6 +167,7 @@ public class SignupActivity extends AppCompatActivity {
                         Log.d(TAG, "Error getting joinedDate from received profile");
                     }
 
+                    Log.d(TAG,"Successfully retrieved login profile information");
                     Intent intent = new Intent(context, UpdateProfileActivity.class);
                     intent.putExtra("profile", receivedProfile);
                     startActivity(intent);

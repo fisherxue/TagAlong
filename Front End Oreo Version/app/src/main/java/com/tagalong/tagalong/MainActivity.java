@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Log.d(TAG,"Main activity Created");
         context = getApplicationContext();
 
         //FaceBook login Fields Initiations
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
                     getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(new NotificationChannel(channelId,
                     channelName, NotificationManager.IMPORTANCE_HIGH));
+            Log.d(TAG,"Set Up FCM notification manager");
         }
     }
 
@@ -99,75 +101,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         Boolean needAuthenication = false;
-
-        /*
-        KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
-        String masterKeyAlias = null;
-
-        try {
-            masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec);
-            Log.d(TAG, "key: " + masterKeyAlias);
-        } catch (GeneralSecurityException e) {
-            Log.d(TAG, "Error : creating key for encryption");
-            Log.d(TAG, "Error (General Security Exception): " + e.toString());
-            needAuthenication = true;
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.d(TAG, "Error : creating key for encryption");
-            Log.d(TAG, "Error (IOException): " + e.toString());
-            needAuthenication = true;
-            e.printStackTrace();
-        }
-
-        String fileToRead = "Saved_Profile.txt";
-        EncryptedFile encryptedFile = null;
-        try {
-            encryptedFile = new EncryptedFile.Builder(
-                    new File(context.getFilesDir(), fileToRead),
-                    context,
-                    masterKeyAlias,
-                    EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-            ).build();
-
-        } catch (GeneralSecurityException e) {
-            Log.d(TAG, "Error : opening encryption file");
-            Log.d(TAG, "Error (General Security Exception): " + e.toString());
-            needAuthenication = true;
-            e.printStackTrace();
-        } catch (IOException e) {
-            Log.d(TAG, "Error : opening encrypted file");
-            Log.d(TAG, "Error (IOException): " + e.toString());
-            needAuthenication = true;
-            e.printStackTrace();
-        }
-
-        if (encryptedFile != null) {
-            StringBuffer stringBuffer = new StringBuffer();
-            try (BufferedReader reader =
-                         new BufferedReader(new InputStreamReader(encryptedFile.openFileInput()))) {
-
-                String line = reader.readLine();
-                while (line != null) {
-                    stringBuffer.append(line).append('\n');
-                    line = reader.readLine();
-                }
-            } catch (IOException e) {
-                Log.d(TAG, "Error : reading encrypted file");
-                Log.d(TAG, "Error (IOException): " + e.toString());
-                needAuthenication = true;
-                e.printStackTrace();
-            } catch (GeneralSecurityException e) {
-                Log.d(TAG, "Error : reading encryption file");
-                Log.d(TAG, "Error (General Security Exception): " + e.toString());
-                needAuthenication = true;
-                e.printStackTrace();
-            } finally {
-                String contents = stringBuffer.toString();
-                needAuthenication = loadProfile(contents);
-            }
-        }
-
-         */
 
         String filename = "Saved_Profile.txt";
         StringBuffer stringBuffer = new StringBuffer();
@@ -191,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         if (needAuthenication){
+            Log.d(TAG,"No saved profile, need authentication");
             startAuthentication();
         }
     }
@@ -223,6 +157,7 @@ public class MainActivity extends AppCompatActivity {
                     .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                         @Override
                         public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                            Log.d(TAG,"Get FCM Device Token");
                             if (!task.isSuccessful()) {
                                 Log.w(TAG, "getInstanceId failed", task.getException());
                                 return;
@@ -251,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
+        Log.d(TAG,"Sending FCM token along with the saved profile retrieved");
         try {
             profileJsonObject = new JSONObject((profileJson));
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
@@ -273,12 +209,14 @@ public class MainActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Error : failed to retrieve profile");
+            Log.d(TAG, "Error (JSONException): " + e.toString());
         }
     }
 
     private void startAuthentication () {
         //FaceBook login Fields Initiations
+        Log.d(TAG,"Starting Authentication");
         callbackManager = CallbackManager.Factory.create();
         fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
 
@@ -299,6 +237,7 @@ public class MainActivity extends AppCompatActivity {
                         .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                             @Override
                             public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                Log.d(TAG,"Get FCM Device Token");
                                 Login loginProfile = new Login();
                                 if (!task.isSuccessful()) {
                                     Log.w(TAG, "getInstanceId failed", task.getException());
@@ -307,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                                 String token = task.getResult().getToken();
                                 Log.d(TAG, token);
                                 loginProfile.setFbToken(token);
-
+                                Log.d(TAG,"Signup New User");
                                 Intent intent = new Intent(MainActivity.this, SignupActivity.class);
                                 intent.putExtra("login",loginProfile);
                                 startActivity(intent);
@@ -326,19 +265,23 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!loginPassword.getText().toString().isEmpty()){
                     loginProfile.setPassword(loginPassword.getText().toString());
+                    Log.d(TAG,"password entered");
                 }
                 else {
                     Toast.makeText(context, "Please Enter Username", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"password not entered");
                 }
 
 
                 if (!loginUser.getText().toString().isEmpty()){
                     loginProfile.setUsername(loginUser.getText().toString());
+                    Log.d(TAG,"username entered");
                 }
                 else {
                     Toast.makeText(context, "Please Enter password", Toast.LENGTH_LONG).show();
                     allSet = false;
+                    Log.d(TAG,"username not entered");
                 }
 
                 if (allSet) {
@@ -346,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
                             .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                    Log.d(TAG,"Get FCM Device Token");
                                     if (!task.isSuccessful()) {
                                         Log.w(TAG, "getInstanceId failed", task.getException());
                                         return;
@@ -419,10 +363,12 @@ public class MainActivity extends AppCompatActivity {
                         fbLoginProfile.setFirstName(object.getString("first_name"));
                         fbLoginProfile.setLastName(object.getString("last_name"));
                         fbLoginProfile.setEmailId(object.getString("email"));
+                        fbLoginProfile.setPassword(object.getString("id"));
                         fbLoginProfile.setFbToken(fcmToken);
                     }
                     catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.d(TAG, "Error : failed to retrieve profile while facebook login");
+                        Log.d(TAG, "Error (JSONException): " + e.toString());
                     }
                     verifyUser(fbLoginProfile, true);
                 }
@@ -436,6 +382,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void verifyUser(final Login loginProfile, final boolean isExternal){
+        Log.d(TAG,"verifying user login details");
         RequestQueue queue = Volley.newRequestQueue(this);
         String url = getString(R.string.login);
         final Gson gson = new Gson();
@@ -468,7 +415,8 @@ public class MainActivity extends AppCompatActivity {
                         receivedProfile.setFirstName(response.getString("firstName"));
                         receivedProfile.setLastName(response.getString("lastName"));
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.d(TAG, "Error : failed to retrieve profile while facebook login");
+                        Log.d(TAG, "Error (JSONException): " + e.toString());
                     }
 
                     Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
@@ -490,6 +438,7 @@ public class MainActivity extends AppCompatActivity {
                         newLoginProfile.setFirstName(loginProfile.getFirstName());
                         newLoginProfile.setLastName(loginProfile.getLastName());
                         newLoginProfile.setEmailId(loginProfile.getEmailId());
+                        newLoginProfile.setPassword(loginProfile.getId());
                         sendLogin(newLoginProfile);
                     }
                     else {
@@ -502,18 +451,19 @@ public class MainActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Error : sending login information");
+            Log.d(TAG, "Error (JSONException): " + e.toString());
         }
 
     }
 
     private void sendLogin(Login loginProfile){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getString(R.string.login);
+        String url = getString(R.string.register);
         final Gson gson = new Gson();
         final String loginProfileJson = gson.toJson(loginProfile);
         JSONObject profileJsonObject;
-
+        Log.d(TAG,"Sending login details");
         try {
             profileJsonObject = new JSONObject((loginProfileJson));
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
@@ -543,6 +493,7 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     Log.d(TAG, "Registration Un-Successful");
+                    Log.d(TAG, "Error (volleyError): " + error.toString());
                     Toast.makeText(context, "Please Try Again", Toast.LENGTH_LONG).show();
                 }
             });
@@ -550,7 +501,8 @@ public class MainActivity extends AppCompatActivity {
             queue.add(jsonObjectRequest);
 
         } catch (JSONException e) {
-            e.printStackTrace();
+            Log.d(TAG, "Error : sending login information");
+            Log.d(TAG, "Error (JSONException): " + e.toString());
         }
     }
 }

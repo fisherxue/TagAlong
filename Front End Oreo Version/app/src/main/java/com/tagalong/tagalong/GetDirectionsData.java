@@ -53,7 +53,7 @@ public class GetDirectionsData extends AsyncTask<Object, String, String> {
         mMap.addMarker(markerOptions);
     }
 
-    public void displayDirections(String[] directionsList){
+    private void displayDirections(String[] directionsList){
         int count = directionsList.length;
         for (int i = 0; i < count; i++){
             PolylineOptions options = new PolylineOptions();

@@ -4,12 +4,14 @@ import android.Manifest;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -71,6 +73,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private TextInputEditText arrivalTime;
     private SearchView locationSearch;
     //private PlacesClient placesClient;
+    private final String TAG = "MapFragment";
 
 
     @Override
@@ -95,6 +98,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         searchRoute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //check and assign all inputs of user to profile
                 boolean allChecked = true;
                 if (arrivalDate.getResources().toString().isEmpty()) {
                     Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
@@ -160,6 +164,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     private void initializeSearch() {
 
+        //Parses string in search and finds location.
         locationSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -168,12 +173,14 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                 Geocoder geocoder = new Geocoder(MapsFragment.this);
                 try {
                     locationList = geocoder.getFromLocationName(location, 1);
+                    Log.d(TAG,"Searching for Location");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 mMap.clear();
                 if(!locationList.isEmpty()) {
+                    Log.d(TAG,"Location was found.");
                     Address address = locationList.get(0);
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latLng));
@@ -183,6 +190,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                 }
                 else {
                     Toast.makeText(context, "Location not Found", Toast.LENGTH_LONG).show();
+                    Log.d(TAG,"Location was not found");
                 }
 
                 return false;
@@ -214,9 +222,11 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                                 calendarSetDate.set(year,month,day);
                                 if (calendarSetDate.after(calendar) && calendarSetDate.before(calendarOneYearAdvance)){
                                     arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
+                                    Log.d(TAG,"Arrival date was correctly filled.");
                                 }
                                 else {
                                     Toast.makeText(context, "Please enter date that is within one year from today", Toast.LENGTH_LONG).show();
+                                    Log.d(TAG,"Not appropriate arrival date.");
                                 }
                             }
                         },calendar.get(Calendar.YEAR),calendar.get(Calendar.MONTH),calendar.get(Calendar.DAY_OF_MONTH));
@@ -231,6 +241,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                         arrivalTime.setText(String.format("%02d:%02d",hour,minute));
+                        Log.d(TAG,"Arrival time was set.");
                     }
                 },0,0,false);
                 timePickerDialog.show();
@@ -250,6 +261,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
+                    Log.d(TAG,"Current Location set.");
                     lastLocation = location;
                     latitude = location.getLatitude();
                     longitude = location.getLongitude();
@@ -272,13 +284,12 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
         try {
             tripJSONObject = new JSONObject(tripJson);
-
-
-
+            Log.d(TAG,tripJSONObject.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, tripJSONObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
+                    Log.d(TAG,"Trip was successfully set.");
                     //Intent intent = new Intent(MapsFragment.this, HomeActivity.class);
                     //startActivity(intent);
                     //MapsFragment.this.finish();
@@ -296,7 +307,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.out.println(error.toString());
+                    Log.d(TAG, "Error: while sending trip");
+                    Log.d(TAG, "Error: " + error.toString());
                     Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
                 }
             });
@@ -321,12 +333,14 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     fetchLastLocation();
 
                     if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+                        Log.d(TAG,"Location enabled.");
                         mMap.setMyLocationEnabled(true);
                     }
 
                     break;
                 }
                 else {
+                    Log.d(TAG,"Location not enabled");
                     Toast.makeText(this, "Permission Denied", Toast.LENGTH_LONG).show();
                 }
                 return;
@@ -365,10 +379,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(markerOptions);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMarkerClickListener(this);
-        System.out.println(latitude);
-        System.out.println(longitude);
-        System.out.println(end_latitude);
-        System.out.println(end_longitude);
+
     }
 
 
@@ -472,5 +483,14 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         System.out.println(longitude);
         System.out.println(end_latitude);
         System.out.println(end_longitude);
+    }
+
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra("profile", userProfile);
+        startActivity(intent);
+        MapsFragment.this.finish();
     }
 }
