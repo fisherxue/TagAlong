@@ -28,7 +28,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".TripDisplay"
+            android:name=".TripDisplayActivity"
             android:label="@string/title_activity_trip_display"></activity>
         <activity android:name=".ViewProfileActivity"></activity>
         <activity android:name=".MessageActivity"></activity>
