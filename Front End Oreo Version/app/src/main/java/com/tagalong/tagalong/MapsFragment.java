@@ -217,10 +217,13 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
                                 Calendar calendarOneYearAdvance = (Calendar)calendar.clone();
+                                Calendar calendarOneDayAdvance = (Calendar)calendar.clone();
                                 calendarOneYearAdvance.add(Calendar.YEAR,1);
+                                calendarOneDayAdvance.add(Calendar.DAY_OF_MONTH,1);
                                 Calendar calendarSetDate = Calendar.getInstance();
                                 calendarSetDate.set(year,month,day);
-                                if (calendarSetDate.after(calendar) && calendarSetDate.before(calendarOneYearAdvance)){
+                                //calendarSetDate.add(Calendar.DAY_OF_MONTH, 1);
+                                if (calendarSetDate.after(calendarOneDayAdvance) && calendarSetDate.before(calendarOneYearAdvance)){
                                     arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
                                     Log.d(TAG,"Arrival date was correctly filled.");
                                 }
