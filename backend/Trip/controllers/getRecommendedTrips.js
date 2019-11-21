@@ -28,6 +28,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 								debug("trips for current drivertrip", riderTrips);
 								appendingobj.riderTrips = riderTrips;
 							});
+							debug("current appendending object", appendingobj);
 							recommendedTrips.push(appendingobj);
 						})
 
