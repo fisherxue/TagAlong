@@ -1,7 +1,7 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
-const debug = require("debug")("http");
+const debug = require("debug")("http /newTrip");
 const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 
@@ -52,10 +52,7 @@ const handleCreateTrip = async (req, res) => {
 	tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
 		trip.tripRoute = resp.json;
 
-		trip.save((err) => {
-			debug(err);
-		});
-
+		trip.save();
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
