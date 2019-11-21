@@ -77,9 +77,18 @@ const handleAcceptTrip = async (req, res) => {
 									}
 								});
 
-								// Add user to chatroom
-								addUsertoChatRoom(usertripID.username, driverTrip.chatroomID);
-								debug("added ", usertripID.username, "to chatroom", "driverTrip.chatroomID");
+								User.findById(usertripID.userID, (err, user) => {
+									if (user) {
+										// Add user to chatroom
+										addUsertoChatRoom(usertripID.username, driverTrip.chatroomID);
+										debug("added ", usertripID.username, "to chatroom", "driverTrip.chatroomID");
+										res.json("Added user to trip");
+									}
+									else {
+										res.status(400).send("user of usertripID not found");
+									}
+								})
+								
 							}
 							else {
 								debug("ridertrip not found");
