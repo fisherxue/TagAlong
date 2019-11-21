@@ -8,25 +8,19 @@ const handleDelTrip = async (req, res) => {
 	const userID = req.body.userID;
 	const tripID = req.body.tripID;
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		await User.findById(userID, (err, user) => {
-			if (!user) {
-				return res.status(400).send("Unable to find user");
-			} else {
-				TripStore.findByIdAndDelete(tripID, (err) => {
-					if (err) {
-						res.status(400).send("trip not found");
-					} else {
-						res.json("trip successfully deleted");
-					}
-				});
-			}
-
-		});
-	} else {
+	if (!mongoose.Types.ObjectId.isValid(userID)) {
+		debug("Invalid userID");
 		return res.status(400).send("Invalid userID");
 	}
 
+	const user = await User.findById(userID);
+
+	if (!user) {
+		debug("Unable to find user");
+		return res.status(400).send("Unable to find user");
+	}
+
+	await TripStore.findByIdAndDelete(tripID);
 };
 
 module.exports = {

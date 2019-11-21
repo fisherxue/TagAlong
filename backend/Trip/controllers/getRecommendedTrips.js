@@ -5,51 +5,54 @@ const debug = require("debug")("http /getRecommendedTrips");
 const User = require("../../User/models/user");
 
 
-const handleGetRecommendedTrips = (req, res) => {
+const handleGetRecommendedTrips = async (req, res) => {
 
 	debug("/getRecommendedTrips hit");
 
 	const userID = req.headers.userid;
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		User.findById(userID, (err, user) => {
-			if (user) {
-				if (user.isDriver) {
-					TripStore.find({ userID }, (err, trips) => {
-						let recommendedTrips = [];
-						trips.forEach(trip => {
-							let appendingobj = {
-								drivertrip: {},
-								riderTrips: []
-							};
-
-							appendingobj.drivertrip = trip;
-							// tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
-							// 	debug("trips for current drivertrip", riderTrips);
-							// 	appendingobj.riderTrips = riderTrips;
-							// });
-
-							appendingobj.riderTrips = driverTripHandler(trip);
-							debug("current appendending object", appendingobj);
-							recommendedTrips.push(appendingobj);
-						})
-
-						debug("responing recommended trips", recommendedTrips);
-						res.json({trips: recommendedTrips});
-					})
-				} else {
-					res.status(400).send("User is not a driver");
-				}
-
-				
-			} else {
-				res.status(400).send("Unable to find user");
-			}
-		});
-	} else {
+	if (!mongoose.Types.ObjectId.isValid(userID)) {
 		debug("invalid userID");
-		res.status(400).send("Invalid userID");
+		return res.status(400).send("Invalid userID");
+		
 	}
+
+	try {
+		const user = await User.findById(userID);
+		if (!user) {
+			return res.status(400).send("User not found with corresponding userID");
+		}
+		if (user.isDriver == false) {
+			return res.status(400).send("User is not a driver")
+		}
+
+		const trips = await TripStore.find({ userID });
+		if (!trips) {
+			return res.status(400).send("Driver has no trips");
+		}
+		let recommendedTrips = [];
+		trips.forEach(trip => {
+			let appendingobj = {
+				drivertrip: {},
+				riderTrips: []
+			};
+
+			appendingobj.drivertrip = trip;
+			// tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
+			// 	debug("trips for current drivertrip", riderTrips);
+			// 	appendingobj.riderTrips = riderTrips;
+			// });
+
+			appendingobj.riderTrips = driverTripHandler(trip);
+			debug("current appendending object", appendingobj);
+			recommendedTrips.push(appendingobj);
+		});
+		debug("responing recommended trips", recommendedTrips);
+		res.json({trips: recommendedTrips});
+
+	} catch (err) {
+		debug(err);
+	};
 
 };
 

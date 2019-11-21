@@ -12,29 +12,26 @@ const handleGetMessages = async (req, res) => {
 
 	debug("get userID", userID);
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		User.findById(userID, (err, user) => {
-			if (user) {
-				const username = user.username;
-				debug(username);
-				Chat.find({users: username}, (err, chats) => {
-					debug(chats);
-					if (chats) {
-						res.json(chats);
-					}
-					else {
-						res.status(400).send("No chatrooms");
-					}
-				});
-				
-			} else {
-				res.status(400).send("Unable to find user");
-			}
-		});
-	} else {
+	if (!mongoose.Types.ObjectId.isValid(userID)) {
 		debug("invalid userID");
-		res.status(400).send("Invalid userID");
+		return res.status(400).send("Invalid userID");
 	}
+
+	const user = await User.findById(userID);
+
+	if (!user) {
+		debug("No user found");
+		return res.status(400).send("Unable to find user");
+	}
+
+	const chats = await Chat.find({ users: username });
+
+	if (!chats) {
+		debug("No chat found");
+		return res.status(400).send("No chat found");
+	} 
+
+	res.json(chats);
 
 
 };

@@ -54,45 +54,34 @@ const handleSendMessages = async (req, res) => {
 
 	debug("get userID", userID);
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		await User.findById(userID, async (err, user) => {
-			if (user) {
-				const username = user.username;
-
-				if (mongoose.Types.ObjectId.isValid(roomID)) {
-					await Chat.findById(roomID, async (err, chat) => {
-						if (chat) {
-							chat.messages.push({
-								username,
-								message
-							});
-							await chat.save();
-							res.send(chat);
-							await notifyUsers(chat.users, message);
-						}
-						else {
-							debug("chat room not found");
-							res.status(400).send("chat room not found");
-						}
-						
-					});
-				}
-				else {
-					debug("invalid roomID");
-					res.status(400).send("Invalid room ID");
-				}
-
-			} else {
-				res.status(400).send("Unable to find user");
-			}
-
-		});
-	} else {
-		debug("invalid userID");
-		return res.status(400).send("Invalid userID");
+	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(roomID)) {
+		debug("invalid userID or roomID");
+		return res.status(400).send("Invalid userID or roomID");
 	}
 
+	const user = await User.findById(userID);
 
+	if (!user) {
+		debug("No user found");
+		return res.status(400).send("Unable to find user");
+	}
+
+	const chat = await Chat.findById(roomID);
+
+	if (!chat) {
+		debug("chat room not found");
+		return res.status(400).send("chat room not found");
+	}
+
+	const username = user.username;
+
+	chat.messages.push({
+		username,
+		message
+	});
+	await chat.save();
+	res.send(chat);
+	await notifyUsers(chat.users, message);
 
 
 };
