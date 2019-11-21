@@ -27,69 +27,61 @@ const handleCreateTrip = async (req, res) => {
 
 	debug(req.body);
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		User.findById(userID, (err, user) => {
-			if (!user) {
-				res.status(400).send("Unable to find user");
-			}
-			else {
-
-				debug("creating new trip");
-
-				let trip = new TripStore({
-					username,
-					taggedUsers: [],
-					userID,
-					arrivalTime,
-					tripRoute,
-					isDriverTrip,
-					isFulfilled: false
-				});
-
-				debug(trip);
-
-				tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
-					trip.tripRoute = resp.json;
-
-					trip.save((err) => {
-						debug(err);
-					});
-
-
-					if (isDriverTrip) {
-						debug("Trip is a DRIVER TRIP");
-						tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
-
-						debug("drivertrip: ", driverTrip);
-						if (typeof riderTrips === "undefined") {
-							return res.status(300).send("NOTHING");
-						} else {
-
-							// Create Chat room
-							driverTrip.chatroomID = createNewRoom(username);
-
-							driverTrip.isFulfilled = true;
-
-							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
-								if (err) {
-									debug(err);
-								}
-							});
-							res.send(driverTrip);
-						}
-
-						});	
-					} 
-					else {
-						debug("NOT A DRIVER TRIP");
-						res.send(trip);
-					}
-				});
-			}
-		});
-	} else {
-		res.status(400).send("Invalid userID");
+	if (!mongoose.Types.ObjectId.isValid(userID)) {
+		debug("Invalid userID");
+		return res.status(400).send("Invalid userID");
 	}
+
+	const user = await User.findById(userID);
+
+	if (!user) {
+		debug("Unable to find user");
+		return res.status(400).send("Unable to find user");
+	}
+
+	let trip = new TripStore({
+		username,
+		taggedUsers: [],
+		userID,
+		arrivalTime,
+		tripRoute,
+		isDriverTrip,
+		isFulfilled: false
+	});
+
+	tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
+		trip.tripRoute = resp.json;
+
+		trip.save((err) => {
+			debug(err);
+		});
+
+
+		if (isDriverTrip) {
+			debug("Trip is a DRIVER TRIP");
+			tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
+
+			debug("drivertrip: ", driverTrip);
+			if (typeof riderTrips === "undefined") {
+				return res.status(300).send("NOTHING");
+			} else {
+
+				// Create Chat room
+				driverTrip.chatroomID = createNewRoom(username);
+
+				driverTrip.isFulfilled = true;
+
+				TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
+				res.send(driverTrip);
+			}
+
+			});	
+		} 
+		else {
+			debug("NOT A DRIVER TRIP");
+			res.send(trip);
+		}
+	});
 
 };
 

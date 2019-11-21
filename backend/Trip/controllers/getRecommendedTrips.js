@@ -43,7 +43,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 			// 	appendingobj.riderTrips = riderTrips;
 			// });
 
-			appendingobj.riderTrips = driverTripHandler(trip);
+			appendingobj.riderTrips = tripRecommender.driverTripHandler(trip);
 			debug("current appendending object", appendingobj);
 			recommendedTrips.push(appendingobj);
 		});
