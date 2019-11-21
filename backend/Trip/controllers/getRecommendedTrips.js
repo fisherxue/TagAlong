@@ -28,7 +28,7 @@ const handleGetRecommendedTrips = (req, res) => {
 							// 	debug("trips for current drivertrip", riderTrips);
 							// 	appendingobj.riderTrips = riderTrips;
 							// });
-							appendingobj.riderTrips = [{1}, {2}];
+							appendingobj.riderTrips = [{number: 1}, {number: 2}];
 							debug("current appendending object", appendingobj);
 							recommendedTrips.push(appendingobj);
 						})
