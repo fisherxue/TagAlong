@@ -58,6 +58,8 @@ const handleCreateTrip = async (req, res) => {
 					if (isDriverTrip) {
 						debug("Trip is a DRIVER TRIP");
 						tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
+
+						debug("drivertrip: ", driverTrip);
 						if (typeof riderTrips === "undefined") {
 							return res.status(300).send("NOTHING");
 						} else {
@@ -78,7 +80,7 @@ const handleCreateTrip = async (req, res) => {
 								if (err) {
 									debug(err);
 								}
-							})
+							});
 							res.send(driverTrip);
 						}
 

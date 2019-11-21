@@ -31,7 +31,7 @@ const sendChatNotif = async (user, message) => {
 	else {
 		debug("invalid firebaseToken");
 	}
-}
+};
 
 const notifyUsers = async (users, message) => {
 	for(const username of users) {
@@ -65,7 +65,7 @@ const handleSendMessages = async (req, res) => {
 							chat.messages.push({
 								username,
 								message
-							})
+							});
 							await chat.save();
 							res.send(chat);
 							await notifyUsers(chat.users, message);
@@ -82,8 +82,7 @@ const handleSendMessages = async (req, res) => {
 					res.status(400).send("Invalid room ID");
 				}
 
-			}
-			else {
+			} else {
 				res.status(400).send("Unable to find user");
 			}
 

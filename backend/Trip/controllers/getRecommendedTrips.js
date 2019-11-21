@@ -13,8 +13,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 				tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
 					res.json(riderTrips);
 				});
-			}
-			else {
+			} else {
 				res.status(400).send("trip not found");
 			}
 
