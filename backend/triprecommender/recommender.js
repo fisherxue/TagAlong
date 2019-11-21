@@ -19,21 +19,27 @@ const getDirectionsWithWaypoints = Directions.getDirectionsWithWaypoints;
  * Reduces down rider trips to those within some time constraint
  * of driver trip
  */
-// function cutTripsByTime(driverTrip, riderTrips) {
-// 	let riderTripsTime = [];
+function cutTripsByTime(driverTrip, riderTrips) {
+	if (typeof riderTrips === "undefined" || typeof driverTrip === "undefined" || riderTrips === []) {
+		return [];
+	}
+	let riderTripsTime = [];
 
-// 	if (typeof riderTrips === "undefined") {
-// 		return [];
-// 	}
+	if (typeof riderTrips === "undefined") {
+		return [];
+	}
 
-// 	riderTrips.forEach(function(riderTrip, index) {
-// 		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
-// 			riderTripsTime.push(riderTrip);
-// 		}
-// 	});
+	console.log(driverTrip)
+	riderTrips.forEach(function(riderTrip, index) {
+		console.log(riderTrip.tripRoute)
+		console.log(riderTrip.tripRoute.routes[0].legs[0].duration)
+		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
+			riderTripsTime.push(riderTrip);
+		}
+	});
 
-// 	return riderTripsTime;
-// }
+	return riderTripsTime;
+}
 
 /* TODO: port to functional programming with map-filter-reduce
  * Reduces down rider trips to those within some bearing constraint
@@ -175,7 +181,7 @@ function getInterestSimilarity(user1, user2) {
 /*
  * Adds a field to riderTrip indicating similarity to given driver
  */
-async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
+async function getRiderTripSimilarity(driverTrip, riderTrips) {
 
 	if (typeof riderTrips === "undefined") {
 		callback([]);
@@ -216,14 +222,14 @@ async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	});
 
 	debug(riderTrips, "OK");
-	callback(riderTrips);
+	return riderTrips;
 }
 
 /*
  * Given a valid driver trip, finds rider trips that
  * are reasonable for the driver
  */
-async function getRiderTrips(driverTrip, callback) {
+async function getRiderTrips(driverTrip) {
 	if (typeof driverTrip === "undefined") {
 		callback([]);
 		return;
@@ -238,11 +244,11 @@ async function getRiderTrips(driverTrip, callback) {
 	});
 	debug("raw rider trips:", riderTrips);
 
-	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
+	riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
 	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
 
-	callback(riderTrips);
+	return riderTrips;
 }
 
 /*
@@ -253,12 +259,9 @@ function driverTripHandler(driverTrip, callback) {
 	if (typeof driverTrip === "undefined") {
 		callback([], driverTrip);
 	}
-	getRiderTrips(driverTrip, function(riderTrips) {
-		debug("riderTrips:", riderTrips);
-		getRiderTripSimilarity(driverTrip, riderTrips, function(riderTrips) {
-			callback(riderTrips, driverTrip);
-		});
-	});
+	riderTrips = await getRiderTrips(driverTrip);
+	riderTrips = await getRiderTripSimilarity(driverTrip, riderTrips);
+	return riderTrips, driverTrip;
 }
 
 /*
@@ -284,6 +287,7 @@ module.exports = {
 	tripHandler,
 	cutTripsByBearing,
 	cutTripsByDistance,
+	cutTripsByTime,
 	modifyTrip,
 	getInterestSimilarity,
 	getRiderTripSimilarity,

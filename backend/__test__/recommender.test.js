@@ -115,6 +115,47 @@ describe("cutTripsByBearing", () => {
     });
 });
 
+describe("cutTripsByTime", () => {
+    it('should exist', () => {
+        expect(recommender.cutTripsByTime).toBeDefined();
+    });
+    it('should be a function', () => {
+       expect(typeof recommender.cutTripsByTime).toBe("function"); 
+    });
+    it('should return empty on null inputs', () => {
+        let driverTrip;
+        let riderTrips;
+        expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(0);
+    });
+    it('should return empty on null inputs for ridertrips', async done => {
+        let driverTrip;
+        let riderTrips;
+        fs.readFile("./triprecommender/__test__/driverTrip1.json", "utf8", (err, data) => {
+            driverTrip = data;
+            expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(0);
+            done();
+        });
+    });
+    it('should return correct value', async done => {
+        let driverTrip;
+        let riderTrips = [];
+        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
+            driverTrip = JSON.parse(data);
+            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+                riderTrips.push(JSON.parse(data1));
+                fs.readFile("./__test__/riderTrip2.json", "utf8", (err, data2) => {
+                    riderTrips.push(JSON.parse(data2));
+                    fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
+                        riderTrips.push(JSON.parse(data3));
+                        expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(3);
+                        done();
+                    });
+                });
+            });
+        });
+    });
+});
+
 describe("cutTripsByDistance", () => {
     it('should exist', () => {
         expect(recommender.cutTripsByDistance).toBeDefined();
