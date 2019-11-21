@@ -19,7 +19,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 						let recommendedTrips = [];
 						trips.forEach(trip => {
 							let appendingobj = {
-								drivertrip: {}
+								drivertrip: {},
 								riderTrips: []
 							};
 
