@@ -175,7 +175,7 @@ function getInterestSimilarity(user1, user2) {
 /*
  * Adds a field to riderTrip indicating similarity to given driver
  */
-function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
+async function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	if (typeof riderTrips === "undefined") {
 		callback([]);
@@ -188,7 +188,7 @@ function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 	/* get the driver user matching the username */
 	let driverUser;
 
-	driverUser = UserStore.findById(driverTrip.userID, (err, user) => {
+	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
 		if (user) {
 			debug(user);
 		}
@@ -196,7 +196,7 @@ function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
 
 	for (const riderTrip of riderTrips) {
 		let riderUser;
-		riderUser = UserStore.findById(riderTrip.userID, (err, user) => {
+		riderUser = await UserStore.findById(riderTrip.userID, (err, user) => {
 			if (user) {
 				debug(user);
 			}
@@ -223,7 +223,7 @@ function getRiderTripSimilarity(driverTrip, riderTrips, callback) {
  * Given a valid driver trip, finds rider trips that
  * are reasonable for the driver
  */
-function getRiderTrips(driverTrip, callback) {
+async function getRiderTrips(driverTrip, callback) {
 	if (typeof driverTrip === "undefined") {
 		callback([]);
 		return;
@@ -231,7 +231,7 @@ function getRiderTrips(driverTrip, callback) {
 	
 	let riderTrips;
 
-	TripStore.find({}, (err, trips) => {
+	await TripStore.find({}, (err, trips) => {
 		riderTrips = trips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
