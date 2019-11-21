@@ -13,7 +13,7 @@ const createNewRoom = (username) => {
 		messages: []
 	});
 
-	chat.save((chatroom) => {
+	chat.save((err, chatroom) => {
 		debug("chat id", chatroom);
 		return chatroom._id;
 	})
