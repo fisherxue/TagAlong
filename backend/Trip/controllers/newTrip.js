@@ -14,6 +14,7 @@ const createNewRoom = (username) => {
 	});
 
 	chat.save((chatroom) => {
+		debug("chat id", chatroom);
 		return chatroom._id;
 	})
 };
@@ -76,8 +77,8 @@ const handleCreateTrip = async (req, res) => {
 							})
 
 							driverTrip.isFulfilled = true;
-							const driverTripID = driverTrip._id;
-							TripStore.findByIdAndUpdate(driverTripID, driverTrip, {new: true}, (err) => {
+
+							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
 								if (err) {
 									debug(err);
 								}
