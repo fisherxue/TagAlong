@@ -43,7 +43,7 @@ const notifyUsers = async (users, message) => {
 			debug("user not found");
 		}
 	}
-}
+};
 
 const handleSendMessages = async (req, res) => {
 	
@@ -63,8 +63,8 @@ const handleSendMessages = async (req, res) => {
 					await Chat.findById(roomID, async (err, chat) => {
 						if (chat) {
 							chat.messages.push({
-								username: username,
-								message: message
+								username,
+								message
 							})
 							await chat.save();
 							res.send(chat);
@@ -75,7 +75,7 @@ const handleSendMessages = async (req, res) => {
 							res.status(400).send("chat room not found");
 						}
 						
-					})
+					});
 				}
 				else {
 					debug("invalid roomID");

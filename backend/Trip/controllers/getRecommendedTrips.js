@@ -1,5 +1,7 @@
 const TripStore = require("../models/Trip");
 const mongoose = require("mongoose");
+const tripRecommender = require("../../triprecommender/recommender");
+
 
 const handleGetRecommendedTrips = async (req, res) => {
 
@@ -10,7 +12,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 			if (trip) {
 				tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
 					res.json(riderTrips);
-				})
+				});
 			}
 			else {
 				res.status(400).send("trip not found");

@@ -25,7 +25,7 @@ const handleGetMessages = async (req, res) => {
 					else {
 						res.status(400).send("No chatrooms");
 					}
-				})
+				});
 				
 			} else {
 				res.status(400).send("Unable to find user");

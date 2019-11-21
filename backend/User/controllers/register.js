@@ -31,8 +31,7 @@ const handleRegister = async (req, res) => {
 					res.send(user);
 				}
 			});
-		}
-		else {
+		} else {
 			res.status(400).send("ERROR MISSING PASSWORD");
 		}
 

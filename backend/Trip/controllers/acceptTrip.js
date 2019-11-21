@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Chat = require("../../Chat/models/Chat");
 const tripRecommender = require("../../triprecommender/recommender");
 const debug = require("debug")("http /acceptTrip");
+const firebase = require("firebase-admin");
 
 
 const addUsertoChatRoom = (username, roomID) => {
@@ -21,7 +22,7 @@ const addUsertoChatRoom = (username, roomID) => {
 	else {
 		debug("invalid roomID");
 	}
-}
+};
 
 const sendNotif = async (user) => {
 	const firebaseToken = user.fbToken;
@@ -84,7 +85,7 @@ const handleAcceptTrip = async (req, res) => {
 								debug("ridertrip not found");
 								res.status(400).send("ridertrip not found");
 							}
-						})
+						});
 					}
 				});
 			}

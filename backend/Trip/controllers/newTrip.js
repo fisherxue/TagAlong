@@ -1,6 +1,5 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
-const firebase = require("firebase-admin");
 const mongoose = require("mongoose");
 const debug = require("debug")("http");
 const tripRecommender = require("../../triprecommender/recommender");
@@ -9,7 +8,7 @@ const Chat = require("../../Chat/models/Chat");
 
 const createNewRoom = (username) => {
 	const users = [username];
-	chat = new Chat({
+	const chat = new Chat({
 		users,
 		messages: []
 	});
@@ -17,7 +16,7 @@ const createNewRoom = (username) => {
 	chat.save((chatroom) => {
 		return chatroom._id;
 	})
-}
+};
 
 const handleCreateTrip = async (req, res) => {
 		
@@ -41,7 +40,7 @@ const handleCreateTrip = async (req, res) => {
 					taggedUsers: [],
 					userID,
 					arrivalTime,
-					tripRoute: tripRoute,
+					tripRoute,
 					isDriverTrip,
 					isFulfilled: false
 				});

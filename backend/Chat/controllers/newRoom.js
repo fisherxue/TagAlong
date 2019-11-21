@@ -10,7 +10,7 @@ const handleNewRoom = async (req, res) => {
 	const users = req.body.users;
 
 	if (users) {
-		chat = new Chat({
+		const chat = new Chat({
 			users,
 			messages: []
 		});
@@ -23,7 +23,7 @@ const handleNewRoom = async (req, res) => {
 		res.status(400).send("No users supplied");
 	}
 
-}
+};
 
 module.exports = {
 	handleNewRoom

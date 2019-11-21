@@ -1,4 +1,4 @@
-const app = require('./index.js')
+const app = require("./index.js");
 const debug = require("debug")("server");
 const mongoose = require("mongoose");
 
