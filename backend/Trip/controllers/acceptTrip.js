@@ -17,7 +17,7 @@ const addUsertoChatRoom = (username, roomID) => {
 			else {
 				debug("chat not found");
 			}
-		})
+		});
 	}
 	else {
 		debug("invalid roomID");
