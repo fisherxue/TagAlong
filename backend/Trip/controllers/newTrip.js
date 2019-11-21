@@ -4,8 +4,6 @@ const firebase = require("firebase-admin");
 const mongoose = require("mongoose");
 const debug = require("debug")("http");
 
-
-
 const tripRecommender = require("../../triprecommender/recommender");
 
 const sendNotif = async (user) => {

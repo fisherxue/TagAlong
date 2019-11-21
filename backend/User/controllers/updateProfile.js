@@ -2,7 +2,7 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 const debug = require("debug")("http");
 
-const createUpdateObject = (req) => {
+const createUpdateObject = async (req) => {
 
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
@@ -30,7 +30,7 @@ const handleProfileUpdate = async (req, res) => {
 	
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
-	const update = createUpdateObject(req);
+	const update = await createUpdateObject(req);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
 
