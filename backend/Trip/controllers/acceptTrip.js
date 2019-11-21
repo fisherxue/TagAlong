@@ -71,11 +71,10 @@ const handleAcceptTrip = async (req, res) => {
 								driverTrip.taggedTrips.push(ridertrip._id);
 
 								debug(driverTrip, "driverTrip update");
-								TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
-									if (err) {
-										debug(err);
-									}
-								});
+								
+								driverTrip.save();
+								ridertrip.drivertripID = driverTrip._id;
+								ridertrip.save();
 
 								User.findById(usertripID.userID, (err, user) => {
 									if (user) {
