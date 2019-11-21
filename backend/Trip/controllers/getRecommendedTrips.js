@@ -5,7 +5,7 @@ const debug = require("debug")("http /getRecommendedTrips");
 const User = require("../../User/models/user");
 
 
-const handleGetRecommendedTrips = async (req, res) => {
+const handleGetRecommendedTrips = (req, res) => {
 
 	debug("/getRecommendedTrips hit");
 
