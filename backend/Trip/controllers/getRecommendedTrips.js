@@ -5,7 +5,7 @@ const debug = require("debug")("http /getRecommendedTrips");
 const User = require("../../User/models/user");
 
 
-const handleGetRecommendedTrips = async (req, res) => {
+const handleGetRecommendedTrips = (req, res) => {
 
 	debug("/getRecommendedTrips hit");
 
@@ -24,10 +24,13 @@ const handleGetRecommendedTrips = async (req, res) => {
 							};
 
 							appendingobj.drivertrip = trip;
-							tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
+							tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
+								debug("trips for current drivertrip", riderTrips);
 								appendingobj.riderTrips = riderTrips;
+								debug("current appendending object", appendingobj);
+								recommendedTrips.push(appendingobj);
 							});
-							recommendedTrips.push(appendingobj);
+							
 						})
 
 						debug("responing recommended trips", recommendedTrips);
