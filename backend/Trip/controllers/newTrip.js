@@ -49,14 +49,14 @@ const handleCreateTrip = async (req, res) => {
 		isFulfilled: false
 	});
 
-	tripRecommender.tripHandler(tripRoute.nameValuePairs, function(resp) {
+	tripRecommender.tripHandler(tripRoute.nameValuePairs, (resp) => {
 		trip.tripRoute = resp.json;
 
 		trip.save();
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
+			tripRecommender.driverTripHandler(trip, async (riderTrips, driverTrip) => {
 
 			debug("drivertrip: ", driverTrip);
 			if (typeof riderTrips === "undefined") {
@@ -68,7 +68,9 @@ const handleCreateTrip = async (req, res) => {
 
 				driverTrip.isFulfilled = true;
 
-				const updatedDriverTrip = TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
+				const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
+
+				debug("updated driver trip:", updatedDriverTrip);
 
 				res.send(updatedDriverTrip);
 			}
