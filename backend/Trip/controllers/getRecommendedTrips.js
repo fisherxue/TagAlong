@@ -27,10 +27,11 @@ const handleGetRecommendedTrips = async (req, res) => {
 							tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
 								appendingobj.riderTrips = riderTrips;
 							});
+							recommendedTrips.push(appendingobj);
 						})
 
-						debug("responing recommended trips", appendingobj);
-						res.json(appendingobj);
+						debug("responing recommended trips", recommendedTrips);
+						res.json({trips: recommendedTrips});
 					})
 				} else {
 					res.status(400).send("User is not a driver");
