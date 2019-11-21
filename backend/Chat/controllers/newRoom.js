@@ -23,8 +23,6 @@ const handleNewRoom = async (req, res) => {
 		res.status(400).send("No users supplied");
 	}
 
-	
-
 }
 
 module.exports = {

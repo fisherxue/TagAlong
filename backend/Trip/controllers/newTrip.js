@@ -3,50 +3,21 @@ const User = require("../../User/models/user");
 const firebase = require("firebase-admin");
 const mongoose = require("mongoose");
 const debug = require("debug")("http");
-
 const tripRecommender = require("../../triprecommender/recommender");
+const Chat = require("../../Chat/models/Chat");
 
-const sendNotif = async (user) => {
-	const firebaseToken = user.fbToken;
-	if (firebaseToken){
-		const payload = {
-			notification: {
-				title: "Trip Accepted",
-				body: "You have been matched with a driver and other riders for the requested trip",
-			}
-		};
-	
-		const options = {
-			priority: "high",
-			timeToLive: 60 * 60 * 24, // 1 day
-		};
 
-		firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.catch((err) => {
-		});
-	}
-	else {
-		debug("invalid firebaseToken");
-	}
-};
+const createNewRoom = (username) => {
+	const users = [username];
+	chat = new Chat({
+		users,
+		messages: []
+	});
 
-const notifyAllRiders = async (riderTrips, callback) => {
-	riderTrips.forEach(async trip => {
-		let username = trip.username;
-		debug(username, "USERNAME");
-
-		const user = await User.findOne({ username });
-
-		if (user) {
-			debug("tried to send", user);
-			await sendNotif(user);
-		}
-		else {
-			callback(Error("Unable to find user"));
-		}
+	chat.save((chatroom) => {
+		return chatroom._id;
 	})
-};
-
+}
 
 const handleCreateTrip = async (req, res) => {
 		
@@ -57,7 +28,7 @@ const handleCreateTrip = async (req, res) => {
 	debug(req.body);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
-		await User.findById(userID, (err, user) => {
+		User.findById(userID, (err, user) => {
 			if (!user) {
 				res.status(400).send("Unable to find user");
 			}
@@ -67,6 +38,7 @@ const handleCreateTrip = async (req, res) => {
 
 				let trip = new TripStore({
 					username,
+					taggedUsers: [],
 					userID,
 					arrivalTime,
 					tripRoute: tripRoute,
@@ -86,56 +58,32 @@ const handleCreateTrip = async (req, res) => {
 
 					if (isDriverTrip) {
 						debug("Trip is a DRIVER TRIP");
-						tripRecommender.driverTripHandler(trip, async function(riderTrips, driverTrip) {
+						tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
 						if (typeof riderTrips === "undefined") {
 							return res.status(300).send("NOTHING");
 						} else {
+
+							// Create Chat room
+							driverTrip.chatroomID = createNewRoom(username);
+
+							// Create new Rider trip;
+
 							riderTrips = riderTrips.slice(0, 4); // should slice by driver car size
-
-							riderTrips.forEach(async (ridertrip) => {
-								const tripID = ridertrip._id;
-								const update = ridertrip;
-
-								update.isFulfilled = true;
-
-								await TripStore.findByIdAndUpdate(tripID, update, {new: true}, (err) => {
-									if (err) {
-										debug(err);
-									}
-								});
-							} );
-
 							
-							driverTrip.tripRoute = await tripRecommender.modifyTrip(driverTrip, riderTrips);
-							console.log(driverTrip)
-							riderTrips.forEach(ridertrip => {
-								driverTrip.taggedUsers.push(ridertrip.username);
-								debug(ridertrip.username, "added to driver trip");
+							riderTrips.forEach((ridertrip) => {
+								driverTrip.recommendedTrips.push(ridertrip);
 							})
-					
+
 							driverTrip.isFulfilled = true;
-							debug(driverTrip, "driverTrip update");
 							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
 								if (err) {
 									debug(err);
 								}
 							})
-							
-							notifyAllRiders(riderTrips, (err) => {
-
-								if (err) {
-									res.status(400).json("unable to find user");
-								}
-								else {
-									res.send("Sent succesfully");
-								}
-							});
-
 							res.send(driverTrip);
 						}
 
-						});
-						
+						});	
 					} 
 					else {
 						debug("NOT A DRIVER TRIP");

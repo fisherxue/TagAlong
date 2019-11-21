@@ -1,7 +1,7 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
-const debug = require("debug")("http /getTrips");
+const debug = require("debug")("http /getRecommendedTrips");
 
 
 

@@ -13,7 +13,7 @@ const handleGetMessages = async (req, res) => {
 	debug("get userID", userID);
 
 	if (mongoose.Types.ObjectId.isValid(userID)) {
-		await User.findById(userID, (err, user) => {
+		User.findById(userID, (err, user) => {
 			if (user) {
 				const username = user.username;
 				debug(username);
