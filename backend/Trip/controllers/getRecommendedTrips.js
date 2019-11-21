@@ -16,7 +16,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 		await TripStore.findById(tripID, (err, trip) => {
 			if (trip) {
 				tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
-					res.json({ trips: riderTrips });
+					res.json({trips: riderTrips});
 				});
 			} else {
 				res.status(400).send("trip not found");

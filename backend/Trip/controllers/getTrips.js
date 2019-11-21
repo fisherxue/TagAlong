@@ -1,7 +1,7 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
-const debug = require("debug")("http /getRecommendedTrips");
+const debug = require("debug")("http /getTrips");
 
 
 
@@ -19,7 +19,7 @@ const handleGetTrips = async (req, res) => {
 			if (user) {
 				TripStore.find({ userID }, (err, trips) => {
 					debug("responded with trips", trips);
-					res.json(trips);
+					res.json({trips: trips});
 				});
 			} else {
 				debug("user not found");
