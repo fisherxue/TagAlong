@@ -68,8 +68,9 @@ const handleCreateTrip = async (req, res) => {
 
 				driverTrip.isFulfilled = true;
 
-				TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
-				res.send(driverTrip);
+				const updatedDriverTrip = TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
+
+				res.send(updatedDriverTrip);
 			}
 
 			});	
