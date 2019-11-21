@@ -2,7 +2,7 @@ const User = require("../models/user");
 const mongoose = require("mongoose");
 const debug = require("debug")("http");
 
-const createUpdateObject = async (req) => {
+const createUpdateObject = (req) => {
 
 	const { userID, firstName, lastName, age, gender, email, interests, isDriver, carCapacity, fbToken } = req.body;
 
