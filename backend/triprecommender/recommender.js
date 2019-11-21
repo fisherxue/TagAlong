@@ -263,7 +263,7 @@ function driverTripHandler(driverTrip) {
 	}
 	riderTrips = getRiderTrips(driverTrip);
 	riderTrips = getRiderTripSimilarity(driverTrip, riderTrips);
-	return riderTrips, driverTrip;
+	return riderTrips;
 }
 
 /*

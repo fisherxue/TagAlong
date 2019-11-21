@@ -24,13 +24,14 @@ const handleGetRecommendedTrips = (req, res) => {
 							};
 
 							appendingobj.drivertrip = trip;
-							tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
-								debug("trips for current drivertrip", riderTrips);
-								appendingobj.riderTrips = riderTrips;
-								debug("current appendending object", appendingobj);
-								recommendedTrips.push(appendingobj);
-							});
-							
+							// tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
+							// 	debug("trips for current drivertrip", riderTrips);
+							// 	appendingobj.riderTrips = riderTrips;
+							// });
+
+							appendingobj.riderTrips = driverTripHandler(trip);
+							debug("current appendending object", appendingobj);
+							recommendedTrips.push(appendingobj);
 						})
 
 						debug("responing recommended trips", recommendedTrips);
