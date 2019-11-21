@@ -24,7 +24,7 @@ const handleGetRecommendedTrips = (req, res) => {
 							};
 
 							appendingobj.drivertrip = trip;
-							tripRecommender.driverTripHandler(trip, function(riderTrips, driverTrip) {
+							tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
 								debug("trips for current drivertrip", riderTrips);
 								appendingobj.riderTrips = riderTrips;
 							});
