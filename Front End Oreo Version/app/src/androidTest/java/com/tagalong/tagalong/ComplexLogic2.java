@@ -5,18 +5,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import org.hamcrest.Description;
-import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
+
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,6 +28,7 @@ import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.pressImeActionButton;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
@@ -37,7 +39,7 @@ import static org.hamcrest.Matchers.is;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ComplexLogicTest {
+public class ComplexLogic2 {
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
@@ -48,7 +50,7 @@ public class ComplexLogicTest {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void complexLogicTest() {
+    public void complexLogic2() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.userNameLogin),
                         childAtPosition(
@@ -57,9 +59,19 @@ public class ComplexLogicTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("rider"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("rider"));
 
         ViewInteraction appCompatEditText2 = onView(
+                allOf(withId(R.id.userNameLogin), withText("rider"),
+                        childAtPosition(
+                                childAtPosition(
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
+                                        0),
+                                1),
+                        isDisplayed()));
+        appCompatEditText2.perform(closeSoftKeyboard());
+
+        ViewInteraction appCompatEditText3 = onView(
                 allOf(withId(R.id.passwordLogin),
                         childAtPosition(
                                 childAtPosition(
@@ -67,7 +79,7 @@ public class ComplexLogicTest {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatEditText2.perform(replaceText("rider"), closeSoftKeyboard());
+        appCompatEditText3.perform(replaceText("rider"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.login_button), withText("Login"),
@@ -95,28 +107,6 @@ public class ComplexLogicTest {
                         isDisplayed()));
         bottomNavigationItemView.perform(click());
 
-        ViewInteraction searchAutoComplete = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete.perform(replaceText("yvr"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete2 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("yvr"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete2.perform(pressImeActionButton());
-
         ViewInteraction textInputEditText = onView(
                 allOf(withId(R.id.arrivalDate),
                         childAtPosition(
@@ -128,7 +118,7 @@ public class ComplexLogicTest {
         textInputEditText.perform(click());
 
         ViewInteraction button = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
+                allOf(withClassName(is("android.widget.Button")), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
@@ -146,15 +136,8 @@ public class ComplexLogicTest {
                         isDisplayed()));
         textInputEditText2.perform(click());
 
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        /*
         ViewInteraction radioButton = onView(
-                allOf(withClassName(is("android.widget.RadioButton")), withText("PM"),
+                allOf(withClassName(is("android.widget.RadioButton")), withText("p.m."),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.RadioGroup")),
                                         childAtPosition(
@@ -164,27 +147,36 @@ public class ComplexLogicTest {
                         isDisplayed()));
         radioButton.perform(click());
 
-        ViewInteraction radioButton2 = onView(
-                allOf(withClassName(is("android.widget.RadioButton")), withText("PM"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.RadioGroup")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.RelativeLayout")),
-                                                3)),
-                                1),
-                        isDisplayed()));
-        radioButton2.perform(click());
-
-         */
-
         ViewInteraction button2 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
+                allOf(withClassName(is("android.widget.Button")), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 3)));
         button2.perform(scrollTo(), click());
+
+        ViewInteraction searchAutoComplete = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete.perform(replaceText("ubc"), closeSoftKeyboard());
+
+        ViewInteraction searchAutoComplete2 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("ubc"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete2.perform(pressImeActionButton());
 
         ViewInteraction button3 = onView(
                 allOf(withId(R.id.To), withText("Find Route"),
@@ -198,7 +190,7 @@ public class ComplexLogicTest {
 
         pressBack();
 
-        ViewInteraction bottomNavigationItemView2 = onView(
+        ViewInteraction bottomNavigationItemView3 = onView(
                 allOf(withId(R.id.nav_chat), withContentDescription("Proposed Trips"),
                         childAtPosition(
                                 childAtPosition(
@@ -206,7 +198,7 @@ public class ComplexLogicTest {
                                         0),
                                 2),
                         isDisplayed()));
-        bottomNavigationItemView2.perform(click());
+        bottomNavigationItemView3.perform(click());
 
         ViewInteraction actionMenuItemView = onView(
                 allOf(withId(R.id.logout), withContentDescription("Logout"),
@@ -218,7 +210,7 @@ public class ComplexLogicTest {
                         isDisplayed()));
         actionMenuItemView.perform(click());
 
-        ViewInteraction appCompatEditText3 = onView(
+        ViewInteraction appCompatEditText4 = onView(
                 allOf(withId(R.id.userNameLogin),
                         childAtPosition(
                                 childAtPosition(
@@ -226,9 +218,9 @@ public class ComplexLogicTest {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText3.perform(replaceText("driver"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("driver"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText4 = onView(
+        ViewInteraction appCompatEditText5 = onView(
                 allOf(withId(R.id.passwordLogin),
                         childAtPosition(
                                 childAtPosition(
@@ -236,7 +228,7 @@ public class ComplexLogicTest {
                                         0),
                                 2),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("driver"), closeSoftKeyboard());
+        appCompatEditText5.perform(replaceText("driver"), closeSoftKeyboard());
 
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.login_button), withText("Login"),
@@ -248,7 +240,7 @@ public class ComplexLogicTest {
                         isDisplayed()));
         appCompatButton2.perform(click());
 
-        ViewInteraction bottomNavigationItemView3 = onView(
+        ViewInteraction bottomNavigationItemView4 = onView(
                 allOf(withId(R.id.nav_maps), withContentDescription("Plan My Trip"),
                         childAtPosition(
                                 childAtPosition(
@@ -256,29 +248,7 @@ public class ComplexLogicTest {
                                         0),
                                 1),
                         isDisplayed()));
-        bottomNavigationItemView3.perform(click());
-
-        ViewInteraction searchAutoComplete3 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete3.perform(replaceText("vyr"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete4 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("vyr"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete4.perform(pressImeActionButton());
+        bottomNavigationItemView4.perform(click());
 
         ViewInteraction textInputEditText3 = onView(
                 allOf(withId(R.id.arrivalDate),
@@ -290,61 +260,17 @@ public class ComplexLogicTest {
                         isDisplayed()));
         textInputEditText3.perform(click());
 
-        try {
-            TimeUnit.SECONDS.sleep(1);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        /*
-        ViewInteraction searchAutoComplete5 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("vyr"),
+        ViewInteraction button4 = onView(
+                allOf(withClassName(is("android.widget.Button")), withText("OK"),
                         childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete5.perform(click());
-
-        ViewInteraction searchAutoComplete6 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("vyr"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete6.perform(replaceText("yvr"));
-
-
-         */
-        ViewInteraction searchAutoComplete7 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete7.perform(replaceText("yvr"), closeSoftKeyboard());
-
-        ViewInteraction searchAutoComplete8 = onView(
-                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("yvr"),
-                        childAtPosition(
-                                allOf(withClassName(is("android.widget.LinearLayout")),
-                                        childAtPosition(
-                                                withClassName(is("android.widget.LinearLayout")),
-                                                1)),
-                                0),
-                        isDisplayed()));
-        searchAutoComplete8.perform(pressImeActionButton());
+                                childAtPosition(
+                                        withClassName(is("android.widget.ScrollView")),
+                                        0),
+                                3)));
+        button4.perform(scrollTo(), click());
 
         ViewInteraction textInputEditText4 = onView(
-                allOf(withId(R.id.arrivalDate),
+                allOf(withId(R.id.arrivalTime),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("com.google.android.material.textfield.TextInputLayout")),
@@ -353,27 +279,8 @@ public class ComplexLogicTest {
                         isDisplayed()));
         textInputEditText4.perform(click());
 
-        ViewInteraction button4 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("android.widget.ScrollView")),
-                                        0),
-                                3)));
-        button4.perform(scrollTo(), click());
-
-        ViewInteraction textInputEditText5 = onView(
-                allOf(withId(R.id.arrivalTime),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("com.google.android.material.textfield.TextInputLayout")),
-                                        0),
-                                0),
-                        isDisplayed()));
-        textInputEditText5.perform(click());
-
-        ViewInteraction radioButton3 = onView(
-                allOf(withClassName(is("android.widget.RadioButton")), withText("PM"),
+        ViewInteraction radioButton2 = onView(
+                allOf(withClassName(is("android.widget.RadioButton")), withText("p.m."),
                         childAtPosition(
                                 allOf(withClassName(is("android.widget.RadioGroup")),
                                         childAtPosition(
@@ -381,18 +288,16 @@ public class ComplexLogicTest {
                                                 3)),
                                 1),
                         isDisplayed()));
-        radioButton3.perform(click());
+        radioButton2.perform(click());
 
         ViewInteraction button5 = onView(
-                allOf(withId(android.R.id.button1), withText("OK"),
+                allOf(withClassName(is("android.widget.Button")), withText("OK"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("android.widget.ScrollView")),
                                         0),
                                 3)));
         button5.perform(scrollTo(), click());
-
-        pressBack();
 
         ViewInteraction button6 = onView(
                 allOf(withId(R.id.To), withText("Find Route"),
@@ -404,17 +309,45 @@ public class ComplexLogicTest {
                         isDisplayed()));
         button6.perform(click());
 
-        pressBack();
+        ViewInteraction searchAutoComplete3 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete3.perform(replaceText("ubc"), closeSoftKeyboard());
 
-        ViewInteraction bottomNavigationItemView4 = onView(
-                allOf(withId(R.id.nav_chat), withContentDescription("Proposed Trips"),
+        ViewInteraction searchAutoComplete4 = onView(
+                allOf(withClassName(is("android.widget.SearchView$SearchAutoComplete")), withText("ubc"),
+                        childAtPosition(
+                                allOf(withClassName(is("android.widget.LinearLayout")),
+                                        childAtPosition(
+                                                withClassName(is("android.widget.LinearLayout")),
+                                                1)),
+                                0),
+                        isDisplayed()));
+        searchAutoComplete4.perform(pressImeActionButton());
+
+        ViewInteraction button7 = onView(
+                allOf(withId(R.id.To), withText("Find Route"),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.bottom_navigation),
+                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
                                         0),
-                                2),
+                                4),
                         isDisplayed()));
-        bottomNavigationItemView4.perform(click());
+        button7.perform(click());
+
+        pressBack();
+
+        ViewInteraction editText = onView(
+                allOf(withText("UserAlongrider"),
+                        isDisplayed()));
+        editText.check(matches(withText("UserAlongrider")));
+
 
         ViewInteraction actionMenuItemView2 = onView(
                 allOf(withId(R.id.logout), withContentDescription("Logout"),
@@ -425,46 +358,6 @@ public class ComplexLogicTest {
                                 1),
                         isDisplayed()));
         actionMenuItemView2.perform(click());
-
-        ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.userNameLogin),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        0),
-                                1),
-                        isDisplayed()));
-        appCompatEditText5.perform(replaceText("rider"), closeSoftKeyboard());
-
-        ViewInteraction appCompatEditText6 = onView(
-                allOf(withId(R.id.passwordLogin),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        0),
-                                2),
-                        isDisplayed()));
-        appCompatEditText6.perform(replaceText("rider"), closeSoftKeyboard());
-
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.login_button), withText("Login"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),
-                                        0),
-                                3),
-                        isDisplayed()));
-        appCompatButton3.perform(click());
-
-        ViewInteraction actionMenuItemView3 = onView(
-                allOf(withId(R.id.logout), withContentDescription("Logout"),
-                        childAtPosition(
-                                childAtPosition(
-                                        withId(R.id.action_bar),
-                                        1),
-                                1),
-                        isDisplayed()));
-        actionMenuItemView3.perform(click());
     }
 
     private static Matcher<View> childAtPosition(

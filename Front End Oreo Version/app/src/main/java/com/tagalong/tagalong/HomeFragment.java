@@ -115,7 +115,7 @@ public class HomeFragment extends Fragment {
         timingLogger.addSplit("setTripList - creating tripList");
         try {
             tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
-            Log.d(TAG, "Trip Array: " + tripListIN.toString());
+            //Log.d(TAG, "Trip Array: " + tripListIN.toString());
             for (int i = 0; i < tripListIN.length(); i++){
                 if(tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
                     this.tripList.add(new Trip(tripListIN.getJSONObject(i)));

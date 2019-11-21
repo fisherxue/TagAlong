@@ -18,6 +18,8 @@ import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import java.util.concurrent.TimeUnit;
+
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -76,6 +78,12 @@ public class ExternalApiTestII {
                                 3),
                         isDisplayed()));
         appCompatButton.perform(click());
+
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         ViewInteraction bottomNavigationItemView = onView(
                 allOf(withId(R.id.nav_maps), withContentDescription("Plan My Trip"),
@@ -147,8 +155,7 @@ public class ExternalApiTestII {
                                 3)));
         button2.perform(scrollTo(), click());
 
-        pressBack();
-
+        
         ViewInteraction button3 = onView(
                 allOf(withId(R.id.To), withText("Find Route"),
                         childAtPosition(
