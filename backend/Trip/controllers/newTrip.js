@@ -68,14 +68,6 @@ const handleCreateTrip = async (req, res) => {
 							// Create Chat room
 							driverTrip.chatroomID = createNewRoom(username);
 
-							// Create new Rider trip;
-
-							riderTrips = riderTrips.slice(0, 4); // should slice by driver car size
-							
-							riderTrips.forEach((ridertrip) => {
-								driverTrip.recommendedTrips.push(ridertrip);
-							})
-
 							driverTrip.isFulfilled = true;
 
 							TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true}, (err) => {
