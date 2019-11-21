@@ -83,6 +83,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
             userSB.append(trip.getTaggedUsers()[i]).append(",\t");
         }
+
         String usersAlong = userSB.toString();
 
         holder.departurePlace.setText("Departure Place: " + trip.getDeparturePlace());

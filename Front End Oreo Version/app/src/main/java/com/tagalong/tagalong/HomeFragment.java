@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -22,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,7 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class HomeFragment extends Fragment {
-    private final String TAG = "My Trips Fragment";
+    private final String TAG = "MyTripsFragment";
     private List<Trip> tripList;
     private View view;
     private Context context;
@@ -46,7 +49,7 @@ public class HomeFragment extends Fragment {
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
-        timingLogger = new TimingLogger(TAG, "My Trips Activity - Loading Trip Cards");
+        timingLogger = new TimingLogger(TAG, "My Trips Activity");
         initTripList();
         return view;
     }
@@ -63,7 +66,7 @@ public class HomeFragment extends Fragment {
             timingLogger.addSplit("initTripList - Send Request to get list of trips");
             profileJsonObject = new JSONObject((profileJson));
             Log.d(TAG, "profileJsonObject" + profileJsonObject);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, profileJsonObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Log.d(TAG, "Received List of Trips for the user");
@@ -80,7 +83,14 @@ public class HomeFragment extends Fragment {
                     Log.d(TAG, "Error: " + error.getMessage());
                     Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
                 }
-            });
+            }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("userID",profile.getUserID());
+                    return headers;
+                }
+            };
 
             queue.add(jsonObjectRequest);
 
@@ -92,6 +102,7 @@ public class HomeFragment extends Fragment {
         Log.d(TAG,"initializing TripView");
         timingLogger.addSplit("initTripView - Start Adapter");
         timingLogger.dumpToLog();
+        timingLogger.reset();
         RecyclerView recyclerView = view.findViewById(R.id.home_frag_recycler_view);
         TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
         recyclerView.setAdapter(tripViewAdapter);

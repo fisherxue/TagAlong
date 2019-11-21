@@ -1,6 +1,7 @@
 package com.tagalong.tagalong;
 
 import android.content.Context;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
+    private final String TAG = "MessageAdapter";
     public static final int MSG_LEFT = 0;
     public static final int MSG_RIGHT = 1;
 
@@ -20,10 +22,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Conversation> conversationList;
     private Profile currentUser;
 
+    private TimingLogger timingLogger;
+
     public MessageAdapter (Context context, List<Conversation> conversationList, Profile profile) {
         this.context = context;
         this.conversationList = conversationList;
         this.currentUser = profile;
+        timingLogger = new TimingLogger(TAG, "Message Adapter");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -52,6 +57,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+        timingLogger.addSplit("Starting to setup conversations");
         Conversation conversation = conversationList.get(position);
         if (conversation.getUserName().equals(currentUser.getUserName())){
             holder.displayMessage.setText(conversation.getMessage());
@@ -59,7 +65,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         else {
             holder.displayMessage.setText(conversation.getUserName() + ": " + conversation.getMessage());
         }
-
+        timingLogger.addSplit("Done Setting All Conversations");
+        timingLogger.dumpToLog();
+        //timingLogger.reset();
 
     }
 

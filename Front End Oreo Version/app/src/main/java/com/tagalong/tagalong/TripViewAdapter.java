@@ -3,6 +3,7 @@ package com.tagalong.tagalong;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,15 +30,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
 
-    private final String TAG = "Trip View Adapter";
+    private final String TAG = "TripViewAdapter";
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
+
+    private TimingLogger timingLogger;
 
     public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
+        timingLogger = new TimingLogger(TAG, "Trip View Adapter");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -76,6 +80,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Trip trip = tripList.get(position);
+        timingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
         StringBuilder userSB = new StringBuilder();
 
@@ -146,6 +151,9 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
                 }
             }
         });
+        timingLogger.addSplit("Done Setting All Trip Cards");
+        timingLogger.dumpToLog();
+        //timingLogger.reset();
     }
 
     @Override
