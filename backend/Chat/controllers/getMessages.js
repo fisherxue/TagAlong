@@ -24,12 +24,9 @@ const handleGetMessages = async (req, res) => {
 		return res.status(400).send("Unable to find user");
 	}
 
-	const chats = await Chat.find({ users: username });
+	const username = user.username;
 
-	if (!chats) {
-		debug("No chat found");
-		return res.status(400).send("No chat found");
-	} 
+	const chats = await Chat.find({ users: username });
 
 	res.json(chats);
 

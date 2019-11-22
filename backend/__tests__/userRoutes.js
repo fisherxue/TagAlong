@@ -207,7 +207,7 @@ describe('testing login', () => {
 
 		const user = await User.findOne({email: "demo6@demo.com"});
 
-		const res2 = await request.put("/users/updateProfile")
+		const res = await request.put("/users/updateProfile")
 			.send({
 				userID: user._id,
 				interests: [0,0,0,0,0],
@@ -222,15 +222,15 @@ describe('testing login', () => {
 			})
 			.expect(200);
 
-		expect(res2.body._id).toEqual(user._id.toString());
-		expect(res2.body.firstName).toBe("demo");
-		expect(res2.body.lastName).toBe("demo");
-		expect(res2.body.age).toBe(20);
-		expect(res2.body.gender).toBe("male");
-		expect(res2.body.email).toBe("demo@demo.com");
-		expect(res2.body.carCapacity).toBe(4);
-		expect(res2.body.fbToken).toBe("a");
-		expect(res2.body.isDriver).toBe(false);
+		expect(res.body._id).toEqual(user._id.toString());
+		expect(res.body.firstName).toBe("demo");
+		expect(res.body.lastName).toBe("demo");
+		expect(res.body.age).toBe(20);
+		expect(res.body.gender).toBe("male");
+		expect(res.body.email).toBe("demo@demo.com");
+		expect(res.body.carCapacity).toBe(4);
+		expect(res.body.fbToken).toBe("a");
+		expect(res.body.isDriver).toBe(false);
 
 		done();
 	})

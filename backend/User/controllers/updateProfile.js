@@ -37,7 +37,7 @@ const handleProfileUpdate = async (req, res) => {
 
 	const update = createUpdateObject(req);
 
-	const updateduser = await User.findByIdAndUpdate(userID, update);
+	const updateduser = await User.findByIdAndUpdate(userID, update, {new: true});
 
 	debug("updated user", updateduser);
 	res.json(updateduser);

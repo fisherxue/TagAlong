@@ -137,7 +137,7 @@ describe('testing chat', () => {
 		user3 = new User({
 			username: "chatdemouser6",
 			email: "chatdemouser6@demo.com",
-			password: "demodemodemo"
+			password: "demodemodemo",
 		});
 
 		await user3.save();
@@ -146,7 +146,7 @@ describe('testing chat', () => {
 
 		// Create a new Chat Room
 
-		chat = new Chat({
+		const chat = new Chat({
 			users: users,
 			messages: []
 		})
@@ -201,7 +201,7 @@ describe('testing chat', () => {
 			})
 			.expect(400); 
 		
-		expect(res.text).toBe("Invalid room ID");
+		expect(res.text).toBe("Invalid userID or roomID");
 
 		done();
 	})
@@ -215,7 +215,7 @@ describe('testing chat', () => {
 			})
 			.expect(400);
 
-		expect(res.text).toBe("Invalid userID");
+		expect(res.text).toBe("Invalid userID or roomID");
 
 		done();
 
@@ -225,7 +225,7 @@ describe('testing chat', () => {
 		const res = await(request.post("/chat/sendMessage"))
 			.send({
 				userID: "5dd334aa82dbf7805559b74a",
-				roomID: "",
+				roomID: "5dd334aa82dbf7805559b74a",
 				message: "home"
 			})
 			.expect(400);
@@ -283,7 +283,7 @@ describe('testing chat', () => {
 				newuser = user;
 			});
 
-		chat = new Chat({
+		const chat = new Chat({
 			users: [user1.username],
 			messages: [{
 				username: user1.username,
@@ -300,27 +300,25 @@ describe('testing chat', () => {
 
 		const roomID = chatroom._id;
 
-		const res = await(request.post("/chat/getMessages"))
-			.send({
-				userID: user1._id,
-				roomID: roomID
+		const res = await(request.get("/chat/getMessages"))
+			.set({
+				userID: user1._id
 			})
 			.expect(200);
 
 		expect(res.body).toBeTruthy();
-		expect(res.body.users).toEqual(expect.arrayContaining([user1.username]));
-		expect(res.body.messages[0].message).toBe("home");
-		expect(res.body.messages[0].username).toBe(user1.username);
+		expect(res.body[0].users).toEqual(expect.arrayContaining([user1.username]));
+		expect(res.body[0].messages[0].message).toBe("home");
+		expect(res.body[0].messages[0].username).toBe(user1.username);
 
 			
 		done();
 	})
 
 	it('gets messages for valid userID with missing user', async (done) => {
-		const res = await(request.post("/chat/getMessages"))
-			.send({
-				userID: "5dd334aa82dbf7805559b74a",
-				roomID: ""
+		const res = await(request.get("/chat/getMessages"))
+			.set({
+				userID: "5dd334aa82dbf7805559b74a"
 			})
 			.expect(400);
 
@@ -330,10 +328,9 @@ describe('testing chat', () => {
 	})
 
 	it('attempt to get message from invalid userID', async (done) => {
-		const res = await(request.post("/chat/getMessages"))
-			.send({
-				userID: "a",
-				roomID: ""
+		const res = await(request.get("/chat/getMessages"))
+			.set({
+				userID: "a"
 			})
 			.expect(400);
 
@@ -341,13 +338,12 @@ describe('testing chat', () => {
 		done();
 	})
 
-	it('attempt to get message from invalid roomID but valid user', async (done) => {
-		
+	it('attempt to send message to a user that no longer exists', async (done) => {
 		user1 = new User({
-			username: "chatdemouser13",
-			email: "chatdemouser13@demo.com",
+			username: "chatdemouser4",
+			email: "chatdemouser4@demo.com",
 			password: "demodemodemo",
-			fbToken: ""
+			fbToken: "eB2TuLLk7YA:APA91bH8JpAXQuzS8VEZlq2gGDVrbVtZS8vmU26A1wA6CUiclwylIuwwdnJeSIyi4a8PGOBfkXiBjKtRpM66lMkY_mr2a84XrnkgvSL8JEvS7ZjEgMRL0bPOKiAMf0vLFyWJBzbrMakS"
 		});
 
 		let newuser;
@@ -357,19 +353,40 @@ describe('testing chat', () => {
 				newuser = user;
 			});
 
-		const res = await(request.post("/chat/getMessages"))
+		const users = [user1.username, "demouser1" , "demouser2"];
+
+		// Create a new Chat Room
+
+		const chat = new Chat({
+			users: users,
+			messages: []
+		})
+
+		let chatroom;
+		await chat.save()
+			.then((chat) => {
+				chatroom = chat;
+			});
+
+
+		const roomID = chatroom._id;
+
+		const res2 = await request.post("/chat/sendMessage")
 			.send({
-				userID: user1._id,
-				roomID: ""
+				userID: newuser._id,
+				roomID: roomID,
+				message: "hello"
 			})
-			.expect(400);
+			.expect(200); 
+		
+		expect(res2.body).toBeTruthy();
+		expect(res2.body.users).toEqual(expect.arrayContaining(users));
+		expect(res2.body.messages[0].username).toBe(user1.username);
+		expect(res2.body.messages[0].message).toBe("hello");
 
-		expect(res.text).toBe("Invalid roomID");
+
 		done();
-
-
 	})
-
 
 
 })

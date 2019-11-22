@@ -7,7 +7,8 @@ const firebase = require("firebase-admin");
 
 const sendChatNotif = async (user, message) => {
 	const firebaseToken = user.fbToken;
-	if (firebaseToken){
+
+	if (typeof firebaseToken != 'undefined'){
 		const payload = {
 			notification: {
 				title: "New Message",
@@ -27,22 +28,23 @@ const sendChatNotif = async (user, message) => {
 		// .catch((err) => {
 		// 	debug(err);
 		// });
-	}
-	else {
+	} else {
 		debug("invalid firebaseToken");
 	}
 };
 
 const notifyUsers = async (users, message) => {
-	for(const username of users) {
+
+	users.forEach(async (username) => {
+		debug("sending message to: ", username);
 		const user = await User.findOne({ username });
 		if (user) {
-			await sendChatNotif(user, message);
+			sendChatNotif(user, message);
 		}
 		else {
 			debug("user not found");
 		}
-	}
+	});
 };
 
 const handleSendMessages = async (req, res) => {
@@ -81,7 +83,7 @@ const handleSendMessages = async (req, res) => {
 	});
 	await chat.save();
 	res.send(chat);
-	await notifyUsers(chat.users, message);
+	notifyUsers(chat.users, message);
 
 
 };
