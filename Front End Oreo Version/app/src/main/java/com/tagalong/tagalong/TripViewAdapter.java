@@ -144,7 +144,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "Error: Could delete Trips");
+                            Log.d(TAG, "Could delete trips");
                             Log.d(TAG, "Error: " + error.getMessage());
                             Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
                         }
@@ -157,9 +157,8 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
                 }
             }
         });
-        timingLogger.addSplit("Done Setting All Trip Cards");
+        timingLogger.addSplit("Done setting all trip cards");
         timingLogger.dumpToLog();
-        //timingLogger.reset();
     }
 
     @Override

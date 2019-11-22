@@ -137,6 +137,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
+                            error.printStackTrace();
                             Log.d(TAG, "Error: Could not get list of Trips");
                             Log.d(TAG, "Error: " + error.toString());
                             Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();

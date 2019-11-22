@@ -67,8 +67,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
         timingLogger.addSplit("Done Setting All Conversations");
         timingLogger.dumpToLog();
-        //timingLogger.reset();
-
     }
 
     @Override

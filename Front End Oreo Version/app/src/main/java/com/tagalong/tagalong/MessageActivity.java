@@ -99,49 +99,43 @@ public class MessageActivity extends AppCompatActivity {
         Conversation newConversation = new Conversation(message);
         newConversation.setRoomID(ID);
         newConversation.setUserID(profile.getUserID());
-        RequestQueue queue = Volley.newRequestQueue(context);
+
         String url = getString(R.string.sendMessage);
+
         final Gson gson = new Gson();
         final String conversationJson = gson.toJson(newConversation);
         JSONObject conversationJsonObject;
+
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                timingLogger.addSplit("Sent Message Successfully");
+                Log.d(TAG, "Message sent successfully");
+                Log.d(TAG, "Received list of messages for the chat");
+                setConversationList(response);
+                initChatView();
+            }
+
+            @Override
+            public void onError(String result){
+                timingLogger.addSplit("Error sending message");
+                Log.d(TAG, "Could not send message");
+                Log.d(TAG, "Error: " + result);
+                Toast.makeText(context, "We encountered some error,\nPlease send your message again", Toast.LENGTH_LONG).show();
+            }
+
+        };
         timingLogger.addSplit("Sending Message");
         try {
             conversationJsonObject = new JSONObject(conversationJson);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url,conversationJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    timingLogger.addSplit("Sent Message Successfully");
-                    Log.d(TAG, "Message Sent successfully");
-                    Log.d(TAG, "Received List of Messages for the chat");
-                    setConversationList(response);
-                    initChatView();
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    timingLogger.addSplit("Error Sending Message");
-                    Log.d(TAG, "Error: Could not send message");
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    Toast.makeText(context, "We encountered some error,\nPlease send your message again", Toast.LENGTH_LONG).show();
-                }
-            }){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("userID",profile.getUserID());
-                    return headers;
-                }
-            };
-
-            queue.add(jsonObjectRequest);
-
+            communicator.VolleyPost(url,conversationJsonObject,callback);
         } catch (JSONException e) {
-            Log.d(TAG, "JsonException building conversation " + e.getMessage());
+            Log.d(TAG, "Error making conversation JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
+            e.printStackTrace();
         }
-
     }
-
 
     private void initChatView(){
         Log.d(TAG,"initializing TripView");
@@ -190,41 +184,31 @@ public class MessageActivity extends AppCompatActivity {
 
     private void initChat(){
         Log.d(TAG, "Initializing Chat");
-        RequestQueue queue = Volley.newRequestQueue(context);
         String url = getString(R.string.getChatList);
-        final Gson gson = new Gson();
-        final String chatJson = gson.toJson(this.chat);
-        JSONObject chatJsonObject;
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("userID",profile.getUserID());
+        headers.put("roomID",ID);
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "Received list of messages for the chat");
+                timingLogger.addSplit("received list of messages");
+                setConversationList(response);
+                initChatView();
+            }
+            @Override
+            public void onError(String result){
+                Log.d(TAG, "Could not get Chat");
+                timingLogger.addSplit("error receiving list of messages");
+                Log.d(TAG, "Error: " +  result);
+                Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
+            }
+        };
 
-        try {
-            timingLogger.addSplit("getting list of messages");
-            Log.d(TAG, "Retrieving list of messages");
-            chatJsonObject = new JSONObject(chatJson);
-            Log.d(TAG,chatJsonObject.toString());
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, chatJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Received List of Messages for the chat");
-                    timingLogger.addSplit("received list of messages");
-                    setConversationList(response);
-                    initChatView();
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: Could not get Chat");
-                    timingLogger.addSplit("error receiving list of messages");
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
-        } catch (JSONException e) {
-            Log.d(TAG, "JsonException building conversation " + e.getMessage());
-        }
+        timingLogger.addSplit("getting list of messages");
+        Log.d(TAG, "Retrieving list of messages");
+        communicator.VolleyGet(url,callback,headers);
     }
 
     @Override
