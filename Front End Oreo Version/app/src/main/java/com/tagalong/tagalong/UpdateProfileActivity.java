@@ -223,7 +223,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 newUserProfile.setInterests(interests);
                 newUserProfile.setUserID(userProfile.getUserID());
                 newUserProfile.setEmail(userProfile.getEmail());
-                newUserProfile.setUserName(userProfile.getUserName());
+                newUserProfile.setUsername(userProfile.getUsername());
                 newUserProfile.setPassword(userProfile.getPassword());
                 newUserProfile.setJoinedDate(userProfile.getJoinedDate());
 
@@ -291,7 +291,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         Log.d(TAG,"Successfully updated user profile");
         final Profile received_profile = new Profile();
         try {
-            received_profile.setUserName(response.getString("username"));
+            received_profile.setUsername(response.getString("username"));
             received_profile.setAge(response.getInt("age"));
             received_profile.setFirstName(response.getString("firstName"));
             received_profile.setLastName(response.getString("lastName"));
@@ -315,13 +315,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         Log.d(TAG,"Successfully retrieved profile");
         Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
         intent.putExtra("profile", received_profile);
-        startActivity(intent);
-        UpdateProfileActivity.this.finish();
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(context, MainActivity.class);
         startActivity(intent);
         UpdateProfileActivity.this.finish();
     }

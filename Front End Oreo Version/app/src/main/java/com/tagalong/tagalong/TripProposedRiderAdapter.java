@@ -11,18 +11,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -97,37 +89,30 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestQueue queue = Volley.newRequestQueue(context);
                 String url = context.getString(R.string.deleteTrip);
-                final Gson gson = new Gson();
-                final String tripJson = gson.toJson(trip);
-                JSONObject tripJsonObject;
-                try {
-                    tripJsonObject = new JSONObject((tripJson));
-                    Log.d(TAG, "profileJsonObject" + tripJsonObject);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, tripJsonObject, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Trip Deleted");
-                            tripList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, tripList.size());
-                        }
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("userID",profile.getUserID());
+                headers.put("tripID",trip.getTripID());
 
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "Error: Could delete Trips");
-                            Log.d(TAG, "Error: " + error.getMessage());
-                            Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+                VolleyCallback callback = new VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response){
+                        Log.d(TAG, "Trip Deleted");
+                        tripList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, tripList.size());
+                    }
 
-                    queue.add(jsonObjectRequest);
+                    @Override
+                    public void onError(String result){
+                        Log.d(TAG, "Could delete trips");
+                        Log.d(TAG, "Error: " + result);
+                        Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    }
+                };
+                communicator.VolleyDelete(url,callback,headers);
             }
         });
     }

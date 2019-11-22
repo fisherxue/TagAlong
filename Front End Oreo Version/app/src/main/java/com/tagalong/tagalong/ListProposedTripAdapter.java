@@ -55,7 +55,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_list_proposed_trips, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.list_proposed_trips, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
@@ -76,13 +76,13 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
         holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
-        JSONArray tripListIN;
+        JSONArray inputTripList;
         tripList= new ArrayList<>();
         try{
-            tripListIN = objectList.get(position).getJSONArray("riderTrips");
+            inputTripList = objectList.get(position).getJSONArray("riderTrips");
             System.out.println(objectList.get(position));
-            for (int i = 0; i < tripListIN.length(); i++){
-                this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+            for (int i = 0; i < inputTripList.length(); i++){
+                this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();

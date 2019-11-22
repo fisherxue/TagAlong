@@ -1,6 +1,7 @@
 package com.tagalong.tagalong;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -59,13 +60,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         timingLogger.addSplit("Starting to setup conversations");
         Conversation conversation = conversationList.get(position);
-        if (conversation.getUserName().equals(currentUser.getUserName())){
+        if (conversation.getUserName().equals(currentUser.getUsername())){
             holder.displayMessage.setText(conversation.getMessage());
         }
         else {
-            holder.displayMessage.setText(conversation.getUserName() + ": " + conversation.getMessage());
+            holder.displayMessage.setText(Html.fromHtml("<b>"+ conversation.getUserName() + ": </b>" + conversation.getMessage()));
         }
-        timingLogger.addSplit("Done Setting All Conversations");
+        timingLogger.addSplit("Done setting all conversations");
         timingLogger.dumpToLog();
     }
 
@@ -76,7 +77,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public int getItemViewType(int position) {
-        if (currentUser.getUserName().equals(conversationList.get(position).getUserName())){
+        if (currentUser.getUsername().equals(conversationList.get(position).getUserName())){
             return MSG_RIGHT;
         }
         else {

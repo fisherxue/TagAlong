@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView carCap;
     private TextView registeredAs;
     private TextView gender;
+    private TextView joinedDate;
     private Button edit;
     private Context context;
 
@@ -39,6 +41,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         carCap = (TextView) findViewById(R.id.carCapacity);
         registeredAs = (TextView) findViewById(R.id.registeredAs);
         gender = (TextView) findViewById(R.id.gender);
+        joinedDate = (TextView) findViewById(R.id.joinedDate);
         edit = (Button) findViewById(R.id.edit);
     }
 
@@ -46,22 +49,23 @@ public class ViewProfileActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
         if (userProfile != null){
-            name.setText("Name: " + userProfile.getFirstName()+ " " + userProfile.getLastName());
-            username.setText("Username: " + userProfile.getUserName());
-            email.setText("Email address: " + userProfile.getEmail());
-            age.setText("Age: " + userProfile.getAge());
-            gender.setText("Gender: " + userProfile.getGender());
+            name.setText(Html.fromHtml("<b>Name: </b>" + userProfile.getFirstName()+ " " + userProfile.getLastName()));
+            username.setText(Html.fromHtml("<b>Username: </b>" + userProfile.getUsername()));
+            email.setText(Html.fromHtml("<b>Email address: </b>" + userProfile.getEmail()));
+            age.setText(Html.fromHtml("<b>Age: </b>" + userProfile.getAge()));
+            gender.setText(Html.fromHtml("<b>Gender: </b>" + userProfile.getGender()));
             if(userProfile.getDriver()){
-                registeredAs.setText("Registered as: Driver");
-                carCap.setText("Car Capacity: " + userProfile.getCarCapacity());
+                registeredAs.setText(Html.fromHtml("<b>Registered as: Driver"));
+                carCap.setText(Html.fromHtml("<b>Car Capacity: " + userProfile.getCarCapacity()));
             } else {
-                registeredAs.setText("Registered as: Rider");
+                registeredAs.setText(Html.fromHtml("<b>Registered as: Rider"));
             }
-            interests.setText(" Preference:\n" + "\t\t\tMusic: " + (userProfile.getInterests()[0]+1) +"/5\n" +
-                    "\t\t\tChatting: " + (userProfile.getInterests()[1]+1) +"/5\n" +
-                    "\t\t\tSpeed: " + (userProfile.getInterests()[2]+1) +"/5\n" +
-                    "\t\t\tFragrance: " + (userProfile.getInterests()[3]+1) +"/5\n" +
-                    "\t\t\tSmoking: " + (userProfile.getInterests()[4]+1) +"/5\n");
+            interests.setText(Html.fromHtml("<b>Preference:</b>\n" + "&emsp<b>Music: </b>" + (userProfile.getInterests()[0]+1) +"/5\n" +
+                    "&emsp<b>Chatting: </b>" + (userProfile.getInterests()[1]+1) +"/5\n" +
+                    "&emsp<b>Speed: </b>" + (userProfile.getInterests()[2]+1) +"/5\n" +
+                    "&emsp<b>Fragrance: </b>" + (userProfile.getInterests()[3]+1) +"/5\n" +
+                    "&emsp<b>Smoking: </b>" + (userProfile.getInterests()[4]+1) +"/5\n"));
+            joinedDate.setText(Html.fromHtml("<b>Joined Date: </b>" + userProfile.getJoinedDate()));
         }
 
         edit.setOnClickListener(new View.OnClickListener() {

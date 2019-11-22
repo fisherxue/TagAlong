@@ -14,19 +14,18 @@ import java.util.Date;
 import javax.xml.datatype.Duration;
 
 public class Trip implements Serializable {
-
+    private static final int MILLY_SECOND_in_SECOND = 1000;
     private String tripID;
     private String username;
+    private String departurePlace;
+    private String arrivalPlace;
+    private String userID;
+    private String roomID;
     private boolean isDriverTrip;
     private JSONObject tripRoute;
     private Date arrivalTime;
     private Date departureTime;
-    private String departurePlace;
-    private String arrivalPlace;
-    private String userID;
     private String[] taggedUsers;
-    private String roomID;
-    private String usertripID ;
 
     public Trip(){
        tripID = "not assigned";
@@ -47,31 +46,38 @@ public class Trip implements Serializable {
             this.username = trip.getString("username");
             this.tripID = trip.getString("_id");
             this.tripRoute = trip.getJSONObject("tripRoute");
-            //this.arrivalTime = (Date) trip.get("arrivalTime");
+            this.userID = trip.getString("userID");
+            this.isDriverTrip = trip.getBoolean("isDriverTrip");
+
             this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
                     .parse(trip.getString("arrivalTime"));
 
             Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
                     .getLong("value");
+
             this.departureTime = (Date) arrivalTime.clone();
-            this.departureTime.setTime(this.arrivalTime.getTime()-(duration*1000));
+
+            this.departureTime.setTime(this.arrivalTime.getTime()-(duration*MILLY_SECOND_in_SECOND));
+
             this.departurePlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("start_address");
             this.arrivalPlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("end_address");
-            this.userID = trip.getString("userID");
-            this.isDriverTrip = trip.getBoolean("isDriverTrip");
+
+
             JSONArray taggedUsers = trip.getJSONArray("taggedUsers");
             this.taggedUsers = new String[taggedUsers.length()];
             for (int i = 0; i < taggedUsers.length(); i++){
                 this.taggedUsers[i] = taggedUsers.getString(i);
             }
+
             if (trip.getBoolean("isFulfilled")){
                 this.roomID = trip.getString("chatroomID");
             } else {
                 this.roomID = "not set";
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {
@@ -155,10 +161,5 @@ public class Trip implements Serializable {
 
     public String getRoomID() {
         return roomID;
-    }
-
-    public void setUserTripID(String tripID){
-        usertripID = tripID;
-        this.tripID = tripID;
     }
 }

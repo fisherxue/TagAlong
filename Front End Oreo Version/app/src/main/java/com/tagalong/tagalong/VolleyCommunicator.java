@@ -88,5 +88,28 @@ public class VolleyCommunicator {
         );
         requestQueue.add(jsonObjectRequest);
     }
+
+    public void VolleyDelete(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                volleyCallback.onSuccess(response);
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                volleyCallback.onError(error.toString());
+            }
+        }
+        ){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                return headers;
+            }
+        };
+
+        requestQueue.add(jsonObjectRequest);
+    }
 }
 

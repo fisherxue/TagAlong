@@ -145,7 +145,7 @@ public class SignupActivity extends AppCompatActivity {
         Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
 
         try {
-            receivedProfile.setUserName(response.getString("username"));
+            receivedProfile.setUsername(response.getString("username"));
         } catch (JSONException e) {
             Log.d(TAG, "Error getting username from received profile");
             e.printStackTrace();

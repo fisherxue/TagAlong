@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             profileJSON = new JSONObject(contents);
             final Profile profile = new Profile();
             profile.setUserID(profileJSON.getString("userID"));
-            profile.setUserName(profileJSON.getString("username"));
+            profile.setUsername(profileJSON.getString("username"));
             profile.setFirstName(profileJSON.getString("firstName"));
             profile.setLastName(profileJSON.getString("lastName"));
             profile.setAge(profileJSON.getInt("age"));
@@ -378,7 +378,7 @@ public class MainActivity extends AppCompatActivity {
     private void verifyUserSuccess(JSONObject response){
         Profile profile = new Profile();
         try {
-            profile.setUserName(response.getString("username"));
+            profile.setUsername(response.getString("username"));
             profile.setUserID(response.getString("_id"));
             profile.setFirstName(response.getString("firstName"));
             profile.setLastName(response.getString("lastName"));
@@ -442,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
 
                 try {
-                    profile.setUserName(response.getString("username"));
+                    profile.setUsername(response.getString("username"));
                     profile.setEmail(response.getString("email"));
                     profile.setUserID(response.getString("_id"));
                     profile.setJoinedDate(response.getString("joinedDate"));

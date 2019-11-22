@@ -8,15 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,7 +15,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,7 +34,7 @@ public class ProposedTripFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view =  inflater.inflate(R.layout.fragment_chat, container, false);
+        view =  inflater.inflate(R.layout.fragment_proposed_trips, container, false);
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
@@ -66,14 +56,14 @@ public class ProposedTripFragment extends Fragment {
         VolleyCallback callback = new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response){
-                Log.d(TAG, "Received List of Trips for the user");
+                Log.d(TAG, "Received list of trips for the user");
                 setTripList(response, isDriver);
                 initTripView(isDriver);
             }
 
             @Override
             public void onError(String result){
-                Log.d(TAG, "Error: Could not get list of Trips");
+                Log.d(TAG, "Could not get list of Trips");
                 Log.d(TAG, "Error: " + result);
                 Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
 
@@ -97,13 +87,13 @@ public class ProposedTripFragment extends Fragment {
     }
 
     private void setTripList (JSONObject response, Boolean isDriver){
-        JSONArray tripListIN;
+        JSONArray inputTripList;
         if (isDriver) {
             proposedList = new ArrayList<>();
             try{
-                tripListIN = response.getJSONArray("trips");
-                for (int i = 0; i < tripListIN.length(); i++){
-                    this.proposedList.add(tripListIN.getJSONObject(i));
+                inputTripList = response.getJSONArray("trips");
+                for (int i = 0; i < inputTripList.length(); i++){
+                    this.proposedList.add(inputTripList.getJSONObject(i));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -112,10 +102,10 @@ public class ProposedTripFragment extends Fragment {
         else {
             tripList = new ArrayList<>();
             try {
-                tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
-                for (int i = 0; i < tripListIN.length(); i++){
-                    if(!tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
-                        this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+                inputTripList = response.getJSONArray("trips");
+                for (int i = 0; i < inputTripList.length(); i++){
+                    if(!inputTripList.getJSONObject(i).getBoolean("isFulfilled")){
+                        this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
                     }
                 }
 

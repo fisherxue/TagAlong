@@ -15,17 +15,8 @@ import android.util.TimingLogger;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -35,14 +26,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class MessageActivity extends AppCompatActivity {
 
     private Context context;
     private static final String TAG = "MessageActivity";
 
-    private ImageButton sendMessage;
+    private ImageButton sendMessageButton;
     private EditText messageToSend;
     private Profile profile;
     private String ID;
@@ -59,7 +49,7 @@ public class MessageActivity extends AppCompatActivity {
         context = this;
         profile = (Profile) getIntent().getSerializableExtra("profile");
         ID =  getIntent().getStringExtra("ID");
-        sendMessage = (ImageButton) findViewById(R.id.sendButton);
+        sendMessageButton = (ImageButton) findViewById(R.id.sendButton);
         messageToSend = (EditText) findViewById(R.id.sendMessage);
     }
 
@@ -68,7 +58,7 @@ public class MessageActivity extends AppCompatActivity {
         super.onStart();
         chat = new Chat(ID);
         chat.setUserID(profile.getUserID());
-        sendMessage.setOnClickListener(new View.OnClickListener() {
+        sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (!messageToSend.getText().toString().equals("")){
@@ -199,7 +189,7 @@ public class MessageActivity extends AppCompatActivity {
             }
             @Override
             public void onError(String result){
-                Log.d(TAG, "Could not get Chat");
+                Log.d(TAG, "Could not get chat");
                 timingLogger.addSplit("error receiving list of messages");
                 Log.d(TAG, "Error: " +  result);
                 Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();

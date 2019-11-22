@@ -147,7 +147,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
                     }
 
                     trip.setTripRoute(origin, destination);
-                    trip.setUsername(userProfile.getUserName());
+                    trip.setUsername(userProfile.getUsername());
                     trip.setUserID(userProfile.getUserID());
                     trip.setDriverTrip(userProfile.getDriver());
                     trip.setArrivalTime(arrivalDate);

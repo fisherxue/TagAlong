@@ -64,7 +64,7 @@ public class Profile implements Serializable {
         return lastName;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
@@ -109,8 +109,8 @@ public class Profile implements Serializable {
         this.lastName = lastName;
     }
 
-    public void setUserName(String userName) {
-        this.username = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {

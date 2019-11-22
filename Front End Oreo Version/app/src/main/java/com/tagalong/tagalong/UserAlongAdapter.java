@@ -20,6 +20,8 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -27,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.ViewHolder> {
 
-    private final String TAG = "UserAlongAdapter";
+    private final String TAG = "UserAlong Adapter";
     private Context context;
     private List<String> usernames;
     private Profile profile;
@@ -39,10 +41,8 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
-
         private Button viewProfile;
         private TextView userAlong;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -68,34 +68,26 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
         holder.viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestQueue queue = Volley.newRequestQueue(context);
-                String url = context.getString(R.string.deleteTrip);
-                final Gson gson = new Gson();
-                final String tripJson = gson.toJson(usersAlong);
-                JSONObject tripJsonObject;
-                try {
-                    tripJsonObject = new JSONObject((tripJson));
-                    Log.d(TAG, "profileJsonObject" + tripJsonObject);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, tripJsonObject, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Success");
-                        }
+                String url = context.getString(R.string.getUserAlongProfile);
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("username",usersAlong);
+                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+                VolleyCallback callback = new VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response){
+                        Log.d(TAG, "Received list of messages for the chat");
 
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "Error: Could delete Trips");
-                            Log.d(TAG, "Error: " + error.getMessage());
-                            Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                    }
+                    @Override
+                    public void onError(String result){
+                        Log.d(TAG, "Could not get profile");
+                        Log.d(TAG, "Error: " +  result);
+                        Toast.makeText(context, "We encountered some error,\nPlease try again", Toast.LENGTH_LONG).show();
+                    }
+                };
 
-                    queue.add(jsonObjectRequest);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Log.d(TAG, "Retrieving userAlong profile");
+                communicator.VolleyGet(url,callback,headers);
             }
         });
     }

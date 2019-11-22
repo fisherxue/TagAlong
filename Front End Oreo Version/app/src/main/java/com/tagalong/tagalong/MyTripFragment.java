@@ -9,15 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,7 +16,6 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -45,7 +35,7 @@ public class MyTripFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_home, container, false);
+        view = inflater.inflate(R.layout.fragment_my_trips, container, false);
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
@@ -94,14 +84,14 @@ public class MyTripFragment extends Fragment {
     }
 
     private void setTripList (JSONObject response){
-        JSONArray tripListIN;
+        JSONArray inputTripList;
         tripList = new ArrayList<>();
         timingLogger.addSplit("setTripList - creating tripList");
         try {
-            tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
-            for (int i = 0; i < tripListIN.length(); i++){
-                if(tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
-                    this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+            inputTripList = response.getJSONArray("trips");
+            for (int i = 0; i < inputTripList.length(); i++){
+                if(inputTripList.getJSONObject(i).getBoolean("isFulfilled")){
+                    this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
                 }
             }
             timingLogger.addSplit("setTripList - created tripList");

@@ -14,6 +14,7 @@
     <string name="createTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/newTrip</string>
     <string name="deleteTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/delTrip</string>
     <string name="acceptTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/acceptTrip</string>
+    <string name="getUserAlongProfile">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/</string>
     <string name="getRecommendedTrips">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/getRecommendedTrips</string>
     <string name="google_directions_key">AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ</string>
     <string name="title_activity_trip_display">Map</string>
