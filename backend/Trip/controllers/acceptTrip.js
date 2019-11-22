@@ -50,57 +50,59 @@ const sendNotif = async (user) => {
 
 const handleAcceptTrip = async (req, res) => {
 	
+	debug("/acceptTrip hit");
+
 	const userID = req.body.userID;
 	const drivertripID = req.body.tripID;
 	const usertripID = req.body.usertripID;
 
-	if (mongoose.Types.ObjectId.isValid(userID)) {
-		User.findById(userID, (err, user) => {
-			if (!user) {
-				return res.status(400).send("Unable to find user");
-			} else {
-				TripStore.findById(drivertripID, (err, driverTrip) => {
-					if (err) {
-						res.status(400).send("trip not found");
-					} else {
-						// Update drivertrip
-						TripStore.findById(usertripID, (err, ridertrip) => {
-							if (ridertrip) {
-								driverTrip.tripRoute = tripRecommender.modifyTrip(driverTrip, riderTrip);
-								driverTrip.taggedUsers.push(ridertrip.username);
-								driverTrip.taggedTrips.push(ridertrip._id);
-
-								debug(driverTrip, "driverTrip update");
-								
-								driverTrip.save();
-								ridertrip.drivertripID = driverTrip._id;
-								ridertrip.save();
-
-								User.findById(usertripID.userID, (err, user) => {
-									if (user) {
-										// Add user to chatroom
-										addUsertoChatRoom(usertripID.username, driverTrip.chatroomID);
-										debug("added ", usertripID.username, "to chatroom", "driverTrip.chatroomID");
-										res.json("Added user to trip");
-									}
-									else {
-										res.status(400).send("user of usertripID not found");
-									}
-								})
-								
-							}
-							else {
-								debug("ridertrip not found");
-								res.status(400).send("ridertrip not found");
-							}
-						});
-					}
-				});
-			}
-		});
-	} else {
-		return res.status(400).send("Invalid userID");
+	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(drivertripID) | mongoose.Types.ObjectId.isValid(usertripID)) {
+		debug("Invalid user ID or roomID");
+		return res.status(400).send("Invalid userID or roomID");
 	}
+
+	const user = User.findById(userID);
+
+	if (!user) {
+		debug("Unable to find user");
+		return res.status(400).send("Unable to find user");
+	}
+
+	const driverTrip = TripStore.findById(drivertripID);
+
+	if (!driverTrip) {
+		debug("driver trip not found");
+		return res.status(400).send("driver trip not found");
+	}
+
+	const riderTrip = TripStore.findById(usertripID);
+
+	if (!riderTrip) {
+		debug("rider trip not found");
+		return res.status(400).send("rider trip not found");
+	}
+
+	const rider_user = User.findById(riderTrip.userID);
+
+	if (!rider_user) {
+		debug("rider user not found");
+		return res.status(400).send("rider user not found");
+	} 
+
+	driverTrip.tripRoute = tripRecommender.modifyTrip(driverTrip, riderTrip);
+	driverTrip.taggedUsers.push(riderTrip.username);
+	driverTrip.taggedTrips.push(riderTrip._id);
+
+	debug(driverTrip, "driverTrip update");
+	
+	driverTrip.save();
+	riderTrip.drivertripID = driverTrip._id;
+	riderTrip.save();
+
+	addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
+	debug("added ", rider_user.username, "to chatroom", driverTrip.chatroomID);
+
+	res.json("Added user to trip");
 
 };
 
