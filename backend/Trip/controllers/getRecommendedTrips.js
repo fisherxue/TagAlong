@@ -31,22 +31,22 @@ const handleGetRecommendedTrips = async (req, res) => {
 			return res.status(400).send("Driver has no trips");
 		}
 		let recommendedTrips = [];
-		trips.forEach(async (trip) => {
+
+		for (const trip of trips) {
 			let appendingobj = {
 				drivertrip: {},
 				riderTrips: []
 			};
 
 			appendingobj.drivertrip = trip;
-			// tripRecommender.driverTripHandler(trip, (riderTrips, driverTrip) => {
-			// 	debug("trips for current drivertrip", riderTrips);
-			// 	appendingobj.riderTrips = riderTrips;
-			// });
 
-			appendingobj.riderTrips = await tripRecommender.driverTripHandler(trip);
+			ridertrips = await tripRecommender.driverTripHandler(trip);
+			
+			appendingobj.riderTrips = ridertrips; 
 			debug("current appendending object", appendingobj);
 			recommendedTrips.push(appendingobj);
-		});
+		}
+		
 		debug("responing recommended trips", recommendedTrips);
 		res.json({trips: recommendedTrips});
 
