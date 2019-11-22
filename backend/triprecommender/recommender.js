@@ -251,10 +251,11 @@ async function getRiderTrips(driverTrip) {
  * Handles a driver trip request
  * Gets the applicable rider trips
  */
-function driverTripHandler(driverTrip, callback) {
+function driverTripHandler(driverTrip) {
 	if (typeof driverTrip === "undefined") {
 		return [];
 	}
+	let riderTrips;
 	getRiderTrips(driverTrip)
 		.then(res => {
 			riderTrips = res;
