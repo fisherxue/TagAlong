@@ -3,7 +3,6 @@ package com.tagalong.tagalong;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-//import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,23 +10,16 @@ import android.view.MenuItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.gson.Gson;
 
-//import java.io.BufferedWriter;
-//import java.io.File;
 import java.io.FileOutputStream;
-//import java.io.IOException;
-//import java.io.OutputStreamWriter;
-//import java.security.GeneralSecurityException;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-//import androidx.security.crypto.EncryptedFile;
-//import androidx.security.crypto.MasterKeys;
 
 import com.facebook.login.LoginManager;
 
 public class HomeActivity extends AppCompatActivity {
-    private final String TAG = "HomeActivity";
+    private final String TAG = "Home Activity";
     private Context context;
     private Profile userProfile;
 
@@ -35,6 +27,7 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home2);
+        Log.d(TAG,"Home activity created");
 
         context = this;
         userProfile = (Profile) getIntent().getSerializableExtra("profile");
@@ -50,7 +43,6 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        //return super.onCreateOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_menu,menu);
         return true;
@@ -60,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.profile :
-                Log.d(TAG,"Visualizing User Profile.");
+                Log.d(TAG,"Visualizing user profile.");
                 Intent intent = new Intent(context, ViewProfileActivity.class);
                 intent.putExtra("profile", userProfile);
                 startActivity(intent);
@@ -84,20 +76,19 @@ public class HomeActivity extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                    Fragment frag = null;
+                    Fragment fragment = null;
 
                     switch (menuItem.getItemId()){
-
                         case R.id.nav_home:
-                            Log.d(TAG,"Opening HomeFragment");
-                            frag = new HomeFragment();
+                            Log.d(TAG,"Opening MyTripFragment");
+                            fragment = new HomeFragment();
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("profile", userProfile);
-                            frag.setArguments(bundle);
+                            fragment.setArguments(bundle);
                             break;
 
                         case R.id.nav_maps:
-                            Log.d(TAG,"Opening MapsFragment");
+                            Log.d(TAG,"Opening SetTripFragment");
                             Intent intent = new Intent(context, MapsFragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
@@ -105,26 +96,24 @@ public class HomeActivity extends AppCompatActivity {
                             break;
 
                         case R.id.nav_chat:
-                            Log.d(TAG,"Opening ChatFragment");
-                            frag = new ChatFragment();
+                            Log.d(TAG,"Opening ProposedTripFragment");
+                            fragment = new ChatFragment();
                             Bundle bundle2 = new Bundle();
                             bundle2.putSerializable("profile", userProfile);
-                            frag.setArguments(bundle2);
+                            fragment.setArguments(bundle2);
                             break;
 
                         default:
                             break;
                     }
-
-                    if (frag != null) {
-                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
+                    if (fragment != null) {
+                        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, fragment).commit();
                     }
                     return true;
                 }
             };
 
     private void removeSavedFiles(){
-        //context.deleteFile("Saved_TripList.txt");
         context.deleteFile("Saved_Profile.txt");
         userProfile = null;
     }
@@ -133,49 +122,6 @@ public class HomeActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (userProfile != null) {
-            /*
-            KeyGenParameterSpec keyGenParameterSpec = MasterKeys.AES256_GCM_SPEC;
-            String masterKeyAlias = null;
-
-            try {
-                masterKeyAlias = MasterKeys.getOrCreate(keyGenParameterSpec);
-                Log.d(TAG, "key: " + masterKeyAlias);
-            } catch (GeneralSecurityException e) {
-                Log.d(TAG, "Error : creating key for encryption");
-                Log.d(TAG, "Error (General Security Exception): " + e.toString());
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.d(TAG, "Error : creating key for encryption");
-                Log.d(TAG, "Error (IOException): " + e.toString());
-                e.printStackTrace();
-            }
-
-            String fileToWrite = "Saved_Profile.txt";
-            try {
-                EncryptedFile encryptedFile = new EncryptedFile.Builder(
-                        new File(context.getFilesDir(), fileToWrite),
-                        context,
-                        masterKeyAlias,
-                        EncryptedFile.FileEncryptionScheme.AES256_GCM_HKDF_4KB
-                ).build();
-
-                // Write to a file.
-                Gson gson = new Gson();
-                String profileJson = gson.toJson(userProfile);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-                        encryptedFile.openFileOutput()));
-                writer.write(profileJson);
-            } catch (GeneralSecurityException e) {
-                Log.d(TAG, "Error : creating key for encryption");
-                Log.d(TAG, "Error (General Security Exception): " + e.toString());
-                e.printStackTrace();
-            } catch (IOException e) {
-                Log.d(TAG, "Error : creating key for encryption");
-                Log.d(TAG, "Error (IOException): " + e.toString());
-                e.printStackTrace();
-            }
-             */
-
             String filename = "Saved_Profile.txt";
             Gson gson = new Gson();
             String profileJson = gson.toJson(userProfile);
@@ -187,14 +133,12 @@ public class HomeActivity extends AppCompatActivity {
                 outputStream.write(fileContents.getBytes());
                 outputStream.close();
             } catch (Exception e) {
-                Log.d(TAG, "Error : Exception Writing file");
-                Log.d(TAG, "Error (Exception): " + e.toString());
+                Log.d(TAG, "Exception writing saved profile file");
+                Log.d(TAG, "Exception: " + e.toString());
                 e.printStackTrace();
             } finally {
                 Log.d(TAG, "Saved profile in Saved_Profile.txt");
             }
-
         }
-
     }
 }

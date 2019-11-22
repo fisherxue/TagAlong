@@ -13,12 +13,6 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
 import org.json.JSONArray;
@@ -259,68 +253,70 @@ public class UpdateProfileActivity extends AppCompatActivity {
     }
 
     private void sendProfile(Profile profile) {
-        RequestQueue queue = Volley.newRequestQueue(context);
         String url = getString(R.string.updateProfile);
 
-        Gson gson = new Gson();
-        String profileJson = gson.toJson(profile);
+        final Gson gson = new Gson();
+        final String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
+
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "Login verification successful");
+                updateProfileSuccessful(response);
+            }
+            @Override
+            public void onError(String result){
+                Log.d(TAG,"Update profile not successful");
+                Log.d(TAG, "Volley Error: " + result);
+                Toast.makeText(context, "Encountered Issue \nPlease Try Again", Toast.LENGTH_LONG).show();
+            }
+        };
+
         try {
             Log.d(TAG,"Sending user profile information");
             profileJsonObject = new JSONObject((profileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Toast.makeText(context, "Update Profile Successful", Toast.LENGTH_LONG).show();
-                    Log.d(TAG,"Successfully updated user profile");
-                    final Profile received_profile = new Profile();
-                    try {
-                        received_profile.setUserName(response.getString("username"));
-                        JSONArray jsonArray = response.getJSONArray("interests");
-                        int [] interests = new int[jsonArray.length()];
-                        for (int i = 0; i < jsonArray.length(); i++){
-                            interests[i] = jsonArray.getInt(i);
-                        }
-                        received_profile.setInterests(interests);
-                        received_profile.setAge(response.getInt("age"));
-                        received_profile.setGender(response.getString( "gender"));
-                        received_profile.setEmail(response.getString("email"));
-                        received_profile.setPassword(response.getString("password"));
-                        received_profile.setDriver(response.getBoolean("isDriver"));
-                        received_profile.setUserID(response.getString("_id"));
-                        received_profile.setJoinedDate(response.getString("joinedDate"));
-                        received_profile.setFirstName(response.getString("firstName"));
-                        received_profile.setLastName(response.getString("lastName"));
-                    } catch (JSONException e) {
-                        Log.d(TAG,"Error while retrieving profile");
-                        Log.d(TAG,"Error" + e.toString());
-                    }
-
-                    Log.d(TAG,"Successfully Retrieved profile");
-                    Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
-                    intent.putExtra("profile", received_profile);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    UpdateProfileActivity.this.finish();
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG,"Error: Registration Un-Successful");
-                    Log.d(TAG, "Volley Error: " + error.toString());
-                    Toast.makeText(context, "Encountered Issue \nPlease Try Again", Toast.LENGTH_LONG).show();
-                    error.printStackTrace();
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
+            communicator.VolleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
-            Log.d(TAG,"Exception: Could not convert loginJson String to JsonObject");
+            Log.d(TAG, "Error making update profile JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
             e.printStackTrace();
         }
+
+    }
+
+    private void updateProfileSuccessful(JSONObject response) {
+        Toast.makeText(context, "Update Profile Successful", Toast.LENGTH_LONG).show();
+        Log.d(TAG,"Successfully updated user profile");
+        final Profile received_profile = new Profile();
+        try {
+            received_profile.setUserName(response.getString("username"));
+            received_profile.setAge(response.getInt("age"));
+            received_profile.setFirstName(response.getString("firstName"));
+            received_profile.setLastName(response.getString("lastName"));
+            received_profile.setUserID(response.getString("_id"));
+            received_profile.setGender(response.getString( "gender"));
+            received_profile.setEmail(response.getString("email"));
+            received_profile.setPassword(response.getString("password"));
+            received_profile.setDriver(response.getBoolean("isDriver"));
+            received_profile.setJoinedDate(response.getString("joinedDate"));
+            JSONArray jsonArray = response.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            received_profile.setInterests(interests);
+        } catch (JSONException e) {
+            Log.d(TAG,"Error while retrieving profile");
+            Log.d(TAG,"Error: " + e.toString());
+        }
+
+        Log.d(TAG,"Successfully retrieved profile");
+        Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
+        intent.putExtra("profile", received_profile);
+        startActivity(intent);
+        UpdateProfileActivity.this.finish();
     }
 
     @Override

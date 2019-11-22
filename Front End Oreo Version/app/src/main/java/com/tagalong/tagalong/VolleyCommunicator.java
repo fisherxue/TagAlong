@@ -71,5 +71,22 @@ public class VolleyCommunicator {
         );
         requestQueue.add(jsonObjectRequest);
     }
+
+    public void VolleyPut(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                volleyCallback.onSuccess(response);
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                volleyCallback.onError(error.toString());
+            }
+        }
+        );
+        requestQueue.add(jsonObjectRequest);
+    }
 }
 

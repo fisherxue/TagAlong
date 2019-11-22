@@ -120,6 +120,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                 JsonObject acceptTrip = new JsonObject();
                 acceptTrip.addProperty("usertripID", trip.getTripID());
                 acceptTrip.addProperty("tripID", tripID);
+                acceptTrip.addProperty("userID",profile.getUserID());
 
                 JSONObject acceptTripJson;
 

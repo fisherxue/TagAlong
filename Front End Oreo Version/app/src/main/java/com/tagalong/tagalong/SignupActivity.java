@@ -122,7 +122,7 @@ public class SignupActivity extends AppCompatActivity {
             }
             @Override
             public void onError(String result){
-                Log.d(TAG,"Registration Un-Successful");
+                Log.d(TAG,"Registration not successful");
                 Log.d(TAG, "Volley Error: " + result);
                 Toast.makeText(context, "Encountered Issue \nPlease Try Again", Toast.LENGTH_LONG).show();
             }
