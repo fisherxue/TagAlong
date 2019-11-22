@@ -34,7 +34,7 @@ const handleGetTrips = async (req, res) => {
 	}
 
 	debug("responded with trips", trips);
-	res.json({trips: trips});
+	res.json({trips});
 
 };
 

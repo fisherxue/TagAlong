@@ -86,31 +86,36 @@ const handleAcceptTrip = async (req, res) => {
 		return res.status(400).send("rider trip not found");
 	}
 
-	const rider_user = await User.findById(riderTrip.userID);
+	const riderUser = await User.findById(riderTrip.userID);
 
-	if (!rider_user) {
+	if (!riderUser) {
 		debug("rider user not found");
 		return res.status(400).send("rider user not found");
 	} 
 
 	debug("selected driver trip", driverTrip);
 
-	tripRecommender.modifyTrip(driverTrip, [riderTrip], res => {
-		driverTrip.tripRoute = res;
+	tripRecommender.modifyTrip(driverTrip, [riderTrip], (triproute) => {
+		driverTrip.tripRoute = triproute;
 		driverTrip.taggedUsers.push(riderTrip.username);
 		driverTrip.taggedTrips.push(riderTrip._id);
 
 		debug(driverTrip, "driverTrip update");
 		
 		driverTrip.save();
-		riderTrip.drivertripID = driverTrip._id;
+		riderTrip.driverTripID = driverTrip._id;
 		riderTrip.chatroomID = driverTrip.chatroomID;
+		riderTrip.isFulfilled = true;
+		riderTrip.taggedUsers.push(driverTrip.username);
 		riderTrip.save();
 
-		addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
-		debug("added ", rider_user.username, "to chatroom", driverTrip.chatroomID);
+		addUsertoChatRoom(riderUser.username, driverTrip.chatroomID);
+		debug("added ", riderUser.username, "to chatroom", driverTrip.chatroomID);
 
-		res.json("Added user to trip");
+		res.send({
+			status: "OK",
+			message: "user successfully added to trip"
+		});
 	});
 
 	

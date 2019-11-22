@@ -8,7 +8,7 @@ const firebase = require("firebase-admin");
 const sendChatNotif = async (user, message) => {
 	const firebaseToken = user.fbToken;
 
-	if (typeof firebaseToken != 'undefined'){
+	if (typeof firebaseToken != "undefined"){
 		const payload = {
 			notification: {
 				title: "New Message",

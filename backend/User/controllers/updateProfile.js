@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const mongoose = require("mongoose");
-const debug = require("debug")("http");
+const debug = require("debug")("http /updateProfile");
 
 const createUpdateObject = (req) => {
 

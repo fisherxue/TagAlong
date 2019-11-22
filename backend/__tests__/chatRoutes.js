@@ -302,14 +302,15 @@ describe('testing chat', () => {
 
 		const res = await(request.get("/chat/getMessages"))
 			.set({
-				userID: user1._id
+				userID: user1._id,
+				roomID: roomID
 			})
 			.expect(200);
 
 		expect(res.body).toBeTruthy();
-		expect(res.body[0].users).toEqual(expect.arrayContaining([user1.username]));
-		expect(res.body[0].messages[0].message).toBe("home");
-		expect(res.body[0].messages[0].username).toBe(user1.username);
+		expect(res.body.users).toEqual(expect.arrayContaining([user1.username]));
+		expect(res.body.messages[0].message).toBe("home");
+		expect(res.body.messages[0].username).toBe(user1.username);
 
 			
 		done();
@@ -318,7 +319,8 @@ describe('testing chat', () => {
 	it('gets messages for valid userID with missing user', async (done) => {
 		const res = await(request.get("/chat/getMessages"))
 			.set({
-				userID: "5dd334aa82dbf7805559b74a"
+				userID: "5dd334aa82dbf7805559b74a",
+				roomID: "5dd334aa82dbf7805559b74a"
 			})
 			.expect(400);
 
@@ -334,7 +336,7 @@ describe('testing chat', () => {
 			})
 			.expect(400);
 
-		expect(res.text).toBe("Invalid userID");
+		expect(res.text).toBe("Invalid userID or roomID");
 		done();
 	})
 
