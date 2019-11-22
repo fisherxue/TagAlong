@@ -26,6 +26,7 @@ public class Trip implements Serializable {
     private String userID;
     private String[] taggedUsers;
     private String roomID;
+    private String usertripID ;
 
     public Trip(){
        tripID = "not assigned";
@@ -150,5 +151,10 @@ public class Trip implements Serializable {
 
     public String getRoomID() {
         return roomID;
+    }
+
+    public void setUserTripID(String tripID){
+        usertripID = tripID;
+        this.tripID = tripID;
     }
 }

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
+    android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <com.google.android.material.card.MaterialCardView
@@ -15,12 +13,6 @@
         android:layout_marginRight="@dimen/mtrl_card_spacing"
         android:minHeight="200dp"
         >
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            >
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -75,42 +67,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/user_along_recycler_view"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                >
-                <Button
-                    android:id="@+id/map"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:backgroundTint="@color/map"
-                    android:text="Map" />
-
-                <Button
-                    android:id="@+id/delete"
-                    style="@style/Widget.MaterialComponents.Button"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:backgroundTint="@color/delete"
-                    android:text="Delete" />
+                    android:id="@+id/recommended_list_recycler_view"/>
 
             </LinearLayout>
-        </LinearLayout>
-
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

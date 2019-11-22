@@ -1,7 +1,6 @@
 package com.tagalong.tagalong;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,86 +20,58 @@ import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedRiderAdapter.ViewHolder> {
+public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.ViewHolder> {
 
-    private final String TAG = "Trip View Adapter";
+    private final String TAG = "UserAlongAdapter";
     private Context context;
-    private List<Trip> tripList;
+    private List<String> usernames;
     private Profile profile;
 
-    public TripProposedRiderAdapter(Context context, List<Trip> tripList, Profile profile) {
+    public UserAlongAdapter(Context context, List<String> usernames, Profile profile) {
         this.context = context;
-        this.tripList = tripList;
+        this.usernames = usernames;
         this.profile = profile;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
 
-        private Button map;
-        private Button delete;
-        private TextView departurePlace;
-        private TextView arrivalPlace;
-        private TextView departureTime;
-        private TextView arrivalTime;
+        private Button viewProfile;
+        private TextView userAlong;
 
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            map = itemView.findViewById(R.id.map);
-            delete = itemView.findViewById(R.id.delete);
-            departurePlace = itemView.findViewById(R.id.departurePlace);
-            arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
-            departureTime = itemView.findViewById(R.id.departureClock);
-            arrivalTime = itemView.findViewById(R.id.arrivalClock);
+            viewProfile = itemView.findViewById(R.id.viewProfile);
+            userAlong = itemView.findViewById(R.id.usersAlong);
         }
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_proposed_trip_rider, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.user_along_list, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Trip trip = tripList.get(position);
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-        StringBuilder userSB = new StringBuilder();
+        final String usersAlong = usernames.get(position);
 
-        for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            userSB.append(trip.getTaggedUsers()[i]).append(",\t");
-        }
+        holder.userAlong.setText(Html.fromHtml("<b>" + "UserAlong:" + "</b>" + "<br/>" + usersAlong));
 
-        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
-        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
-        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
-        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
-
-        holder.map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, TripDisplayActivity.class);
-                intent.putExtra("tripRoute", trip.getTripRoute().toString());
-                context.startActivity(intent);
-            }
-        });
-
-        holder.delete.setOnClickListener(new View.OnClickListener() {
+        holder.viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RequestQueue queue = Volley.newRequestQueue(context);
                 String url = context.getString(R.string.deleteTrip);
                 final Gson gson = new Gson();
-                final String tripJson = gson.toJson(trip);
+                final String tripJson = gson.toJson(usersAlong);
                 JSONObject tripJsonObject;
                 try {
                     tripJsonObject = new JSONObject((tripJson));
@@ -108,10 +79,7 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
                     JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, tripJsonObject, new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Trip Deleted");
-                            tripList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, tripList.size());
+                            Log.d(TAG, "Success");
                         }
 
                     }, new Response.ErrorListener() {
@@ -134,6 +102,6 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
 
     @Override
     public int getItemCount() {
-        return tripList.size();
+        return usernames.size();
     }
 }

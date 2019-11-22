@@ -11,21 +11,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-//import android.security.keystore.KeyGenParameterSpec;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.AccessToken;
-//import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -45,12 +37,8 @@ import org.json.JSONObject;
 
 
 import java.io.BufferedReader;
-//import java.io.File;
-//import java.io.FileInputStream;
-//import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
-//import java.security.GeneralSecurityException;
 
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
@@ -58,8 +46,6 @@ public class MainActivity extends AppCompatActivity {
     //FaceBook Login Fields
     private CallbackManager callbackManager;
     private LoginButton fbloginButton;
-    //private AccessTokenTracker accessTokenTracker;
-    //private AccessToken accessToken;
 
     //Login-SignUp Fields
     private Button loginButton;
@@ -85,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         loginPassword = (EditText) findViewById(R.id.passwordLogin);
         loginUser = (EditText) findViewById(R.id.userNameLogin);
 
+        //Set up Fire-base notification manager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             // Create channel to show notifications.
             String channelId  = getString(R.string.default_notification_channel_id);
@@ -93,37 +80,33 @@ public class MainActivity extends AppCompatActivity {
                     getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(new NotificationChannel(channelId,
                     channelName, NotificationManager.IMPORTANCE_HIGH));
-            Log.d(TAG,"Set Up FCM notification manager");
+            Log.d(TAG,"Fire-base notification manager set up");
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Boolean needAuthenication = false;
+        Boolean needAuthentication;
 
-        String filename = "Saved_Profile.txt";
+        String profileFilename = "Saved_Profile.txt";
         StringBuffer stringBuffer = new StringBuffer();
         try (BufferedReader reader =
-                     new BufferedReader(new InputStreamReader(openFileInput(filename)))) {
-
+                     new BufferedReader(new InputStreamReader(openFileInput(profileFilename)))) {
             String line = reader.readLine();
             while (line != null) {
                 stringBuffer.append(line).append('\n');
                 line = reader.readLine();
             }
         } catch (IOException e) {
-            Log.d(TAG, "Error : reading encrypted file");
-            Log.d(TAG, "Error (IOException): " + e.toString());
-            needAuthenication = true;
+            Log.d(TAG, "Could not load a saved profile");
             e.printStackTrace();
         } finally {
             String contents = stringBuffer.toString();
-            needAuthenication = loadProfile(contents);
+            needAuthentication = loadProfile(contents);
         }
 
-
-        if (needAuthenication){
+        if (needAuthentication){
             Log.d(TAG,"No saved profile, need authentication");
             startAuthentication();
         }
@@ -135,136 +118,137 @@ public class MainActivity extends AppCompatActivity {
         try {
             profileJSON = new JSONObject(contents);
             final Profile profile = new Profile();
-
+            profile.setUserID(profileJSON.getString("userID"));
             profile.setUserName(profileJSON.getString("username"));
+            profile.setFirstName(profileJSON.getString("firstName"));
+            profile.setLastName(profileJSON.getString("lastName"));
+            profile.setAge(profileJSON.getInt("age"));
+            profile.setGender(profileJSON.getString("gender"));
+            profile.setEmail(profileJSON.getString("email"));
+            profile.setDriver(profileJSON.getBoolean("isDriver"));
+            profile.setJoinedDate(profileJSON.getString("joinedDate"));
             JSONArray jsonArray = profileJSON.getJSONArray("interests");
             int [] interests = new int[jsonArray.length()];
             for (int i = 0; i < jsonArray.length(); i++){
                 interests[i] = jsonArray.getInt(i);
             }
             profile.setInterests(interests);
-            profile.setAge(profileJSON.getInt("age"));
-            profile.setGender(profileJSON.getString("gender"));
-            profile.setEmail(profileJSON.getString("email"));
-            profile.setPassword(profileJSON.getString("password"));
-            profile.setDriver(profileJSON.getBoolean("isDriver"));
-            profile.setUserID(profileJSON.getString("userID"));
-            profile.setJoinedDate(profileJSON.getString("joinedDate"));
-            profile.setFirstName(profileJSON.getString("firstName"));
-            profile.setLastName(profileJSON.getString("lastName"));
 
-            FirebaseInstanceId.getInstance().getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            Log.d(TAG,"Get FCM Device Token");
-                            if (!task.isSuccessful()) {
-                                Log.w(TAG, "getInstanceId failed", task.getException());
-                                return;
-                            }
-                            String token = task.getResult().getToken();
-                            Log.d(TAG, token);
-                            profile.setFbToken(token);
-                            sendFCM(profile);
-                        }
-                    });
-
-
+            FirebaseCallback firebaseCallback = new FirebaseCallback() {
+                @Override
+                public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                    String token = task.getResult().getToken();
+                    profile.setFbToken(token);
+                    loginSavedProfile(profile);
+                }
+            };
+            getFCMToken(firebaseCallback);
         } catch (JSONException e) {
-            Log.d(TAG, "Error : failed to convert stored json string to profile");
-            Log.d(TAG, "Error (JSONException): " + e.toString());
-            e.printStackTrace();
+            Log.d(TAG, "Failed to convert stored json string to profile");
+            Log.d(TAG, ("JSONException: " + e.toString()));
             failedToLoad = true;
         }
 
         return failedToLoad;
     }
 
-    public void sendFCM(final Profile profile){
-        RequestQueue queue = Volley.newRequestQueue(context);
+    private void getFCMToken(final FirebaseCallback firebaseCallback){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "FCM failed", task.getException());
+                            return;
+                        }
+                        Log.d(TAG,"Got FCM Device Token");
+                        firebaseCallback.onSuccess(task);
+                    }
+                });
+
+    }
+
+    public void loginSavedProfile(final Profile profile){
         String url = getString(R.string.updateProfile);
+
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
-        Log.d(TAG,"Sending FCM token along with the saved profile retrieved");
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "Saved login verification successful");
+                Intent intent = new Intent(context, HomeActivity.class);
+                intent.putExtra("profile", profile);
+                startActivity(intent);
+                MainActivity.this.finish();
+            }
+
+            @Override
+            public void onError(String result){
+                Log.d(TAG, "Saved login verification not successful");
+                Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+            }
+
+        };
+
         try {
             profileJsonObject = new JSONObject((profileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, profileJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Intent intent = new Intent(context, HomeActivity.class);
-                    intent.putExtra("profile", profile);
-                    startActivity(intent);
-                    MainActivity.this.finish();
-
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
+            communicator.VolleyPost(url,profileJsonObject,callback);
         } catch (JSONException e) {
-            Log.d(TAG, "Error : failed to retrieve profile");
-            Log.d(TAG, "Error (JSONException): " + e.toString());
+            Log.d(TAG, "Error making login JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
+            e.printStackTrace();
         }
     }
 
     private void startAuthentication () {
         //FaceBook login Fields Initiations
-        Log.d(TAG,"Starting Authentication");
-        callbackManager = CallbackManager.Factory.create();
-        fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
-
-        signupButton = (Button) findViewById(R.id.signup_button);
-        loginButton = (Button) findViewById(R.id.login_button);
-        loginPassword = (EditText) findViewById(R.id.passwordLogin);
-        loginUser = (EditText) findViewById(R.id.userNameLogin);
-
+        Log.d(TAG,"Starting authentication");
         startFBAuthentication();
 
-        //Click on signupButton
-        signupButton.setOnClickListener( new View.OnClickListener(){
+        final Login login = new Login();
 
+        final FirebaseCallback firebaseCallbackSignup = new FirebaseCallback() {
+            @Override
+            public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                Login login = new Login();
+                String token = task.getResult().getToken();
+                login.setFbToken(token);
+                Log.d(TAG,"Sign up new user");
+                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
+                intent.putExtra("login",login);
+                startActivity(intent);
+                MainActivity.this.finish();
+            }
+        };
+
+        final FirebaseCallback firebaseCallbackLogin = new FirebaseCallback() {
+            @Override
+            public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                String token = task.getResult().getToken();
+                Log.d(TAG, token);
+                login.setFbToken(token);
+                verifyUser(login, false);
+            }
+        };
+
+        signupButton.setOnClickListener( new View.OnClickListener(){
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Sign up requested");
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                Log.d(TAG,"Get FCM Device Token");
-                                Login loginProfile = new Login();
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                    return;
-                                }
-                                String token = task.getResult().getToken();
-                                Log.d(TAG, token);
-                                loginProfile.setFbToken(token);
-                                Log.d(TAG,"Signup New User");
-                                Intent intent = new Intent(MainActivity.this, SignupActivity.class);
-                                intent.putExtra("login",loginProfile);
-                                startActivity(intent);
-                                Log.d(TAG, "Main Activity Ended");
-                            }
-                        });
+                getFCMToken(firebaseCallbackSignup);
             }
         });
 
-        //Click on LoginButton
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final Login loginProfile = new Login();
                 boolean allSet = true;
 
                 if (!loginPassword.getText().toString().isEmpty()){
-                    loginProfile.setPassword(loginPassword.getText().toString());
+                    login.setPassword(loginPassword.getText().toString());
                     Log.d(TAG,"password entered");
                 }
                 else {
@@ -273,9 +257,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG,"password not entered");
                 }
 
-
                 if (!loginUser.getText().toString().isEmpty()){
-                    loginProfile.setUsername(loginUser.getText().toString());
+                    login.setUsername(loginUser.getText().toString());
                     Log.d(TAG,"username entered");
                 }
                 else {
@@ -285,58 +268,35 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 if (allSet) {
-                    FirebaseInstanceId.getInstance().getInstanceId()
-                            .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                    Log.d(TAG,"Get FCM Device Token");
-                                    if (!task.isSuccessful()) {
-                                        Log.w(TAG, "getInstanceId failed", task.getException());
-                                        return;
-                                    }
-                                    String token = task.getResult().getToken();
-                                    Log.d(TAG, token);
-                                    loginProfile.setFbToken(token);
-                                    verifyUser(loginProfile, false);
-                                }
-                            });
+                    getFCMToken(firebaseCallbackLogin);
                 }
-
             }
         });
     }
 
     private void startFBAuthentication(){
-        //Click on FaceBook Button
+        final FirebaseCallback firebaseCallbackFB = new FirebaseCallback() {
+            @Override
+            public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                String token = task.getResult().getToken();
+                handleFacebookLogin(token);
+            }
+        };
+
         fbloginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "Successful FaceBook Login");
-                FirebaseInstanceId.getInstance().getInstanceId()
-                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                                if (!task.isSuccessful()) {
-                                    Log.w(TAG, "getInstanceId failed", task.getException());
-                                    return;
-                                }
-
-                                String token = task.getResult().getToken();
-                                Log.d(TAG, token);
-
-                                handleFacebookLogin(token);
-                            }
-                        });
+                Log.d(TAG, "Successful FaceBook login");
+                getFCMToken(firebaseCallbackFB);
             }
-
             @Override
             public void onCancel() {
-                Log.d(TAG, "FaceBook Login Cancelled");
+                Log.d(TAG, "FaceBook login cancelled");
             }
 
             @Override
             public void onError(FacebookException exception) {
-                Log.d(TAG, "Error In Login using FaceBook: Check the Network");
+                Log.d(TAG, "Error in login using FaceBook: check the network");
             }
         });
     }
@@ -350,7 +310,8 @@ public class MainActivity extends AppCompatActivity {
     private void handleFacebookLogin(final String fcmToken){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {
-            Log.d(TAG, "Some Error, please re-login and try again");
+            Toast.makeText(context, "Some error, please re-login and try again", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "null FB token");
         }
         else {
             GraphRequest graphRequest = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
@@ -367,8 +328,8 @@ public class MainActivity extends AppCompatActivity {
                         fbLoginProfile.setFbToken(fcmToken);
                     }
                     catch (JSONException e) {
-                        Log.d(TAG, "Error : failed to retrieve profile while facebook login");
-                        Log.d(TAG, "Error (JSONException): " + e.toString());
+                        Log.d(TAG, "Failed to retrieve profile while facebook login");
+                        Log.d(TAG, "JSONException: " + e.toString());
                     }
                     verifyUser(fbLoginProfile, true);
                 }
@@ -381,128 +342,137 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void verifyUser(final Login loginProfile, final boolean isExternal){
+    private void verifyUser(final Login login, final boolean isExternal){
         Log.d(TAG,"verifying user login details");
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = getString(R.string.login);
+
         final Gson gson = new Gson();
-        final String loginProfileJson = gson.toJson(loginProfile);
-        JSONObject profileJsonObject;
+        final String loginJson = gson.toJson(login);
+        JSONObject loginJsonObject;
+
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "Login verification successful");
+                verifyUserSuccess(response);
+            }
+
+            @Override
+            public void onError(String result){
+                verifyUserError(login,isExternal);
+            }
+
+        };
 
         try {
-            profileJsonObject = new JSONObject((loginProfileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Login Verification Successful");
-                    Profile receivedProfile = new Profile();
-
-                    try {
-                        receivedProfile.setUserName(response.getString("username"));
-                        JSONArray jsonArray = response.getJSONArray("interests");
-                        int [] interests = new int[jsonArray.length()];
-                        for (int i = 0; i < jsonArray.length(); i++){
-                            interests[i] = jsonArray.getInt(i);
-                        }
-                        receivedProfile.setInterests(interests);
-                        receivedProfile.setAge(response.getInt("age"));
-                        receivedProfile.setGender(response.getString("gender"));
-                        receivedProfile.setEmail(response.getString("email"));
-                        receivedProfile.setPassword(response.getString("password"));
-                        receivedProfile.setDriver(response.getBoolean("isDriver"));
-                        receivedProfile.setUserID(response.getString("_id"));
-                        receivedProfile.setJoinedDate(response.getString("joinedDate"));
-                        receivedProfile.setFirstName(response.getString("firstName"));
-                        receivedProfile.setLastName(response.getString("lastName"));
-                    } catch (JSONException e) {
-                        Log.d(TAG, "Error : failed to retrieve profile while facebook login");
-                        Log.d(TAG, "Error (JSONException): " + e.toString());
-                    }
-
-                    Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
-
-                    Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-                    intent.putExtra("profile", receivedProfile);
-                    startActivity(intent);
-                    MainActivity.this.finish();
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    if (isExternal) {
-                        Log.d(TAG, "Login Verification Un-Successful, New External User");
-                        Login newLoginProfile = new Login();
-                        newLoginProfile.setUsername(loginProfile.getUsername());
-                        newLoginProfile.setId(loginProfile.getId());
-                        newLoginProfile.setFirstName(loginProfile.getFirstName());
-                        newLoginProfile.setLastName(loginProfile.getLastName());
-                        newLoginProfile.setEmailId(loginProfile.getEmailId());
-                        newLoginProfile.setPassword(loginProfile.getId());
-                        sendLogin(newLoginProfile);
-                    }
-                    else {
-                        Log.d(TAG, "Login Verification Un-Successful");
-                        Toast.makeText(context, "UserName or Incorrect Password", Toast.LENGTH_LONG).show();
-                    }
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
+            loginJsonObject = new JSONObject((loginJson));
+            communicator.VolleyPost(url,loginJsonObject,callback);
         } catch (JSONException e) {
-            Log.d(TAG, "Error : sending login information");
-            Log.d(TAG, "Error (JSONException): " + e.toString());
+            Log.d(TAG, "Error making login JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
+            e.printStackTrace();
         }
 
     }
 
-    private void sendLogin(Login loginProfile){
-        RequestQueue queue = Volley.newRequestQueue(this);
-        String url = getString(R.string.register);
-        final Gson gson = new Gson();
-        final String loginProfileJson = gson.toJson(loginProfile);
-        JSONObject profileJsonObject;
-        Log.d(TAG,"Sending login details");
+    private void verifyUserSuccess(JSONObject response){
+        Profile profile = new Profile();
         try {
-            profileJsonObject = new JSONObject((loginProfileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, profileJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Login Verification Successful");
-                    Profile receivedProfile = new Profile();
-                    Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+            profile.setUserName(response.getString("username"));
+            profile.setUserID(response.getString("_id"));
+            profile.setFirstName(response.getString("firstName"));
+            profile.setLastName(response.getString("lastName"));
+            profile.setAge(response.getInt("age"));
+            profile.setGender(response.getString("gender"));
+            profile.setEmail(response.getString("email"));
+            profile.setDriver(response.getBoolean("isDriver"));
+            profile.setJoinedDate(response.getString("joinedDate"));
 
-                    try {
-                        receivedProfile.setUserName(response.getString("username"));
-                        receivedProfile.setPassword(response.getString("password"));
-                        receivedProfile.setEmail(response.getString("email"));
-                        receivedProfile.setUserID(response.getString("_id"));
-                        receivedProfile.setJoinedDate(response.getString("joinedDate"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                    Intent intent = new Intent(context, UpdateProfileActivity.class);
-                    intent.putExtra("profile", receivedProfile);
-                    startActivity(intent);
-
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Registration Un-Successful");
-                    Log.d(TAG, "Error (volleyError): " + error.toString());
-                    Toast.makeText(context, "Please Try Again", Toast.LENGTH_LONG).show();
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
+            JSONArray jsonArray = response.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            profile.setInterests(interests);
         } catch (JSONException e) {
-            Log.d(TAG, "Error : sending login information");
-            Log.d(TAG, "Error (JSONException): " + e.toString());
+            Log.d(TAG, "Failed to retrieve profile while login");
+            Log.d(TAG, "JSONException: " + e.toString());
+        }
+
+        Toast.makeText(context, "Successfully logged in", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(MainActivity.this, HomeActivity.class);
+        intent.putExtra("profile", profile);
+        startActivity(intent);
+        MainActivity.this.finish();
+    }
+
+    private void verifyUserError(Login login, boolean isExternal) {
+        if (isExternal) {
+            Log.d(TAG, "Login verification not successful, new external user discovered");
+            Login newLogin = new Login();
+            newLogin.setUsername(login.getUsername());
+            newLogin.setPassword(login.getId());
+            newLogin.setId(login.getId());
+            newLogin.setFirstName(login.getFirstName());
+            newLogin.setLastName(login.getLastName());
+            newLogin.setEmailId(login.getEmailId());
+            newUserLogin(newLogin);
+        }
+        else {
+            Log.d(TAG, "Login verification not successful");
+            Toast.makeText(context, "Incorrect Username or Password", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private void newUserLogin(Login newLogin){
+        Log.d(TAG,"Sending new external login details");
+        String url = getString(R.string.register);
+
+        final Gson gson = new Gson();
+        final String loginJson = gson.toJson(newLogin);
+        JSONObject loginJsonObject;
+
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "New external login successful");
+                Profile profile = new Profile();
+                Toast.makeText(context, "Successfully Logged in", Toast.LENGTH_LONG).show();
+
+                try {
+                    profile.setUserName(response.getString("username"));
+                    profile.setEmail(response.getString("email"));
+                    profile.setUserID(response.getString("_id"));
+                    profile.setJoinedDate(response.getString("joinedDate"));
+                } catch (JSONException e) {
+                    Log.d(TAG, "Failed to retrieve profile while login");
+                    Log.d(TAG, "JSONException: " + e.toString());
+                }
+
+                Intent intent = new Intent(context, UpdateProfileActivity.class);
+                intent.putExtra("profile", profile);
+                startActivity(intent);
+            }
+
+            @Override
+            public void onError(String result){
+                Log.d(TAG, "Registration not successful");
+                Log.d(TAG, "VolleyError: " + result);
+                Toast.makeText(context, "Please Try Again", Toast.LENGTH_LONG).show();
+            }
+
+        };
+
+        try {
+            loginJsonObject = new JSONObject((loginJson));
+            communicator.VolleyPost(url,loginJsonObject,callback);
+        } catch (JSONException e) {
+            Log.d(TAG, "Error making new login JSONObject");
+            Log.d(TAG, "Exception" + e.toString());
+            e.printStackTrace();
         }
     }
 }

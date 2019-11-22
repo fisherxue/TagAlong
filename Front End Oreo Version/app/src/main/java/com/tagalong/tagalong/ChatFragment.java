@@ -36,6 +36,7 @@ public class ChatFragment extends Fragment {
 
     private final String TAG = "Proposed Trip Fragment";
     private List<Trip> tripList;
+    private List<JSONObject> proposedList;
     private View view;
     private Context context;
     private Profile profile;
@@ -48,7 +49,7 @@ public class ChatFragment extends Fragment {
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
         if (profile.getDriver()){
-            initTripList(getString(R.string.getTripList), true);
+            initTripList(getString(R.string.getRecommendedTrips), true);
         }
         else {
             initTripList(getString(R.string.getTripList), false);
@@ -57,50 +58,36 @@ public class ChatFragment extends Fragment {
     }
 
     private void initTripList(String url, final Boolean isDriver){
-        RequestQueue queue = Volley.newRequestQueue(context);
-        final Gson gson = new Gson();
-        final String profileJson = gson.toJson(profile);
-        JSONObject profileJsonObject;
 
-        try {
-            profileJsonObject = new JSONObject((profileJson));
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, profileJsonObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Log.d(TAG, "Received List of Trips for the user");
-                    setTripList(response, isDriver);
-                    initTripView(isDriver);
-                }
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("userID",profile.getUserID());
 
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: Could not get list of Trips");
-                    Log.d(TAG, "Error: " + error.getMessage());
-                    Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
-                }
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                Log.d(TAG, "Received List of Trips for the user");
+                setTripList(response, isDriver);
+                initTripView(isDriver);
             }
-            ){
-                @Override
-                public Map<String, String> getHeaders() throws AuthFailureError {
-                    HashMap<String, String> headers = new HashMap<String, String>();
-                    headers.put("userID",profile.getUserID());
-                    return headers;
-                }
-            };
 
-            queue.add(jsonObjectRequest);
+            @Override
+            public void onError(String result){
+                Log.d(TAG, "Error: Could not get list of Trips");
+                Log.d(TAG, "Error: " + result);
+                Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            }
+        };
+        communicator.VolleyGet(url,callback,headers);
+
     }
     private void initTripView(Boolean isDriver){
         Log.d(TAG,"initializing TripView");
         RecyclerView recyclerView = view.findViewById(R.id.proposed_trip_recycler_view);
         if (isDriver){
-            TripProposedDriverAdapter tripViewAdapter = new TripProposedDriverAdapter(context, this.tripList, profile);
-            recyclerView.setAdapter(tripViewAdapter);
+            ListProposedTripAdapter listProposedTripAdapter = new ListProposedTripAdapter(context, this.proposedList, profile);
+            recyclerView.setAdapter(listProposedTripAdapter);
         }
         else {
             TripProposedRiderAdapter tripViewAdapter = new TripProposedRiderAdapter(context, this.tripList, profile);
@@ -111,22 +98,30 @@ public class ChatFragment extends Fragment {
 
     private void setTripList (JSONObject response, Boolean isDriver){
         JSONArray tripListIN;
-        tripList = new ArrayList<>();
-        try {
-            tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
-            for (int i = 0; i < tripListIN.length(); i++){
-                if (isDriver){
-                    this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
+        if (isDriver) {
+            proposedList = new ArrayList<>();
+            try{
+                tripListIN = response.getJSONArray("trips");
+                for (int i = 0; i < tripListIN.length(); i++){
+                    this.proposedList.add(tripListIN.getJSONObject(i));
                 }
-                else {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+            tripList = new ArrayList<>();
+            try {
+                tripListIN = response.getJSONArray("trips"); // ASK IAN FOR CORRECT NAME
+                for (int i = 0; i < tripListIN.length(); i++){
                     if(!tripListIN.getJSONObject(i).getBoolean("isFulfilled")){
                         this.tripList.add(new Trip(tripListIN.getJSONObject(i)));
                     }
                 }
-            }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

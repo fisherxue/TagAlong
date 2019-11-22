@@ -12,5 +12,7 @@
     <string name="getChatList">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/getMessages</string>
     <string name="sendMessage">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/sendMessage</string>
     <string name="deleteTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/delTrip</string>
+    <string name="acceptTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/acceptTrip</string>
+    <string name="getRecommendedTrips">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/getRecommendedTrips</string>
     <string name="title_activity_trip_display">Map</string>
 </resources>

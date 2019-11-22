@@ -324,4 +324,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(context, MainActivity.class);
+        startActivity(intent);
+        UpdateProfileActivity.this.finish();
+    }
 }

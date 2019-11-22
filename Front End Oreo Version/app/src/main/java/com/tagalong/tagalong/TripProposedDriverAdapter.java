@@ -2,6 +2,7 @@ package com.tagalong.tagalong;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -17,14 +19,19 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import io.opencensus.common.ToDoubleFunction;
 
@@ -34,11 +41,14 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
+    private List<String> useralonglist;
+    private String tripID;
 
-    public TripProposedDriverAdapter(Context context, List<Trip> tripList, Profile profile) {
+    public TripProposedDriverAdapter(Context context, List<Trip> tripList, String tripID, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
+        this.tripID = tripID;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -50,7 +60,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         private TextView arrivalPlace;
         private TextView departureTime;
         private TextView arrivalTime;
-        private TextView usersAlong;
+        private RecyclerView recyclerView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -62,7 +72,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
             departureTime = itemView.findViewById(R.id.departureClock);
             arrivalTime = itemView.findViewById(R.id.arrivalClock);
-            usersAlong = itemView.findViewById(R.id.usersAlong);
+            recyclerView = itemView.findViewById(R.id.user_along_recycler_view);
         }
     }
 
@@ -78,19 +88,20 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Trip trip = tripList.get(position);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-        StringBuilder userSB = new StringBuilder();
 
+        useralonglist = new ArrayList<>();
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            userSB.append(trip.getTaggedUsers()[i]).append(",\t");
+            useralonglist.add(trip.getTaggedUsers()[i]);
         }
 
-        String usersAlong = userSB.toString();
+        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
+        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
+        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
+        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
-        holder.departurePlace.setText("Departure Place: " + trip.getDeparturePlace());
-        holder.departureTime.setText("Departure Time: " + format.format(trip.getDepartureTime()));
-        holder.arrivalTime.setText("Arrival Time: " + format.format(trip.getArrivalTime()));
-        holder.arrivalPlace.setText("Arrival Place" + trip.getArrivalPlace());
-        holder.usersAlong.setText("UserAlong" + usersAlong);
+        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist, profile);
+        holder.recyclerView.setAdapter(userAlongAdapter);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         holder.map.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +115,40 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                RequestQueue queue = Volley.newRequestQueue(context);
+                String url = context.getString(R.string.acceptTrip);
+                JsonObject acceptTrip = new JsonObject();
+                acceptTrip.addProperty("usertripID", trip.getTripID());
+                acceptTrip.addProperty("tripID", tripID);
+
+                JSONObject acceptTripJson;
+
+                try {
+                    acceptTripJson = new JSONObject(acceptTrip.toString());
+                    Log.d(TAG, "acceptTripJson" + acceptTripJson);
+                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, acceptTripJson, new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Log.d(TAG, "Received List of Trips for the user");
+                            tripList.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, tripList.size());
+                        }
+
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d(TAG, "Error: Could not get list of Trips");
+                            Log.d(TAG, "Error: " + error.getMessage());
+                            Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
+                        }
+                    });
+
+                    queue.add(jsonObjectRequest);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 //TODo: Write Acceptance
             }
         });

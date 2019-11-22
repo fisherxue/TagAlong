@@ -2,6 +2,7 @@ package com.tagalong.tagalong;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.util.Log;
 import android.util.TimingLogger;
 import android.view.LayoutInflater;
@@ -23,9 +24,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
@@ -34,6 +37,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
+    private List<String> useralonglist;
 
     private TimingLogger timingLogger;
 
@@ -53,7 +57,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         private TextView arrivalPlace;
         private TextView departureTime;
         private TextView arrivalTime;
-        private TextView usersAlong;
+        private RecyclerView recyclerView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -65,7 +69,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
             departureTime = itemView.findViewById(R.id.departureClock);
             arrivalTime = itemView.findViewById(R.id.arrivalClock);
-            usersAlong = itemView.findViewById(R.id.usersAlong);
+            recyclerView = itemView.findViewById(R.id.user_along_recycler_view);
         }
     }
 
@@ -82,18 +86,20 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         final Trip trip = tripList.get(position);
         timingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-        StringBuilder userSB = new StringBuilder();
 
+        useralonglist = new ArrayList<>();
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            userSB.append(trip.getTaggedUsers()[i]).append(",\t");
+            useralonglist.add(trip.getTaggedUsers()[i]);
         }
-        String usersAlong = userSB.toString();
 
-        holder.departurePlace.setText("Departure Place: " + trip.getDeparturePlace());
-        holder.departureTime.setText("Departure Time: " + format.format(trip.getDepartureTime()));
-        holder.arrivalTime.setText("Arrival Time: " + format.format(trip.getArrivalTime()));
-        holder.arrivalPlace.setText("Arrival Place" + trip.getArrivalPlace());
-        holder.usersAlong.setText("UserAlong" + usersAlong);
+        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
+        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
+        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
+        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
+
+        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist, profile);
+        holder.recyclerView.setAdapter(userAlongAdapter);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         holder.map.setOnClickListener(new View.OnClickListener() {
             @Override
