@@ -49,40 +49,19 @@ const handleCreateTrip = async (req, res) => {
 		isFulfilled: false
 	});
 
-	tripRecommender.tripHandler(tripRoute.nameValuePairs, (resp) => {
+	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
 		trip.tripRoute = resp.json;
-
-		trip.save();
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			tripRecommender.driverTripHandler(trip, async (riderTrips, driverTrip) => {
-
-			debug("drivertrip: ", driverTrip);
-			if (typeof riderTrips === "undefined") {
-				debug("riderTrips undefined");
-				return res.status(300).send("NOTHING");
-			} else {
-
-				// Create Chat room
-
-				driverTrip.chatroomID = createNewRoom(username);
-				debug("created chatroom, id: ", driverTrip.chatroomID);
-				driverTrip.isFulfilled = true;
-
-				const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
-
-				debug("updated driver trip:", updatedDriverTrip);
-
-				res.send(updatedDriverTrip);
-			}
-
-			});	
-		} 
-		else {
-			debug("NOT A DRIVER TRIP");
-			res.send(trip);
+			trip.chatroomID = createNewRoom(username);
+			debug("created chatroom, id: ", trip.chatroomID);
+			trip.isFulfilled = true;
 		}
+
+		trip.save();
+		res.send(trip);
+
 	});
 
 };
