@@ -112,8 +112,6 @@ const handleDelTrip = async (req, res) => {
 
 	debug("deleted trip: ", trip);
 
-	
-
 	res.send({
 		status: "OK",
 		message: "trip successfully deleted"
