@@ -112,7 +112,10 @@ const handleAcceptTrip = async (req, res) => {
 		addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
 		debug("added ", rider_user.username, "to chatroom", driverTrip.chatroomID);
 
-		res.json("Added user to trip");
+		res.send({
+			status: 'OK',
+			message: 'user successfully added to trip'
+		}));
 	});
 
 	
