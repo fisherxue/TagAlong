@@ -95,8 +95,8 @@ const handleAcceptTrip = async (req, res) => {
 
 	debug("selected driver trip", driverTrip);
 
-	tripRecommender.modifyTrip(driverTrip, [riderTrip], res => {
-		driverTrip.tripRoute = res;
+	tripRecommender.modifyTrip(driverTrip, [riderTrip], triproute => {
+		driverTrip.tripRoute = triproute;
 		driverTrip.taggedUsers.push(riderTrip.username);
 		driverTrip.taggedTrips.push(riderTrip._id);
 
