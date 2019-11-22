@@ -61,6 +61,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private FusedLocationProviderClient client;
     private Location lastLocation;
+    private LatLng markerLocation;
     private Marker currentLocationMarker;
     public static final int PERMISSION_REQUEST_LOCATION_CODE = 101;
     private double latitude;
@@ -72,7 +73,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     private TextInputEditText arrivalDate;
     private TextInputEditText arrivalTime;
     private SearchView locationSearch;
-    //private PlacesClient placesClient;
+    private Button setOrigin;
     private final String TAG = "MapFragment";
 
 
@@ -88,11 +89,13 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         fetchLastLocation();
 
         searchRoute = (Button) findViewById(R.id.To);
+        setOrigin = (Button) findViewById(R.id.setOrigin);
         arrivalTime = (TextInputEditText) findViewById(R.id.arrivalTime);
         arrivalDate = (TextInputEditText) findViewById(R.id.arrivalDate);
         locationSearch = (SearchView) findViewById(R.id.search);
 
         initializeSearch();
+        initializeOrigin();
         initializeArrivalButtons();
 
         searchRoute.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +103,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 //check and assign all inputs of user to profile
                 boolean allChecked = true;
+                end_latitude = markerLocation.latitude;
+                end_longitude = markerLocation.longitude;
                 if (arrivalDate.getResources().toString().isEmpty()) {
                     Toast.makeText(context, "Please enter arrival date", Toast.LENGTH_LONG).show();
                     allChecked = false;
@@ -128,7 +133,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     Object dataTransfer[] = new Object[3];
                     String url = getDirectionsURL();
                     GetDirectionsData getDirectionsData = new GetDirectionsData();
-                    LatLng origin = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
+                    LatLng origin = new LatLng(latitude, longitude);
                     LatLng destination = new LatLng(end_latitude, end_longitude);
 
                     dataTransfer[0] = mMap;
@@ -159,7 +164,20 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-
+    private void initializeOrigin() {
+        setOrigin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(markerLocation != null) {
+                    latitude = markerLocation.latitude;
+                    longitude = markerLocation.longitude;
+                    Toast.makeText(context, "Origin was set to chosen location", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(context, "Select a departure location", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
 
 
     private void initializeSearch() {
@@ -185,8 +203,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                     mMap.addMarker(new MarkerOptions().position(latLng));
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                    end_latitude = latLng.latitude;
-                    end_longitude = latLng.longitude;
+                    markerLocation = latLng;
                 }
                 else {
                     Toast.makeText(context, "Location not Found", Toast.LENGTH_LONG).show();
@@ -222,7 +239,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                                 calendarOneDayAdvance.add(Calendar.DAY_OF_MONTH,1);
                                 Calendar calendarSetDate = Calendar.getInstance();
                                 calendarSetDate.set(year,month,day);
-                                //calendarSetDate.add(Calendar.DAY_OF_MONTH, 1);
                                 if (calendarSetDate.after(calendarOneDayAdvance) && calendarSetDate.before(calendarOneYearAdvance)){
                                     arrivalDate.setText(String.format("%02d/%02d/%04d",day,month+1,year));
                                     Log.d(TAG,"Arrival date was correctly filled.");
@@ -278,33 +294,23 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     private void generateTrip(Trip trip){
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/newTrip";
+        String url = getString(R.string.createTrip);
         Gson gson = new Gson();
         String tripJson = gson.toJson(trip);
         JSONObject tripJSONObject;
 
-        System.out.println(tripJson);
-
         try {
             tripJSONObject = new JSONObject(tripJson);
-            Log.d(TAG,tripJSONObject.toString());
             JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, tripJSONObject, new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
                     Log.d(TAG,"Trip was successfully set.");
-                    //Intent intent = new Intent(MapsFragment.this, HomeActivity.class);
-                    //startActivity(intent);
-                    //MapsFragment.this.finish();
-                    /*mMap.clear();
-                    Object dataTransfer[] = new Object[3];
-                    GetDirectionsData getDirectionsData = new GetDirectionsData();
-                    String url = "";
-                    dataTransfer[0] = mMap;
-                    dataTransfer[1] = url;
-                    dataTransfer[2] = new LatLng(end_latitude, end_longitude);
-                    getDirectionsData.execute(dataTransfer);
-*/
+                    Intent intent = new Intent(MapsFragment.this, HomeActivity.class);
+                    intent.putExtra("profile", userProfile);
+                    startActivity(intent);
+                    MapsFragment.this.finish();
+
                 }
 
             }, new Response.ErrorListener() {
@@ -358,8 +364,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -369,6 +373,8 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         LatLng latLng = new LatLng(lastLocation.getLatitude(), lastLocation.getLongitude());
         MarkerOptions markerOptions = new MarkerOptions().position(latLng).title("Current Location");
+        latitude = lastLocation.getLatitude();
+        longitude = lastLocation.getLongitude();
 
 
         if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED){
@@ -390,7 +396,10 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         StringBuilder googleDirectionsURL = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
         googleDirectionsURL.append("origin="+latitude+","+longitude);
         googleDirectionsURL.append("&destination="+end_latitude+","+end_longitude);
-        googleDirectionsURL.append("&key="+"AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ");
+        googleDirectionsURL.append("&key="+getString(R.string.google_directions_key));
+        StringBuilder msg = new StringBuilder("");
+        msg.append(latitude+" "+longitude+"\n"+end_latitude+" "+end_longitude);
+        Log.d(TAG, msg.toString());
 
         return googleDirectionsURL.toString();
     }
@@ -409,8 +418,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onLocationChanged(Location location) {
-        latitude = location.getLatitude();
-        longitude = location.getLongitude();
         lastLocation = location;
 
         if (currentLocationMarker != null){
@@ -446,21 +453,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         //Nothing to be done
     }
 
-    public boolean checkLocationPermission(){
-        if(ContextCompat.checkSelfPermission(this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED){
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)){
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION_CODE);
-            }
-            else {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_REQUEST_LOCATION_CODE);
-            }
-            return false;
-        }
-        else {
-            return true;
-        }
-    }
-
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -480,17 +472,11 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onMarkerDragEnd(Marker marker) {
-        end_latitude = marker.getPosition().latitude;
-        end_longitude = marker.getPosition().longitude;
-        System.out.println(latitude);
-        System.out.println(longitude);
-        System.out.println(end_latitude);
-        System.out.println(end_longitude);
+        markerLocation = marker.getPosition();
     }
 
     @Override
     public void onBackPressed() {
-        //super.onBackPressed();
         Intent intent = new Intent(context, HomeActivity.class);
         intent.putExtra("profile", userProfile);
         startActivity(intent);
