@@ -85,7 +85,7 @@ const handleDelTrip = async (req, res) => {
 
 			debug("parenttrip found: ", parenttrip);
 
-			const driveruser = await TripStore.findById(parenttrip.userID);
+			const driveruser = await User.findById(parenttrip.userID);
 
 			if (!driveruser) {
 				debug("Unable to find driver");
