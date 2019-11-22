@@ -49,7 +49,7 @@ const handleCreateTrip = async (req, res) => {
 		isFulfilled: false
 	});
 
-	tripRecommender.tripHandler(tripRoute.nameValuePairs, (resp) => {
+	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
 		trip.tripRoute = resp.json;
 
 		trip.save();
