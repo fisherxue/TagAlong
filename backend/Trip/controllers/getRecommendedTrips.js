@@ -22,8 +22,8 @@ const handleGetRecommendedTrips = async (req, res) => {
 		if (!user) {
 			return res.status(400).send("User not found with corresponding userID");
 		}
-		if (user.isDriver == false) {
-			return res.status(400).send("User is not a driver")
+		if (user.isDriver === false) {
+			return res.status(400).send("User is not a driver");
 		}
 
 		const trips = await TripStore.find({ userID });
@@ -40,7 +40,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 
 			appendingobj.drivertrip = trip;
 
-			ridertrips = await tripRecommender.driverTripHandler(trip);
+			const ridertrips = await tripRecommender.driverTripHandler(trip);
 			
 			appendingobj.riderTrips = ridertrips; 
 			debug("current appendending object", appendingobj);
@@ -52,7 +52,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 
 	} catch (err) {
 		debug(err);
-	};
+	}
 
 };
 

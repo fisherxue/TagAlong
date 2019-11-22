@@ -8,7 +8,7 @@ const firebase = require("firebase-admin");
 const sendChatNotif = async (user, message) => {
 	const firebaseToken = user.fbToken;
 
-	if (typeof firebaseToken != 'undefined'){
+	if (typeof firebaseToken != "undefined"){
 		const payload = {
 			notification: {
 				title: "New Message",
@@ -74,8 +74,7 @@ const handleDelTrip = async (req, res) => {
 				sendChatNotif(rideruser, `Driver ${user.username} has deleted his trip`);
 			}
 		}
-	}
-	else {
+	} else {
 		if (trip.isFulfilled) {
 			const parenttrip = await TripStore.findById(trip.driverTripID);
 
@@ -95,7 +94,7 @@ const handleDelTrip = async (req, res) => {
 
 			const index = parenttrip.taggedUsers.indexOf(user.username);
 			if (index > -1) {
-			  parenttrip.taggedUsers.splice(index, 1);
+				parenttrip.taggedUsers.splice(index, 1);
 			}
 
 			const tripindex = parenttrip.taggedTrips.indexOf(tripID);
@@ -116,9 +115,9 @@ const handleDelTrip = async (req, res) => {
 	
 
 	res.send({
-		status: 'OK',
-		message: 'trip successfully deleted'
-	})
+		status: "OK",
+		message: "trip successfully deleted"
+	});
 };
 
 module.exports = {
