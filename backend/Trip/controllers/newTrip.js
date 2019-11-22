@@ -52,24 +52,16 @@ const handleCreateTrip = async (req, res) => {
 	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
 		trip.tripRoute = resp.json;
 
-		trip.save();
-
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			driverTrip.chatroomID = createNewRoom(username);
-			debug("created chatroom, id: ", driverTrip.chatroomID);
-			driverTrip.isFulfilled = true;
-
-			const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
-
-			debug("updated driver trip:", updatedDriverTrip);
-
-			res.send(updatedDriverTrip);
-		} 
-		else {
-			debug("NOT A DRIVER TRIP");
-			res.send(trip);
+			trip.chatroomID = createNewRoom(username);
+			debug("created chatroom, id: ", trip.chatroomID);
+			trip.isFulfilled = true;
 		}
+
+		trip.save();
+		res.send(trip);
+
 	});
 
 };
