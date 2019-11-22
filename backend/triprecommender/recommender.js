@@ -1,4 +1,3 @@
-
 const debug = require("debug")("recommender");
 
 const LatLng = require("./latlng.js");
@@ -181,20 +180,18 @@ function getInterestSimilarity(user1, user2) {
 /*
  * Adds a field to riderTrip indicating similarity to given driver
  */
-function getRiderTripSimilarity(driverTrip, riderTrips) {
+async function getRiderTripSimilarity(driverTrip, riderTrips) {
 
 	if (typeof riderTrips === "undefined") {
-		callback([]);
-		return;
+		return [];
 	}
 	if (typeof driverTrip === "undefined") {
-		callback([]);
-		return;
+		return [];
 	}
 	/* get the driver user matching the username */
 	let driverUser;
 
-	driverUser = UserStore.findById(driverTrip.userID, (err, user) => {
+	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
 		if (user) {
 			debug(user);
 		}
@@ -202,7 +199,7 @@ function getRiderTripSimilarity(driverTrip, riderTrips) {
 
 	for (const riderTrip of riderTrips) {
 		let riderUser;
-		riderUser = UserStore.findById(riderTrip.userID, (err, user) => {
+		riderUser = await UserStore.findById(riderTrip.userID, (err, user) => {
 			if (user) {
 				debug(user);
 			}
@@ -229,21 +226,18 @@ function getRiderTripSimilarity(driverTrip, riderTrips) {
  * Given a valid driver trip, finds rider trips that
  * are reasonable for the driver
  */
-function getRiderTrips(driverTrip) {
+async function getRiderTrips(driverTrip) {
 	if (typeof driverTrip === "undefined") {
-		callback([]);
-		return;
+		return []
 	}
 	
 	let riderTrips;
 
-	riderTrips = TripStore.find({}, (err, trips) => {
+	await TripStore.find({}, (err, trips) => {
+		riderTrips = trips.filter((trip) => {
+			return !(trip.isDriverTrip || trip.isFulfilled);
+		});
 	});
-
-	riderTrips = trips.filter((trip) => {
-		return !(trip.isDriverTrip || trip.isFulfilled);
-	});
-
 	debug("raw rider trips:", riderTrips);
 
 	riderTrips = cutTripsByTime(driverTrip, riderTrips);
@@ -257,12 +251,18 @@ function getRiderTrips(driverTrip) {
  * Handles a driver trip request
  * Gets the applicable rider trips
  */
-function driverTripHandler(driverTrip) {
+function driverTripHandler(driverTrip, callback) {
 	if (typeof driverTrip === "undefined") {
-		return [], driverTrip;
+		return [];
 	}
-	riderTrips = getRiderTrips(driverTrip);
-	riderTrips = getRiderTripSimilarity(driverTrip, riderTrips);
+	getRiderTrips(driverTrip)
+		.then(res => {
+			riderTrips = res;
+		});
+	getRiderTripSimilarity(driverTrip, riderTrips)
+		.then(res => {
+			riderTrips = res;
+		});
 	return riderTrips;
 }
 
@@ -279,7 +279,6 @@ function tripHandler(trip, callback) {
 		destination: endPoint
 	};
 	getDirections(req, function(err, res) {
-
 		callback(res);
 	});
 }
