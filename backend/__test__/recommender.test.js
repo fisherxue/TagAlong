@@ -204,16 +204,6 @@ describe("modifyTrip", () => {
     it('should be function', () => {
         expect(typeof recommender.modifyTrip).toBe("function");
     });
-    it('should return driverTrip if no riderTrips', async done => {
-        let driverTrip;
-        let riderTrips = [];
-        fs.readFile("./__test__/driverTrip1.json", "utf8", async (err, data) => {
-            driverTrip = JSON.parse(data);
-            let res = await recommender.modifyTrip(driverTrip, riderTrips);
-            expect(res).toBe(driverTrip.tripRoute);
-            done();
-        });
-    });
     it('should return json with one riderTrip', async done => {
         let driverTrip;
         let riderTrips = [];
@@ -221,23 +211,37 @@ describe("modifyTrip", () => {
             driverTrip = JSON.parse(data);
             fs.readFile("./__test__/riderTrip1.json", "utf8", async (err, data1) => {
                 riderTrips.push(JSON.parse(data1));
-                let res = await recommender.modifyTrip(driverTrip, riderTrips);
-                console.log(res);
-                expect(typeof res).toBe("object");
+                recommender.modifyTrip(driverTrip, riderTrips, res => {
+                    expect(typeof res).toBe("object");
+                    done();
+                });
+                
+            });
+        });
+    });
+    it('should return driverTrip if no riderTrips', async done => {
+        let driverTrip;
+        let riderTrips = [];
+        fs.readFile("./__test__/driverTrip1.json", "utf8", async (err, data) => {
+            driverTrip = JSON.parse(data);
+            recommender.modifyTrip(driverTrip, riderTrips, res => {
+                expect(res).toBe(driverTrip.tripRoute);
                 done();
             });
         });
     });
-    it('should return proper json with routes with one riderTrip', async done => {
+    it('should return json with routes with one riderTrip', async done => {
         let driverTrip;
         let riderTrips = [];
         fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
             driverTrip = JSON.parse(data);
             fs.readFile("./__test__/riderTrip1.json", "utf8", async (err, data1) => {
                 riderTrips.push(JSON.parse(data1));
-                let res = await recommender.modifyTrip(driverTrip, riderTrips);
-                expect(res.routes).toBeDefined();
-                done();
+                recommender.modifyTrip(driverTrip, riderTrips, res => {
+                    expect(res.routes).toBeDefined();
+                    done();
+                });
+                
             });
         });
     });
@@ -252,9 +256,10 @@ describe("modifyTrip", () => {
                     riderTrips.push(JSON.parse(data2));
                     fs.readFile("./__test__/riderTrip3.json", "utf8", async (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
-                        let res = recommender.modifyTrip(driverTrip, riderTrips);
-                        expect(typeof res).toBe("object");
-                        done();
+                        recommender.modifyTrip(driverTrip, riderTrips, res => {
+                            expect(typeof res).toBe("object");
+                            done();
+                        });
                     });
                 });
             });
@@ -272,10 +277,10 @@ describe("modifyTrip", () => {
                     fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
                         fs.readFile("./__test__/outputTrip1.json", "utf8", async (err, out) => {
-                            let res = await recommender.modifyTrip(driverTrip, riderTrips);
-                            expect(res).toStrictEqual(JSON.parse(out));
-                            done();
-
+                            recommender.modifyTrip(driverTrip, riderTrips, res => {
+                                expect(res).toStrictEqual(JSON.parse(out));
+                                done();
+                            });
                         });
                     });
                 });
@@ -401,75 +406,68 @@ describe("getRiderTripSimilarity", () => {
     it('should return empty array on bad input', async done => {
         let driverTrip;
         let riderTrips;
-        recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-            expect(res).toHaveLength(0);
-            done();
-        });
+        let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+        expect(res).toHaveLength(0);
+        done();
     });
     it('should return empty array on incorrect driver input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
+            addMockUsers(async () => {
                 let dt;
-                recommender.getRiderTripSimilarity(dt, riderTrips, (res) => {
-                    expect(res).toHaveLength(0);
-                    done();
-                });
+                let res = await recommender.getRiderTripSimilarity(dt, riderTrips);
+                expect(res).toHaveLength(0);
+                done();
             });
         });
     });
     it('should ignore bad user-trip relationship on bad userID in trip', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
+            addMockUsers(async () => {
                 let userId = riderTrips[0].userID;
                 riderTrips[0].userID = mongoose.Types.ObjectId(1);
-                TripStore.findByIdAndUpdate({userID: userId}, riderTrips[0], () => {
-                    recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-                        expect(res).toHaveLength(2);
-                        done();
-                    });
+                TripStore.findByIdAndUpdate({userID: userId}, riderTrips[0], async () => {
+                    let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+                    expect(res).toHaveLength(2);
+                    done();
                 });
             });
         });
     });
     it('should return something on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-                    expect(res).toHaveLength(3);
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+                expect(res).toHaveLength(3);
+                done();
             });
         });
     });
     it('should return something with similarity measure on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-                    expect(res[0].similarityWithDriver).toBeDefined();
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+                expect(res[0].similarityWithDriver).toBeDefined();
+                done();
             });
         });
     });
     it('should return correctly ordered result on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-                    expect(res[0].similarityWithDriver).toBeGreaterThanOrEqual(res[1].similarityWithDriver);
-                    expect(res[1].similarityWithDriver).toBeGreaterThanOrEqual(res[2].similarityWithDriver);
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+                expect(res[0].similarityWithDriver).toBeGreaterThanOrEqual(res[1].similarityWithDriver);
+                expect(res[1].similarityWithDriver).toBeGreaterThanOrEqual(res[2].similarityWithDriver);
+                done();
             });
         });
     });
     it('should return correctly similarity on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTripSimilarity(driverTrip, riderTrips, (res) => {
-                    expect(res[0].similarityWithDriver).toBeGreaterThan(1.0);
-                    expect(res[0].similarityWithDriver).toBeLessThan(1.05);
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTripSimilarity(driverTrip, riderTrips);
+                expect(res[0].similarityWithDriver).toBeGreaterThan(1.0);
+                expect(res[0].similarityWithDriver).toBeLessThan(1.05);
+                done();
             });
         });
     });
@@ -527,34 +525,31 @@ describe("getRiderTrips", () => {
     });
     it('should return empty array on incorrect input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
+            addMockUsers(async () => {
                 let dt;
-                recommender.getRiderTrips(dt, (res) => {
-                    expect(res).toHaveLength(0);
-                    expect(res).toStrictEqual([]);
-                    done();
-                });
+                let res = await recommender.getRiderTrips(dt);
+                expect(res).toHaveLength(0);
+                expect(res).toStrictEqual([]);
+                done();
             });
         });
     });
     it('should return something of correct length on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTrips(driverTrip, (res) => {
-                    expect(res).toHaveLength(2);
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTrips(driverTrip);
+                expect(res).toHaveLength(2);
+                done();
             });
         });
     });
-    it('should return something of correct length on correct input', async done => {
+    it('should return something correct on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.getRiderTrips(driverTrip, (res) => {
-                    expect(res[1]._id).toBe(riderTrips[2]._id);
-                    expect(res[0]._id).toBe(riderTrips[0]._id);
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTrips(driverTrip);
+                expect(JSON.stringify(res[1]._id)).toBe(JSON.stringify(riderTrips[2]._id));
+                expect(JSON.stringify(res[0]._id)).toBe(JSON.stringify(riderTrips[0]._id));
+                done();
             });
         });
     });
@@ -613,28 +608,25 @@ describe("driverTripHandler", () => {
     });
     it('should return empty array when driverTrips is empty', async done => {
         let driverTrip;
-        recommender.driverTripHandler(driverTrip, (res) => {
-            expect(res).toStrictEqual([]);
-            done();
-        });
+        let res = await recommender.driverTripHandler(driverTrip);
+        expect(res).toStrictEqual([]);
+        done();
     })
     it('should return object on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.driverTripHandler(driverTrip, (res) => {
-                    expect(typeof res).toBe("object");
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.driverTripHandler(driverTrip);
+                expect(typeof res).toBe("object");
+                done();
             });
         });
     });
     it('should return json routes object on correct input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
-            addMockUsers(() => {
-                recommender.driverTripHandler(driverTrip, (rds, drs) => {
-                    expect(rds[0].tripRoute.routes).toBeDefined();
-                    done();
-                });
+            addMockUsers(async () => {
+                let res = await recommender.driverTripHandler(driverTrip);
+                expect(res[0].tripRoute.routes).toBeDefined();
+                done();
             });
         });
     });
