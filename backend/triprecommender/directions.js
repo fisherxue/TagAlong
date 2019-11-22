@@ -12,7 +12,7 @@ function getDirectionsWithWaypoints(req, callback) {
 		waypoints: req.waypoints,
 		optimize: true,
 	}, function(err, response) {
-		callback(err, response);
+		callback(err, response.json);
 	});
 }
 
@@ -22,7 +22,7 @@ function getDirections(req, callback) {
 		origin: req.origin,
 		destination: req.destination,
 	}, function(err, response) {
-		callback(err, response);
+		callback(err, response.json);
 	});
 }
 
