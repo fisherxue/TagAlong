@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,12 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tagalong.tagalong.Models.Login;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 

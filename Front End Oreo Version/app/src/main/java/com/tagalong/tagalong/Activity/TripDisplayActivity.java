@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Activity;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -15,6 +15,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.PolyUtil;
+import com.tagalong.tagalong.DataParser;
+import com.tagalong.tagalong.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;

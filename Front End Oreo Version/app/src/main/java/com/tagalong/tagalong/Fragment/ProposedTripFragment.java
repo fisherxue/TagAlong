@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,6 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import com.tagalong.tagalong.Adapter.ListProposedTripAdapter;
+import com.tagalong.tagalong.Adapter.TripProposedRiderAdapter;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;

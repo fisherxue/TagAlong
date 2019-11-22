@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Models;
 
 import com.google.android.gms.maps.model.LatLng;
 

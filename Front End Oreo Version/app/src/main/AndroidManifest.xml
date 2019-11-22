@@ -28,14 +28,14 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".TripDisplayActivity"
+            android:name=".Activity.TripDisplayActivity"
             android:label="@string/title_activity_trip_display"></activity>
-        <activity android:name=".ViewProfileActivity"></activity>
-        <activity android:name=".MessageActivity"></activity>
-        <activity android:name=".UpdateProfileActivity" />
-        <activity android:name=".SignupActivity" />
-        <activity android:name=".HomeActivity" />
-        <activity android:name=".SetTripFragment" />
+        <activity android:name=".Activity.ViewProfileActivity"></activity>
+        <activity android:name=".Activity.MessageActivity"></activity>
+        <activity android:name=".Activity.UpdateProfileActivity" />
+        <activity android:name=".Activity.SignupActivity" />
+        <activity android:name=".Activity.HomeActivity" />
+        <activity android:name=".Fragment.SetTripFragment" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -54,7 +54,7 @@
             </intent-filter>
         </service>
 
-        <activity android:name=".MainActivity">
+        <activity android:name=".Activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

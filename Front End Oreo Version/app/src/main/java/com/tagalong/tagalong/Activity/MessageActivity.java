@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -18,6 +18,14 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
+import com.tagalong.tagalong.Adapter.MessageAdapter;
+import com.tagalong.tagalong.Models.Chat;
+import com.tagalong.tagalong.Models.Conversation;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;

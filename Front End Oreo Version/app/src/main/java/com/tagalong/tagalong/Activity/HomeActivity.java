@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +17,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.login.LoginManager;
+import com.tagalong.tagalong.Fragment.MyTripFragment;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.Fragment.ProposedTripFragment;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Fragment.SetTripFragment;
 
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "Home Activity";

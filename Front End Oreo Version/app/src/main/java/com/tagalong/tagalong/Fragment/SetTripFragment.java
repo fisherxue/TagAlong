@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Fragment;
 
 import android.Manifest;
 import android.app.DatePickerDialog;
@@ -38,6 +38,13 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.tagalong.tagalong.Activity.HomeActivity;
+import com.tagalong.tagalong.GetDirectionsData;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -9,6 +9,9 @@ import android.text.Html;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.R;
 
 public class ViewProfileActivity extends AppCompatActivity {
 
