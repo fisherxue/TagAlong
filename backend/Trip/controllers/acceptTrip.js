@@ -105,6 +105,8 @@ const handleAcceptTrip = async (req, res) => {
 		driverTrip.save();
 		riderTrip.drivertripID = driverTrip._id;
 		riderTrip.chatroomID = driverTrip.chatroomID;
+		riderTrip.isFulfilled = true;
+		riderTrip.taggedUsers.push(driverTrip.username);
 		riderTrip.save();
 
 		addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
