@@ -423,7 +423,7 @@ describe('testing trips', () => {
       const res = await request.del("/trips/delTrip")
             .send({
                 userID: "5dd3aaa00389fd5bf3b6a528",
-                tripID: ""
+                tripID: "5dd3aaa00389fd5bf3b6a528"
             })
             .expect(400);
 
@@ -448,12 +448,11 @@ describe('testing trips', () => {
 
       const res = await request.del("/trips/delTrip")
         .send({
-            userID: user1._id,
-            tripID: ""
+            userID: user1._id
         })
         .expect(400);
 
-      expect(res.text).toBe("trip not found");
+      expect(res.text).toBe("Invalid userID or tripID");
       done();
 
     });
@@ -466,7 +465,7 @@ describe('testing trips', () => {
         })
         .expect(400);
 
-      expect(res.text).toBe("Invalid userID");
+      expect(res.text).toBe("Invalid userID or tripID");
       done();
     })
 

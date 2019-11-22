@@ -9,9 +9,9 @@ const handleDelTrip = async (req, res) => {
 	const userID = req.body.userID;
 	const tripID = req.body.tripID;
 
-	if (!mongoose.Types.ObjectId.isValid(userID)) {
+	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(tripID)) {
 		debug("Invalid userID");
-		return res.status(400).send("Invalid userID");
+		return res.status(400).send("Invalid userID or tripID");
 	}
 
 	const user = await User.findById(userID);
@@ -22,6 +22,8 @@ const handleDelTrip = async (req, res) => {
 	}
 
 	await TripStore.findByIdAndDelete(tripID);
+
+	res.json("trip successfully deleted");
 };
 
 module.exports = {
