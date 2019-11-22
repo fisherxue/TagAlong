@@ -13,10 +13,8 @@ const createNewRoom = async (username) => {
 		messages: []
 	});
 
-	chat.save((err, chatroom) => {
-		debug("chat id", chatroom);
-		return chatroom._id;
-	})
+	const updatedchat = await chat.save();
+	return updatedchat._id;
 };
 
 const handleCreateTrip = async (req, res) => {

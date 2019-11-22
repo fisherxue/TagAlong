@@ -9,12 +9,13 @@ const handleGetMessages = async (req, res) => {
 	debug(req.headers);
 
 	const userID = req.headers.userid;
+	const roomID = req.headers.roomid;
 
 	debug("get userID", userID);
 
-	if (!mongoose.Types.ObjectId.isValid(userID)) {
-		debug("invalid userID");
-		return res.status(400).send("Invalid userID");
+	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(roomID)) {
+		debug("invalid userID or roomID");
+		return res.status(400).send("Invalid userID or roomID");
 	}
 
 	const user = await User.findById(userID);
@@ -24,11 +25,9 @@ const handleGetMessages = async (req, res) => {
 		return res.status(400).send("Unable to find user");
 	}
 
-	const username = user.username;
+	const chatroom = await Chat.findById(roomID);
 
-	const chats = await Chat.find({ users: username });
-
-	res.json(chats);
+	res.json(chatroom);
 
 
 };
