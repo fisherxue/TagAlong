@@ -114,8 +114,9 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  * rider trip start and end
  */
 async function modifyTrip(driverTrip, riderTrips, callback) {
-	if (riderTrips.length < 1 || riderTrips === undefined) {
+	if (riderTrips.length < 1 || typeof riderTrips === "undefined") {
 		callback(driverTrip.tripRoute);
+		return;
 	}
 
 	let waypoints = [];
@@ -138,8 +139,9 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("req to directions with waypoints:", req);	
 
 	getDirectionsWithWaypoints(req, (err, res) => {
-		callback(res.json);
+		callback(res);
 	});
+	return;
 }
 
 /*
