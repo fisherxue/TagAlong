@@ -139,7 +139,7 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("req to directions with waypoints:", req);	
 
 	getDirectionsWithWaypoints(req, (err, res) => {
-		callback(res);
+		callback(res.json);
 	});
 	return;
 }
