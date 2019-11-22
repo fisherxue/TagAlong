@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "start": "DEBUG=* nodemon server.js",
+    "start": "DEBUG=*,-recommender nodemon server.js",
     "debug": "DEBUG=* node server.js",
     "test": "jest --collect-coverage"
   },

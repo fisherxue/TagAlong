@@ -31,7 +31,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 			return res.status(400).send("Driver has no trips");
 		}
 		let recommendedTrips = [];
-		trips.forEach(trip => {
+		trips.forEach(async (trip) => {
 			let appendingobj = {
 				drivertrip: {},
 				riderTrips: []
@@ -43,7 +43,7 @@ const handleGetRecommendedTrips = async (req, res) => {
 			// 	appendingobj.riderTrips = riderTrips;
 			// });
 
-			appendingobj.riderTrips = tripRecommender.driverTripHandler(trip);
+			appendingobj.riderTrips = await tripRecommender.driverTripHandler(trip);
 			debug("current appendending object", appendingobj);
 			recommendedTrips.push(appendingobj);
 		});

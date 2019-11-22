@@ -231,17 +231,19 @@ async function getRiderTrips(driverTrip) {
 	
 	let riderTrips;
 
-	await TripStore.find({}, (err, trips) => {
-		riderTrips = trips.filter((trip) => {
+	riderTrips = await TripStore.find({}, (err, trips) => {
+		if (trips) {
+			debug(trips)
+		}
+	});
+	riderTrips = riderTrips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});
-	});
-	debug("raw rider trips:", riderTrips);
 
-	riderTrips = cutTripsByTime(driverTrip, riderTrips);
+	debug("raw rider trips:", riderTrips);
+	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
 	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
-
 	return riderTrips;
 }
 
@@ -249,19 +251,12 @@ async function getRiderTrips(driverTrip) {
  * Handles a driver trip request
  * Gets the applicable rider trips
  */
-function driverTripHandler(driverTrip) {
+async function driverTripHandler(driverTrip) {
 	if (typeof driverTrip === "undefined") {
 		return [];
 	}
-	let riderTrips;
-	getRiderTrips(driverTrip)
-		.then(res => {
-			riderTrips = res;
-		});
-	getRiderTripSimilarity(driverTrip, riderTrips)
-		.then(res => {
-			riderTrips = res;
-		});
+	riderTrips = await getRiderTrips(driverTrip);
+	riderTrips = await getRiderTripSimilarity(driverTrip, riderTrips);
 	return riderTrips;
 }
 
