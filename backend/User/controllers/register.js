@@ -21,7 +21,8 @@ const handleRegister = async (req, res) => {
 				email,
 				joinedDate: new Date(),
 				password: bcrypt.hashSync(password, 10),
-				fbToken
+				fbToken,
+				interests: [2,2,2,2,2]
 
 			});
 			await user.save((err) => {
