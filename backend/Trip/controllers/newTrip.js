@@ -56,28 +56,15 @@ const handleCreateTrip = async (req, res) => {
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			tripRecommender.driverTripHandler(trip, async (riderTrips, driverTrip) => {
+			driverTrip.chatroomID = createNewRoom(username);
+			debug("created chatroom, id: ", driverTrip.chatroomID);
+			driverTrip.isFulfilled = true;
 
-			debug("drivertrip: ", driverTrip);
-			if (typeof riderTrips === "undefined") {
-				debug("riderTrips undefined");
-				return res.status(300).send("NOTHING");
-			} else {
+			const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
 
-				// Create Chat room
+			debug("updated driver trip:", updatedDriverTrip);
 
-				driverTrip.chatroomID = createNewRoom(username);
-				debug("created chatroom, id: ", driverTrip.chatroomID);
-				driverTrip.isFulfilled = true;
-
-				const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
-
-				debug("updated driver trip:", updatedDriverTrip);
-
-				res.send(updatedDriverTrip);
-			}
-
-			});	
+			res.send(updatedDriverTrip);
 		} 
 		else {
 			debug("NOT A DRIVER TRIP");
