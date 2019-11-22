@@ -6,7 +6,7 @@ const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 
 
-const createNewRoom = (username) => {
+const createNewRoom = async (username) => {
 	const users = [username];
 	const chat = new Chat({
 		users,
@@ -54,7 +54,7 @@ const handleCreateTrip = async (req, res) => {
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			trip.chatroomID = createNewRoom(username);
+			trip.chatroomID = await createNewRoom(username);
 			debug("created chatroom, id: ", trip.chatroomID);
 			trip.isFulfilled = true;
 		}
