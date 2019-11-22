@@ -55,10 +55,10 @@ public class ViewProfileActivity extends AppCompatActivity {
             age.setText(Html.fromHtml("<b>Age: </b>" + userProfile.getAge()));
             gender.setText(Html.fromHtml("<b>Gender: </b>" + userProfile.getGender()));
             if(userProfile.getDriver()){
-                registeredAs.setText(Html.fromHtml("<b>Registered as: Driver"));
-                carCap.setText(Html.fromHtml("<b>Car Capacity: " + userProfile.getCarCapacity()));
+                registeredAs.setText(Html.fromHtml("<b>Registered as:</b> Driver"));
+                carCap.setText(Html.fromHtml("<b>Car Capacity: </b>" + userProfile.getCarCapacity()));
             } else {
-                registeredAs.setText(Html.fromHtml("<b>Registered as: Rider"));
+                registeredAs.setText(Html.fromHtml("<b>Registered as: </b>Rider"));
             }
             interests.setText(Html.fromHtml("<b>Preference:</b>\n" + "&emsp<b>Music: </b>" + (userProfile.getInterests()[0]+1) +"/5\n" +
                     "&emsp<b>Chatting: </b>" + (userProfile.getInterests()[1]+1) +"/5\n" +
