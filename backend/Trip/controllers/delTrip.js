@@ -1,6 +1,7 @@
 const TripStore = require("../models/Trip");
 const User = require("../../User/models/user");
 const mongoose = require("mongoose");
+const debug = require("debug")("http /delTrip");
 
 
 const handleDelTrip = async (req, res) => {
