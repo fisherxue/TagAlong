@@ -19,5 +19,5 @@ const handleGetProfile = async (req, res) => {
 };
 
 module.exports = {
-	handleGetProfile;
+	handleGetProfile
 };

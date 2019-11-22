@@ -115,7 +115,7 @@ const handleAcceptTrip = async (req, res) => {
 		res.send({
 			status: 'OK',
 			message: 'user successfully added to trip'
-		}));
+		});
 	});
 
 	
