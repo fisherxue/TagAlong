@@ -60,12 +60,14 @@ const handleCreateTrip = async (req, res) => {
 
 			debug("drivertrip: ", driverTrip);
 			if (typeof riderTrips === "undefined") {
+				debug("riderTrips undefined");
 				return res.status(300).send("NOTHING");
 			} else {
 
 				// Create Chat room
-				driverTrip.chatroomID = createNewRoom(username);
 
+				driverTrip.chatroomID = createNewRoom(username);
+				debug("created chatroom, id: ", driverTrip.chatroomID);
 				driverTrip.isFulfilled = true;
 
 				const updatedDriverTrip = await TripStore.findByIdAndUpdate(driverTrip._id, driverTrip, {new: true});
