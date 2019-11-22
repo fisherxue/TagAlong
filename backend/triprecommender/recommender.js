@@ -28,8 +28,13 @@ function cutTripsByTime(driverTrip, riderTrips) {
 		return [];
 	}
 
+	let driverDepartureDate = new Date(driverTrip.arrivalTime);
+	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTrip.tripRoute.routes[0].legs[0].duration.value);
+
 	riderTrips.forEach(function(riderTrip, index) {
-		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
+		let riderDepartureDate = new Date(riderTrip.arrivalTime);
+		riderDepartureDate.setSeconds(riderDepartureDate.getSeconds() - riderTrip.tripRoute.routes[0].legs[0].duration.value);
+		if (riderTrip.arrivalTime <= driverTrip.arrivalTime && riderDepartureDate >= driverDepartureDate) {
 			riderTripsTime.push(riderTrip);
 		}
 	});
@@ -242,7 +247,7 @@ async function getRiderTrips(driverTrip) {
 		});
 
 	debug("raw rider trips:", riderTrips);
-	//riderTrips = cutTripsByTime(driverTrip, riderTrips);
+	riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
 	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
 	return riderTrips;
