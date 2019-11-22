@@ -50,10 +50,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_profile);
+        Log.d(TAG,"Started Update Profile Activity");
+
         context = getApplicationContext();
         userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
-
-        Log.d(TAG,"Started Update Profile Activity");
 
         firstNameEditText = (EditText) findViewById(R.id.firstName);
         lastNameEditText = (EditText) findViewById(R.id.lastName);
@@ -67,7 +67,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
         fragranceSeekBar = (SeekBar) findViewById(R.id.seekFragrance);
         speedSeekBar = (SeekBar) findViewById(R.id.seekSpeed);
         chattingSeekBar = (SeekBar) findViewById(R.id.seekChatting);
-
         initializeSeekBar();
     }
 
@@ -157,13 +156,12 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 //Nothing To be Done
             }
         });
-        Log.d(TAG,"SeekBars Initialized");
+        Log.d(TAG,"SeekBars initialized");
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         newUserProfile = new Profile();
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,7 +173,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     newUserProfile.setFirstName(firstNameEditText.getText().toString());
                 }
                 else {
-                    Toast.makeText(context, "Please Enter First Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please enter first name", Toast.LENGTH_LONG).show();
                     allSet = false;
                     Log.d(TAG,"First name not set");
                 }
@@ -185,7 +183,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     Log.d(TAG,"Last name set");
                 }
                 else {
-                    Toast.makeText(context, "Please Enter Last Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please enter last name", Toast.LENGTH_LONG).show();
                     allSet = false;
                     Log.d(TAG,"Last name not set");
                 }
@@ -195,7 +193,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     Log.d(TAG,"Age set");
                 }
                 else {
-                    Toast.makeText(context, "Please Enter Age", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please enter age", Toast.LENGTH_LONG).show();
                     allSet = false;
                     Log.d(TAG,"Age not set");
                 }
@@ -204,7 +202,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     newUserProfile.setGender(genderEditText.getText().toString());
                     Log.d(TAG,"Gender set");
                 } else {
-                    Toast.makeText(context, "Please Enter Gender", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "Please enter gender", Toast.LENGTH_LONG).show();
                     Log.d(TAG,"Gender not set");
                     allSet = false;
                 }
@@ -215,9 +213,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
                     newUserProfile.setDriver(true);
                     if (!carCapacityEditText.getText().toString().isEmpty()){
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
-                        Log.d(TAG,"Car capacity and Driver set");
+                        Log.d(TAG,"Car capacity and driver set");
                     } else {
-                        Toast.makeText(context, "Please Enter Car Capacity", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not set");
                         allSet = false;
                     }
@@ -225,7 +223,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 else if (isDriverSwitch.isChecked() && newUserProfile.getAge() < newUserProfile.minAgeDriver) {
                     Toast.makeText(context, "You are underage to be a driver \n Please register as a rider", Toast.LENGTH_LONG).show();
                     allSet = false;
-                    Log.d(TAG,"Age Requirements not met to be driver");
+                    Log.d(TAG,"Age requirements not met to be driver");
                 }
 
                 newUserProfile.setInterests(interests);
