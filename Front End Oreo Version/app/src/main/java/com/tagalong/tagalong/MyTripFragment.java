@@ -33,7 +33,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class HomeFragment extends Fragment {
+public class MyTripFragment extends Fragment {
     private final String TAG = "MyTripsFragment";
     private List<Trip> tripList;
     private View view;

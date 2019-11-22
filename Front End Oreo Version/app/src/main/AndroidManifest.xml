@@ -35,7 +35,7 @@
         <activity android:name=".UpdateProfileActivity" />
         <activity android:name=".SignupActivity" />
         <activity android:name=".HomeActivity" />
-        <activity android:name=".MapsFragment" />
+        <activity android:name=".SetTripFragment" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

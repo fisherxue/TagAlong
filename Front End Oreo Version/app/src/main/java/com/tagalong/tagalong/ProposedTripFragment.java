@@ -32,7 +32,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ChatFragment extends Fragment {
+public class ProposedTripFragment extends Fragment {
 
     private final String TAG = "Proposed Trip Fragment";
     private List<Trip> tripList;

@@ -24,12 +24,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -56,7 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
-public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
+public class SetTripFragment extends FragmentActivity implements OnMapReadyCallback
         , LocationListener, GoogleMap.OnMarkerClickListener, GoogleMap.OnMarkerDragListener {
     private GoogleMap mMap;
     private FusedLocationProviderClient client;
@@ -188,7 +182,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             public boolean onQueryTextSubmit(String query) {
                 String location = locationSearch.getQuery().toString();
                 List<Address> locationList = new ArrayList<>();
-                Geocoder geocoder = new Geocoder(MapsFragment.this);
+                Geocoder geocoder = new Geocoder(SetTripFragment.this);
                 try {
                     locationList = geocoder.getFromLocationName(location, 1);
                     Log.d(TAG,"Searching for Location");
@@ -229,7 +223,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View view) {
                 final Calendar calendar = Calendar.getInstance();
 
-                DatePickerDialog datePickerDialog = new DatePickerDialog(MapsFragment.this,
+                DatePickerDialog datePickerDialog = new DatePickerDialog(SetTripFragment.this,
                         new DatePickerDialog.OnDateSetListener() {
                             @Override
                             public void onDateSet(DatePicker datePicker, int year, int month, int day) {
@@ -256,7 +250,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         arrivalTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                TimePickerDialog timePickerDialog = new TimePickerDialog(MapsFragment.this, new TimePickerDialog.OnTimeSetListener() {
+                TimePickerDialog timePickerDialog = new TimePickerDialog(SetTripFragment.this, new TimePickerDialog.OnTimeSetListener() {
                     @Override
                     public void onTimeSet(TimePicker timePicker, int hour, int minute) {
                         arrivalTime.setText(String.format("%02d:%02d",hour,minute));
@@ -286,50 +280,45 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                     longitude = location.getLongitude();
                     SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                             .findFragmentById(R.id.map);
-                    mapFragment.getMapAsync(MapsFragment.this);
+                    mapFragment.getMapAsync(SetTripFragment.this);
                 }
             }
         });
     }
 
     private void generateTrip(Trip trip){
-        RequestQueue queue = Volley.newRequestQueue(this);
         String url = getString(R.string.createTrip);
         Gson gson = new Gson();
         String tripJson = gson.toJson(trip);
         JSONObject tripJSONObject;
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context);
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
+                Log.d(TAG,"Trip was successfully set.");
+                Intent intent = new Intent(SetTripFragment.this, HomeActivity.class);
+                intent.putExtra("profile", userProfile);
+                startActivity(intent);
+                SetTripFragment.this.finish();
+            }
+
+            @Override
+            public void onError(String result) {
+                Log.d(TAG, "Error: while sending trip");
+                Log.d(TAG, "Error: " + result);
+                Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+            }
+        };
 
         try {
-            tripJSONObject = new JSONObject(tripJson);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, tripJSONObject, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
-                    Log.d(TAG,"Trip was successfully set.");
-                    Intent intent = new Intent(MapsFragment.this, HomeActivity.class);
-                    intent.putExtra("profile", userProfile);
-                    startActivity(intent);
-                    MapsFragment.this.finish();
-
-                }
-
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.d(TAG, "Error: while sending trip");
-                    Log.d(TAG, "Error: " + error.toString());
-                    Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
-                }
-            });
-
-            queue.add(jsonObjectRequest);
-
-
-
+            tripJSONObject = new JSONObject((tripJson));
+            communicator.VolleyPost(url,tripJSONObject,callback);
         } catch (JSONException e) {
+            Log.d(TAG, "Error making trip JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
             e.printStackTrace();
         }
-
 
     }
 
@@ -341,7 +330,7 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
                     fetchLastLocation();
 
-                    if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED){
+                    if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)==PackageManager.PERMISSION_GRANTED && mMap!=null){
                         Log.d(TAG,"Location enabled.");
                         mMap.setMyLocationEnabled(true);
                     }
@@ -480,6 +469,6 @@ public class MapsFragment extends FragmentActivity implements OnMapReadyCallback
         Intent intent = new Intent(context, HomeActivity.class);
         intent.putExtra("profile", userProfile);
         startActivity(intent);
-        MapsFragment.this.finish();
+        SetTripFragment.this.finish();
     }
 }

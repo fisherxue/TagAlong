@@ -34,7 +34,7 @@ public class HomeActivity extends AppCompatActivity {
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
-        Fragment frag = new HomeFragment();
+        Fragment frag = new MyTripFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable("profile", userProfile);
         frag.setArguments(bundle);
@@ -81,7 +81,7 @@ public class HomeActivity extends AppCompatActivity {
                     switch (menuItem.getItemId()){
                         case R.id.nav_home:
                             Log.d(TAG,"Opening MyTripFragment");
-                            fragment = new HomeFragment();
+                            fragment = new MyTripFragment();
                             Bundle bundle = new Bundle();
                             bundle.putSerializable("profile", userProfile);
                             fragment.setArguments(bundle);
@@ -89,7 +89,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         case R.id.nav_maps:
                             Log.d(TAG,"Opening SetTripFragment");
-                            Intent intent = new Intent(context, MapsFragment.class);
+                            Intent intent = new Intent(context, SetTripFragment.class);
                             intent.putExtra("profile", userProfile);
                             startActivity(intent);
                             HomeActivity.this.finish();
@@ -97,7 +97,7 @@ public class HomeActivity extends AppCompatActivity {
 
                         case R.id.nav_chat:
                             Log.d(TAG,"Opening ProposedTripFragment");
-                            fragment = new ChatFragment();
+                            fragment = new ProposedTripFragment();
                             Bundle bundle2 = new Bundle();
                             bundle2.putSerializable("profile", userProfile);
                             fragment.setArguments(bundle2);
