@@ -6,17 +6,15 @@ const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 
 
-const createNewRoom = (username) => {
+const createNewRoom = async (username) => {
 	const users = [username];
 	const chat = new Chat({
 		users,
 		messages: []
 	});
 
-	chat.save((err, chatroom) => {
-		debug("chat id", chatroom);
-		return chatroom._id;
-	})
+	const updatedchat = await chat.save();
+	return updatedchat._id;
 };
 
 const handleCreateTrip = async (req, res) => {
@@ -54,7 +52,7 @@ const handleCreateTrip = async (req, res) => {
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
-			trip.chatroomID = createNewRoom(username);
+			trip.chatroomID = await createNewRoom(username);
 			debug("created chatroom, id: ", trip.chatroomID);
 			trip.isFulfilled = true;
 		}

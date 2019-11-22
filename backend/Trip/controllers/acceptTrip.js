@@ -56,53 +56,64 @@ const handleAcceptTrip = async (req, res) => {
 	const drivertripID = req.body.tripID;
 	const usertripID = req.body.usertripID;
 
-	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(drivertripID) | mongoose.Types.ObjectId.isValid(usertripID)) {
+	debug("userID", userID);
+	debug("drivertripID", drivertripID);
+	debug("usertripID", usertripID);
+
+	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(drivertripID) | !mongoose.Types.ObjectId.isValid(usertripID)) {
 		debug("Invalid user ID or roomID");
 		return res.status(400).send("Invalid userID or roomID");
 	}
 
-	const user = User.findById(userID);
+	const user = await User.findById(userID);
 
 	if (!user) {
 		debug("Unable to find user");
 		return res.status(400).send("Unable to find user");
 	}
 
-	const driverTrip = TripStore.findById(drivertripID);
+	const driverTrip = await TripStore.findById(drivertripID);
 
 	if (!driverTrip) {
 		debug("driver trip not found");
 		return res.status(400).send("driver trip not found");
 	}
 
-	const riderTrip = TripStore.findById(usertripID);
+	const riderTrip = await TripStore.findById(usertripID);
 
 	if (!riderTrip) {
 		debug("rider trip not found");
 		return res.status(400).send("rider trip not found");
 	}
 
-	const rider_user = User.findById(riderTrip.userID);
+	const rider_user = await User.findById(riderTrip.userID);
 
 	if (!rider_user) {
 		debug("rider user not found");
 		return res.status(400).send("rider user not found");
 	} 
 
-	driverTrip.tripRoute = tripRecommender.modifyTrip(driverTrip, riderTrip);
-	driverTrip.taggedUsers.push(riderTrip.username);
-	driverTrip.taggedTrips.push(riderTrip._id);
+	debug("selected driver trip", driverTrip);
 
-	debug(driverTrip, "driverTrip update");
+	tripRecommender.modifyTrip(driverTrip, [riderTrip], res => {
+		driverTrip.tripRoute = res;
+		driverTrip.taggedUsers.push(riderTrip.username);
+		driverTrip.taggedTrips.push(riderTrip._id);
+
+		debug(driverTrip, "driverTrip update");
+		
+		driverTrip.save();
+		riderTrip.drivertripID = driverTrip._id;
+		riderTrip.chatroomID = driverTrip.chatroomID;
+		riderTrip.save();
+
+		addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
+		debug("added ", rider_user.username, "to chatroom", driverTrip.chatroomID);
+
+		res.json("Added user to trip");
+	});
+
 	
-	driverTrip.save();
-	riderTrip.drivertripID = driverTrip._id;
-	riderTrip.save();
-
-	addUsertoChatRoom(rider_user.username, driverTrip.chatroomID);
-	debug("added ", rider_user.username, "to chatroom", driverTrip.chatroomID);
-
-	res.json("Added user to trip");
 
 };
 

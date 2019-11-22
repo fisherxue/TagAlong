@@ -22,7 +22,11 @@ const handleRegister = async (req, res) => {
 				joinedDate: new Date(),
 				password: bcrypt.hashSync(password, 10),
 				fbToken,
-				interests: [2,2,2,2,2]
+				interests: [2,2,2,2,2],
+				age: 0,
+				gender: "",
+				firstName: "",
+				lastName: ""
 
 			});
 			await user.save((err) => {
