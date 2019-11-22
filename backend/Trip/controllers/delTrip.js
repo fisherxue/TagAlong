@@ -64,6 +64,7 @@ const handleDelTrip = async (req, res) => {
 	if (tripindex > -1) {
 		parenttrip.taggedTrips.splice(tripindex, 1);
 	}
+	
 
 	await parenttrip.save();
 
