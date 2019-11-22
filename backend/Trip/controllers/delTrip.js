@@ -40,7 +40,7 @@ const handleDelTrip = async (req, res) => {
 	const tripID = req.body.tripID;
 
 	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(tripID)) {
-		debug("Invalid userID");
+		debug("Invalid userID or tripID");
 		return res.status(400).send("Invalid userID or tripID");
 	}
 
