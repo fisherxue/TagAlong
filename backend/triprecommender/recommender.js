@@ -28,9 +28,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
 		return [];
 	}
 
-	console.log(driverTrip)
 	riderTrips.forEach(function(riderTrip, index) {
-		console.log(riderTrip.tripRoute)
 		console.log(riderTrip.tripRoute.routes[0].legs[0].duration)
 		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
 			riderTripsTime.push(riderTrip);
