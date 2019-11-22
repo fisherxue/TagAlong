@@ -36,8 +36,11 @@ const sendChatNotif = async (user, message) => {
 
 const handleDelTrip = async (req, res) => {
 	
-	const userID = req.body.userID;
-	const tripID = req.body.tripID;
+	const userID = req.headers.userid;
+	const tripID = req.headers.tripid;
+
+	debug("userID: ", userID);
+	debug("tripID: ", tripID);
 
 	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(tripID)) {
 		debug("Invalid userID or tripID");
@@ -51,26 +54,66 @@ const handleDelTrip = async (req, res) => {
 		return res.status(400).send("Unable to find user");
 	}
 
-	const trip = await TripStore.findByIdAndDelete(tripID);
+	const trip = await TripStore.findById(tripID);
 
-	const parenttrip = await TripStore.findByIdAndDelete(trip.driverTripID);
-
-	const index = parenttrip.taggedUsers.indexOf(user.username);
-	if (index > -1) {
-	  parenttrip.taggedUsers.splice(index, 1);
+	if (!trip) {
+		debug("trip not found");
+		return res.status(400).send("trip not found");
 	}
 
-	const tripindex = parenttrip.taggedTrips.indexOf(tripID);
-	if (tripindex > -1) {
-		parenttrip.taggedTrips.splice(tripindex, 1);
+	if (trip.isDriverTrip) {
+		if (trip.taggedTrips) {
+			for (const ridertrip of trip.taggedTrips) {
+				const foundridertrip = await TripStore.findByIdAndUpdate(ridertrip._id, {
+					isFulfilled: false,
+					taggedUsers: [],
+					driverTripID: undefined,
+					chatroomID: undefined
+				}, {new: true});
+				const rideruser = await User.findById(foundridertrip.userID);
+				sendChatNotif(rideruser, `Driver ${user.username} has deleted his trip`);
+			}
+		}
 	}
+	else {
+		if (trip.isFulfilled) {
+			const parenttrip = await TripStore.findById(trip.driverTripID);
+
+			if (!parenttrip) {
+				debug("Unable to find driver trip");
+				return res.status(400).send("Unable to find driver trip");
+			}
+
+			debug("parenttrip found: ", parenttrip);
+
+			const driveruser = await TripStore.findById(parenttrip.userID);
+
+			if (!driveruser) {
+				debug("Unable to find driver");
+				return res.status(400).send("Unable to find driver");
+			}
+
+			const index = parenttrip.taggedUsers.indexOf(user.username);
+			if (index > -1) {
+			  parenttrip.taggedUsers.splice(index, 1);
+			}
+
+			const tripindex = parenttrip.taggedTrips.indexOf(tripID);
+			if (tripindex > -1) {
+				parenttrip.taggedTrips.splice(tripindex, 1);
+			}
+			
+			await parenttrip.save();
+
+			sendChatNotif(driveruser, `User ${user.username} has left your trip`);
+		}
+	}
+
+	await TripStore.findByIdAndDelete(tripID);
+
+	debug("deleted trip: ", trip);
+
 	
-
-	await parenttrip.save();
-
-	const driveruser = await TripStore.findById(parenttrip.userID);
-
-	sendChatNotif(driveruser, `User ${user.username} has left your trip`);
 
 	res.send({
 		status: 'OK',

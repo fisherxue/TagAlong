@@ -103,7 +103,7 @@ const handleAcceptTrip = async (req, res) => {
 		debug(driverTrip, "driverTrip update");
 		
 		driverTrip.save();
-		riderTrip.drivertripID = driverTrip._id;
+		riderTrip.driverTripID = driverTrip._id;
 		riderTrip.chatroomID = driverTrip.chatroomID;
 		riderTrip.isFulfilled = true;
 		riderTrip.taggedUsers.push(driverTrip.username);
