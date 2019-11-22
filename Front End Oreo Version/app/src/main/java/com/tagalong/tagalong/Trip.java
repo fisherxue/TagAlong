@@ -46,7 +46,6 @@ public class Trip implements Serializable {
         try {
             this.username = trip.getString("username");
             this.tripID = trip.getString("_id");
-            this.roomID = trip.getString("roomID");
             this.tripRoute = trip.getJSONObject("tripRoute");
             //this.arrivalTime = (Date) trip.get("arrivalTime");
             this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
@@ -67,6 +66,11 @@ public class Trip implements Serializable {
             this.taggedUsers = new String[taggedUsers.length()];
             for (int i = 0; i < taggedUsers.length(); i++){
                 this.taggedUsers[i] = taggedUsers.getString(i);
+            }
+            if (trip.getBoolean("isFulfilled")){
+                this.roomID = trip.getString("chatroomID");
+            } else {
+                this.roomID = "not set";
             }
         } catch (JSONException e) {
             e.printStackTrace();

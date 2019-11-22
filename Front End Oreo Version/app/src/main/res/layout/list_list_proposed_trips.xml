@@ -14,7 +14,7 @@
         android:layout_marginTop="@dimen/mtrl_card_spacing"
         android:layout_marginRight="@dimen/mtrl_card_spacing"
         android:minHeight="200dp"
-        app:cardBackgroundColor="@color/quantum_purple200"
+        app:cardBackgroundColor="@color/quantum_lightblue200"
         >
 
             <LinearLayout

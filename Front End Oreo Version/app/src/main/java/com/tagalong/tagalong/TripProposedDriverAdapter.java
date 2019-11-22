@@ -37,7 +37,7 @@ import io.opencensus.common.ToDoubleFunction;
 
 public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposedDriverAdapter.ViewHolder> {
 
-    private final String TAG = "Trip View Adapter";
+    private final String TAG = "Trip Proposed View Adapter";
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
@@ -55,7 +55,6 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
 
         private Button map;
         private Button accept;
-        private Button reject;
         private TextView departurePlace;
         private TextView arrivalPlace;
         private TextView departureTime;
@@ -67,7 +66,6 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
             super(itemView);
             map = itemView.findViewById(R.id.map);
             accept = itemView.findViewById(R.id.accept);
-            reject = itemView.findViewById(R.id.reject);
             departurePlace = itemView.findViewById(R.id.departurePlace);
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
             departureTime = itemView.findViewById(R.id.departureClock);
@@ -140,7 +138,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                         @Override
                         public void onErrorResponse(VolleyError error) {
                             Log.d(TAG, "Error: Could not get list of Trips");
-                            Log.d(TAG, "Error: " + error.getMessage());
+                            Log.d(TAG, "Error: " + error.toString());
                             Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
                         }
                     });
@@ -150,16 +148,9 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //TODo: Write Acceptance
             }
         });
 
-        holder.reject.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODo: Write Rejection
-            }
-        });
     }
 
     @Override

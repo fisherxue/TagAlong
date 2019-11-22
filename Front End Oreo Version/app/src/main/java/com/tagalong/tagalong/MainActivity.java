@@ -228,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSuccess(@NonNull Task<InstanceIdResult> task) {
                 String token = task.getResult().getToken();
-                Log.d(TAG, token);
                 login.setFbToken(token);
                 verifyUser(login, false);
             }
