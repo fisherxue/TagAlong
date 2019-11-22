@@ -29,7 +29,6 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	}
 
 	riderTrips.forEach(function(riderTrip, index) {
-		console.log(riderTrip.tripRoute.routes[0].legs[0].duration)
 		if (riderTrip.arrivalTime <= driverTrip.arrivalTime) {
 			riderTripsTime.push(riderTrip);
 		}
@@ -114,9 +113,9 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  * Modify the driver trip by adding waypoints for each
  * rider trip start and end
  */
-async function modifyTrip(driverTrip, riderTrips) {
+async function modifyTrip(driverTrip, riderTrips, callback) {
 	if (riderTrips.length < 1 || riderTrips === undefined) {
-		return driverTrip.tripRoute;
+		callback(driverTrip.tripRoute);
 	}
 
 	let waypoints = [];
@@ -139,7 +138,7 @@ async function modifyTrip(driverTrip, riderTrips) {
 	debug("req to directions with waypoints:", req);	
 
 	getDirectionsWithWaypoints(req, (err, res) => {
-		return res.json;
+		callback(res.json);
 	});
 }
 

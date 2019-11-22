@@ -147,7 +147,7 @@ describe("cutTripsByTime", () => {
                     riderTrips.push(JSON.parse(data2));
                     fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
                         riderTrips.push(JSON.parse(data3));
-                        expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(3);
+                        expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(2);
                         done();
                     });
                 });
@@ -222,6 +222,7 @@ describe("modifyTrip", () => {
             fs.readFile("./__test__/riderTrip1.json", "utf8", async (err, data1) => {
                 riderTrips.push(JSON.parse(data1));
                 let res = await recommender.modifyTrip(driverTrip, riderTrips);
+                console.log(res);
                 expect(typeof res).toBe("object");
                 done();
             });
