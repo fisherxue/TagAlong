@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.Toast;
@@ -67,6 +66,10 @@ public class UpdateProfileActivity extends AppCompatActivity {
         speedSeekBar = (SeekBar) findViewById(R.id.seekSpeed);
         chattingSeekBar = (SeekBar) findViewById(R.id.seekChatting);
         initializeSeekBar();
+
+        if (!userProfile.getUsername().equals("Not Set")){
+            showProfile();
+        }
     }
 
     private void initializeSeekBar(){
@@ -210,12 +213,18 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 newUserProfile.setCarCapacity(0);
                 if(isDriverSwitch.isChecked() && newUserProfile.getAge() >= newUserProfile.minAgeDriver){
                     newUserProfile.setDriver(true);
-                    if (!carCapacityEditText.getText().toString().isEmpty()){
+                    if (!carCapacityEditText.getText().toString().isEmpty() &&
+                            Integer.parseInt(carCapacityEditText.getText().toString()) <= Profile.maxCarCapacity &&
+                            Integer.parseInt(carCapacityEditText.getText().toString()) >= Profile.minCarCapacity ){
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
                         Log.d(TAG,"Car capacity and driver set");
-                    } else {
+                    } else if (carCapacityEditText.getText().toString().isEmpty()){
                         Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not set");
+                        allSet = false;
+                    } else {
+                        Toast.makeText(context, "Please enter car capacity between 0 and 10", Toast.LENGTH_LONG).show();
+                        Log.d(TAG,"Car capacity not in valid range");
                         allSet = false;
                     }
                 }
@@ -322,5 +331,22 @@ public class UpdateProfileActivity extends AppCompatActivity {
         intent.putExtra("profile", received_profile);
         startActivity(intent);
         UpdateProfileActivity.this.finish();
+    }
+
+    private void showProfile(){
+        firstNameEditText.setText(userProfile.getFirstName());
+        lastNameEditText.setText(userProfile.getLastName());
+        ageEditText.setText(Integer.toString(userProfile.getAge()));
+        genderEditText.setText(userProfile.getGender());
+        if(userProfile.getDriver()){
+            carCapacityEditText.setText(Integer.toString(userProfile.getCarCapacity()));
+        } else {
+            isDriverSwitch.setChecked(false);
+        }
+        musicSeekBar.setProgress(userProfile.getInterests()[0],true);
+        chattingSeekBar.setProgress(userProfile.getInterests()[1],true);
+        speedSeekBar.setProgress(userProfile.getInterests()[2],true);
+        fragranceSeekBar.setProgress(userProfile.getInterests()[3],true);
+        chattingSeekBar.setProgress(userProfile.getInterests()[4],true);
     }
 }

@@ -2,8 +2,6 @@ package com.tagalong.tagalong.Activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-//import androidx.security.crypto.EncryptedFile;
-//import androidx.security.crypto.MasterKeys;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void loginSavedProfile(final Profile profile){
+    private void loginSavedProfile(final Profile profile){
         String url = getString(R.string.updateProfile);
 
         Gson gson = new Gson();

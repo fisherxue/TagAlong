@@ -11,6 +11,8 @@ public class Profile implements Serializable {
     public static final int minAgeDriver = 19;
     public static final int minAgeRider = 15;
     public static final int maxAge = 100;
+    public static final int minCarCapacity = 1;
+    public static final int maxCarCapacity = 10;
 
     private String userID;
     private String username;
@@ -36,10 +38,13 @@ public class Profile implements Serializable {
         this.email = "Not Set";
         this.joinedDate = new Date();
         this.gender = "Not Set";
-        this.isDriver = false;
+        this.isDriver = true;
         this.age = 0;
         this.carCapacity = 0;
         this.interests = new int[5];
+        for (int i = 0; i < interests.length; i++){
+            interests[i] = 2;
+        }
     }
 
 

@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tagalong.tagalong.Activity.HomeActivity;
-import com.tagalong.tagalong.Activity.MainActivity;
 import com.tagalong.tagalong.Activity.ViewProfileActivity;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.R;

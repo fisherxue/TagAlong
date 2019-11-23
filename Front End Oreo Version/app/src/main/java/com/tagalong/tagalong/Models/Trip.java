@@ -11,8 +11,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javax.xml.datatype.Duration;
-
 public class Trip implements Serializable {
     private static final int MILLY_SECOND_in_SECOND = 1000;
     private String tripID;
