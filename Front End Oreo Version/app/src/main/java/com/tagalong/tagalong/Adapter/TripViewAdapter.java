@@ -142,7 +142,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
 
                     @Override
                     public void onError(String result){
-                        Log.d(TAG, "Could delete trips");
+                        Log.d(TAG, "Could not delete trips");
                         Log.d(TAG, "Error: " + result);
                         Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
 

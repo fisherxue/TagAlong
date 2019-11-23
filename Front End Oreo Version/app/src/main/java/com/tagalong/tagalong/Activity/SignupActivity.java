@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.tagalong.tagalong.Models.Login;
 import com.tagalong.tagalong.Models.Profile;
@@ -24,10 +25,10 @@ import org.json.JSONObject;
 public class SignupActivity extends AppCompatActivity {
 
     private String TAG = "Signup Activity";
-    private EditText usernameEditText;
-    private EditText passwordEditText;
-    private EditText passwordConfirmET;
-    private EditText emailEditText;
+    private TextInputEditText usernameEditText;
+    private TextInputEditText passwordEditText;
+    private TextInputEditText passwordConfirmET;
+    private TextInputEditText emailEditText;
     private Button nextButton;
 
     private Context context;
@@ -42,11 +43,12 @@ public class SignupActivity extends AppCompatActivity {
         context = getApplicationContext();
         login = (Login) getIntent().getSerializableExtra("login");
 
-        usernameEditText = (EditText) findViewById(R.id.username);
-        passwordEditText = (EditText) findViewById(R.id.password);
-        passwordConfirmET = (EditText) findViewById(R.id.password2);
+        usernameEditText = (TextInputEditText) findViewById(R.id.username);
+        passwordEditText = (TextInputEditText) findViewById(R.id.password);
+        passwordConfirmET = (TextInputEditText) findViewById(R.id.password2);
+        emailEditText = (TextInputEditText) findViewById(R.id.Email);
         nextButton = (Button) findViewById(R.id.nextbutton);
-        emailEditText = (EditText) findViewById(R.id.Email);
+
     }
 
     @Override

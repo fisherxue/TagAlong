@@ -83,9 +83,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
 
         useralonglist = new ArrayList<>();
-        for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            useralonglist.add(trip.getTaggedUsers()[i]);
-        }
+        useralonglist.add(trip.getUsername());
 
         holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
         holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));

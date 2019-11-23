@@ -1,6 +1,7 @@
 package com.tagalong.tagalong.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,11 +11,16 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tagalong.tagalong.Activity.HomeActivity;
+import com.tagalong.tagalong.Activity.MainActivity;
+import com.tagalong.tagalong.Activity.ViewProfileActivity;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.R;
 import com.tagalong.tagalong.Communication.VolleyCallback;
 import com.tagalong.tagalong.Communication.VolleyCommunicator;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -71,8 +77,8 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
                 VolleyCallback callback = new VolleyCallback() {
                     @Override
                     public void onSuccess(JSONObject response){
-                        Log.d(TAG, "Received list of messages for the chat");
-
+                        Log.d(TAG, "Received profile");
+                        viewUserAlongSuccess(response);
                     }
                     @Override
                     public void onError(String result){
@@ -91,5 +97,36 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
     @Override
     public int getItemCount() {
         return usernames.size();
+    }
+
+    private void viewUserAlongSuccess(JSONObject response){
+        Profile profile = new Profile();
+        try {
+            profile.setUsername(response.getString("username"));
+            profile.setUserID(response.getString("_id"));
+            profile.setFirstName(response.getString("firstName"));
+            profile.setLastName(response.getString("lastName"));
+            profile.setAge(response.getInt("age"));
+            profile.setGender(response.getString("gender"));
+            profile.setEmail(response.getString("email"));
+            profile.setDriver(response.getBoolean("isDriver"));
+            profile.setJoinedDate(response.getString("joinedDate"));
+
+            JSONArray jsonArray = response.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            profile.setInterests(interests);
+        } catch (JSONException e) {
+            Log.d(TAG, "Failed to retrieve profile while getting userAlong profile");
+            Log.d(TAG, "JSONException: " + e.toString());
+        }
+
+        Toast.makeText(context, "Successfully logged in", Toast.LENGTH_LONG).show();
+
+        Intent intent = new Intent(context, ViewProfileActivity.class); //// BRUNO CHANGE THE VIEWPROFILEACTIVITY
+        intent.putExtra("profile", profile);
+        context.startActivity(intent);
     }
 }

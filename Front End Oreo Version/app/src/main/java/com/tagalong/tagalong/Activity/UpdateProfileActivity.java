@@ -13,6 +13,7 @@ import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.Toast;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.R;
@@ -26,11 +27,11 @@ import org.json.JSONObject;
 public class UpdateProfileActivity extends AppCompatActivity {
 
     private String TAG = "Update Profile Activity";
-    private EditText ageEditText;
-    private EditText genderEditText;
-    private EditText firstNameEditText;
-    private EditText lastNameEditText;
-    private EditText carCapacityEditText;
+    private TextInputEditText ageEditText;
+    private TextInputEditText firstNameEditText;
+    private TextInputEditText genderEditText;
+    private TextInputEditText lastNameEditText;
+    private TextInputEditText carCapacityEditText;
     private Button submitButton;
     private Switch isDriverSwitch;
     private SeekBar musicSeekBar;
@@ -53,11 +54,11 @@ public class UpdateProfileActivity extends AppCompatActivity {
         context = getApplicationContext();
         userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
 
-        firstNameEditText = (EditText) findViewById(R.id.firstName);
-        lastNameEditText = (EditText) findViewById(R.id.lastName);
-        ageEditText = (EditText) findViewById(R.id.age);
-        genderEditText = (EditText) findViewById(R.id.gender);
-        carCapacityEditText = (EditText) findViewById(R.id.carCapacity);
+        firstNameEditText = (TextInputEditText) findViewById(R.id.firstName);
+        lastNameEditText = (TextInputEditText) findViewById(R.id.lastName);
+        ageEditText = (TextInputEditText) findViewById(R.id.age);
+        genderEditText = (TextInputEditText) findViewById(R.id.gender);
+        carCapacityEditText = (TextInputEditText) findViewById(R.id.carCapacity);
         isDriverSwitch = (Switch) findViewById(R.id.isDriver);
         submitButton = (Button) findViewById(R.id.submit);
         musicSeekBar = (SeekBar) findViewById(R.id.seekMusic);

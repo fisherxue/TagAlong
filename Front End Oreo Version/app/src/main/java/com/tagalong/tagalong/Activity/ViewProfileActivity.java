@@ -62,12 +62,14 @@ public class ViewProfileActivity extends AppCompatActivity {
                 carCap.setText(Html.fromHtml("<b>Car Capacity: </b>" + userProfile.getCarCapacity()));
             } else {
                 registeredAs.setText(Html.fromHtml("<b>Registered as: </b>Rider"));
+                carCap.setText(Html.fromHtml("<b>Car Capacity: </b>" + "Not Applicable"));
             }
-            interests.setText(Html.fromHtml("<b>Preference:</b>\n" + "&emsp<b>Music: </b>" + (userProfile.getInterests()[0]+1) +"/5\n" +
-                    "&emsp<b>Chatting: </b>" + (userProfile.getInterests()[1]+1) +"/5\n" +
-                    "&emsp<b>Speed: </b>" + (userProfile.getInterests()[2]+1) +"/5\n" +
-                    "&emsp<b>Fragrance: </b>" + (userProfile.getInterests()[3]+1) +"/5\n" +
-                    "&emsp<b>Smoking: </b>" + (userProfile.getInterests()[4]+1) +"/5\n"));
+            interests.setText(Html.fromHtml("<b>Preference:</b><br>" +
+                    "&emsp&emsp&emsp&emsp&emsp<b>1) Music: </b>" + (userProfile.getInterests()[0]+1) +"/5<br>" +
+                    "&emsp&emsp&emsp&emsp&emsp<b>2) Chatting: </b>" + (userProfile.getInterests()[1]+1) +"/5<br>" +
+                    "&emsp&emsp&emsp&emsp&emsp<b>3) Speed: </b>" + (userProfile.getInterests()[2]+1) +"/5<br>" +
+                    "&emsp&emsp&emsp&emsp&emsp<b>4) Fragrance: </b>" + (userProfile.getInterests()[3]+1) +"/5<br>" +
+                    "&emsp&emsp&emsp&emsp&emsp<b>5) Smoking: </b>" + (userProfile.getInterests()[4]+1) +"/5"));
             joinedDate.setText(Html.fromHtml("<b>Joined Date: </b>" + userProfile.getJoinedDate()));
         }
 
