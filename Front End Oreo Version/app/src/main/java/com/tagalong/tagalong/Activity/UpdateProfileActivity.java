@@ -67,7 +67,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         chattingSeekBar = (SeekBar) findViewById(R.id.seekChatting);
         initializeSeekBar();
 
-        if (!userProfile.getUsername().equals("Not Set")){
+        if (!userProfile.getFirstName().equals("Not Set")){
             showProfile();
         }
     }
