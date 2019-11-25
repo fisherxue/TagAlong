@@ -17,7 +17,7 @@ const sendChatNotif = async (user, message, sentby, roomID) => {
 		const payload = {
 			notification: {
 				title: "New Message",
-				body: sentby + ": " + message;
+				body: sentby + ": " + message
 			},
 			data :{
 				type: "Chat",

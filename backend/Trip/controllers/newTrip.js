@@ -5,6 +5,31 @@ const debug = require("debug")("http /newTrip");
 const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 
+
+const sendNotif = async (user) => {
+	const firebaseToken = user.fbToken;
+	if (firebaseToken){
+		const payload = {
+			notification: {
+				title: "New Trip Created",
+				body: "You have created a new trip",
+			}
+		};
+	
+		const options = {
+			priority: "high",
+			timeToLive: 60 * 60 * 24, // 1 day
+		};
+
+		firebase.messaging().sendToDevice(firebaseToken, payload, options)
+		.catch((err) => {
+		});
+	}
+	else {
+		debug("invalid firebaseToken");
+	}
+};
+
 /**
  * createNewRoom: Creates a new chatroom with one user
  *				  which is given by the username and returns
@@ -71,6 +96,7 @@ const handleCreateTrip = async (req, res) => {
 
 		trip.save();
 		res.send(trip);
+		sendNotif(user);
 
 	});
 
