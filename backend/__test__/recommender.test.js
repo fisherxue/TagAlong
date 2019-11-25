@@ -194,6 +194,27 @@ describe("cutTripsByDistance", () => {
             });
         });
     });
+    it('should return correct value, edgier case', async done => {
+        let driverTrip;
+        let riderTrips = [];
+        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
+            driverTrip = JSON.parse(data);
+            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+                riderTrips.push(JSON.parse(data1));
+                fs.readFile("./__test__/riderTrip2.json", "utf8", (err, data2) => {
+                    riderTrips.push(JSON.parse(data2));
+                    fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
+                        riderTrips.push(JSON.parse(data3));
+                        fs.readFile("./__test__/riderTrip4.json", "utf8", (err, data4) => {
+                            riderTrips.push(JSON.parse(data4));
+                            expect(recommender.cutTripsByDistance(driverTrip, riderTrips)).toHaveLength(3);
+                            done();
+                        });
+                    });
+                });
+            });
+        });
+    });
 });
 
 describe("modifyTrip", () => {
