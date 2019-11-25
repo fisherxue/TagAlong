@@ -2,6 +2,10 @@ const User = require("../../User/models/user");
 const mongoose = require("mongoose");
 const debug = require("debug")("http /getProfile");
 
+/**
+ * handleGetProfile: returns the given user profile based off the username
+ */ 
+
 const handleGetProfile = async (req, res) => {
 	debug("/getProfile");
 	debug(req.headers);

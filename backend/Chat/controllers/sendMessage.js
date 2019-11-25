@@ -5,6 +5,11 @@ const debug = require("debug")("http /sendMessages");
 const firebase = require("firebase-admin");
 
 
+/**
+ * sendChatNotif: Sends a push notification to the given user containing
+ * 				  the message
+ */
+
 const sendChatNotif = async (user, message) => {
 	const firebaseToken = user.fbToken;
 
@@ -33,6 +38,11 @@ const sendChatNotif = async (user, message) => {
 	}
 };
 
+/**
+ * notifyUsers: Calls sendChatNotif to all users in the chatroom
+ * 				to send a push notification to them.   
+ */
+
 const notifyUsers = async (users, message) => {
 
 	users.forEach(async (username) => {
@@ -46,6 +56,12 @@ const notifyUsers = async (users, message) => {
 		}
 	});
 };
+
+/**
+ * handleSendMessages: Checks the given userID and roomID and sends the message 
+ * 					   to the appropriate chatroom corresponding to roomID and 
+ * 					   notifies all the users in the room through a push notification
+ */ 
 
 const handleSendMessages = async (req, res) => {
 	
