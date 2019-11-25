@@ -61,7 +61,8 @@ public class Trip implements Serializable {
             this.departurePlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
                     .getJSONArray("legs").getJSONObject(0).getString("start_address");
             this.arrivalPlace = this.tripRoute.getJSONArray("routes").getJSONObject(0)
-                    .getJSONArray("legs").getJSONObject(0).getString("end_address");
+                    .getJSONArray("legs").getJSONObject(this.tripRoute.getJSONArray("routes").getJSONObject(0)
+                            .getJSONArray("legs").length()-1).getString("end_address");
 
 
             JSONArray taggedUsers = trip.getJSONArray("taggedUsers");

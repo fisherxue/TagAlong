@@ -38,7 +38,6 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
                 .findFragmentById(R.id.map);
         Intent intent = getIntent();
         trip = intent.getStringExtra("tripRoute");
-        setOriginAndDest();
         mapFragment.getMapAsync(this);
     }
 
@@ -58,8 +57,8 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
         String[] directionsList;
         DataParser parser = new DataParser();
         directionsList = parser.parseDirections(trip);
+        setOriginAndDest();
 
-        mMap.clear();
         MarkerOptions originMarker = new MarkerOptions();
         MarkerOptions destinationMarker = new MarkerOptions();
         originMarker.position(origin);
@@ -82,15 +81,34 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
         double originLng;
         double destLat;
         double destLng;
+        double stopLat;
+        double stopLng;
+        MarkerOptions stopMarker = new MarkerOptions();
 
         try {
             jsonTrip = new JSONObject(trip);
-            originLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("start_location").getDouble("lat");
-            originLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("start_location").getDouble("lng");
-            destLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("end_location").getDouble("lat");
-            destLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("end_location").getDouble("lng");
-            origin = new LatLng(originLat, originLng);
-            destination = new LatLng(destLat, destLng);
+            Log.d(TAG, trip);
+            for(int i = 0; i < jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").length(); i++) {
+                System.out.println(jsonTrip.getJSONArray("routes").length());
+                if (i == 0) {
+                    originLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lat");
+                    originLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lng");
+                    origin = new LatLng(originLat, originLng);
+                } else {
+                    stopLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lat");
+                    stopLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lng");
+                    stopMarker.position(new LatLng(stopLat, stopLng));
+                    stopMarker.title("Stop");
+                    mMap.addMarker(stopMarker);
+                }
+                if (i == jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").length() - 1) {
+                    destLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("end_location").getDouble("lat");
+                    destLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("end_location").getDouble("lng");
+                    destination = new LatLng(destLat, destLng);
+                }
+                System.out.println(i);
+                //Log.d(TAG, destination.toString());
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();

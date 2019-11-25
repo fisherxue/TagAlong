@@ -135,6 +135,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                 };
                 try {
                     acceptTripJson = new JSONObject(acceptTrip.toString());
+                    Log.d(TAG, acceptTrip.toString());
                     communicator.VolleyPost(url,acceptTripJson,callback);
                 } catch (JSONException e) {
                     Log.d(TAG, "Error making accepted-trip JSONObject");
