@@ -30,10 +30,6 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	}
 	let riderTripsTime = [];
 
-	if (typeof riderTrips === "undefined") {
-		return [];
-	}
-
 	let driverDepartureDate = new Date(driverTrip.arrivalTime);
 	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTrip.tripRoute.routes[0].legs[0].duration.value - MaxDriverTimeDiff);
 	
@@ -82,7 +78,7 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 				newRiderRoute.routes[0].legs[0].start_location.lng,
 				newRiderRoute.routes[0].legs[0].end_location.lat,
 				newRiderRoute.routes[0].legs[0].end_location.lng);
-		if (Math.abs(driverBearing - riderBearing) < MaxDriverBearingDiff) {
+		if (Math.abs(driverBearing - riderBearing) <= MaxDriverBearingDiff) {
 			riderTripsBearing.push(riderTrip);
 		}
 	});
@@ -126,7 +122,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 			newRiderRoute.routes[0].legs[0].end_location.lng
 		);
 
-		if (riderDistanceStart + riderDistanceEnd < MaxDriverDistanceDiff) {
+		if (riderDistanceStart + riderDistanceEnd <= MaxDriverDistanceDiff) {
 			riderTripsDistance.push(riderTrip);
 		}
 	});
@@ -225,19 +221,11 @@ async function getRiderTripSimilarity(driverTrip, riderTrips) {
 	/* get the driver user matching the username */
 	let driverUser;
 
-	driverUser = await UserStore.findById(driverTrip.userID, (err, user) => {
-		if (user) {
-			debug(user);
-		}
-	});
+	driverUser = await UserStore.findById(driverTrip.userID);
 
 	for (const riderTrip of riderTrips) {
 		let riderUser;
-		riderUser = await UserStore.findById(riderTrip.userID, (err, user) => {
-			if (user) {
-				debug(user);
-			}
-		});
+		riderUser = await UserStore.findById(riderTrip.userID);
 		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
 			riderTrips = riderTrips.filter((value, index, arr) => {
 				return value != riderTrip;
@@ -271,11 +259,7 @@ async function getRiderTrips(driverTrip) {
 	
 	let riderTrips;
 
-	riderTrips = await TripStore.find({}, (err, trips) => {
-		if (trips) {
-			debug(trips)
-		}
-	});
+	riderTrips = await TripStore.find({});
 	riderTrips = riderTrips.filter((trip) => {
 			return !(trip.isDriverTrip || trip.isFulfilled);
 		});

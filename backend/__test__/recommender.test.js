@@ -10,7 +10,6 @@ const UserStore = require("../User/models/user");
 jest.mock("../triprecommender/directions.js");
 jest.mock("../triprecommender/latlng.js");
 
-
 function addMockUsers(callback) {
     fs.readFile("./__test__/users/driverUser1.json", "utf8", (err, data) => {
         user = JSON.parse(data);
