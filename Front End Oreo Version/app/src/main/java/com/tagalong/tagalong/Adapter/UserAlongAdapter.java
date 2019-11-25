@@ -11,11 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tagalong.tagalong.Activity.ViewProfileActivity;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.R;
 import com.tagalong.tagalong.Communication.VolleyCallback;
 import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.Activity.ViewUserAlongProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,8 +123,8 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
 
         Toast.makeText(context, "Successfully logged in", Toast.LENGTH_LONG).show();
 
-        Intent intent = new Intent(context, ViewProfileActivity.class); //// BRUNO CHANGE THE VIEWPROFILEACTIVITY
-        intent.putExtra("profile", profile);
+        Intent intent = new Intent(context, ViewUserAlongProfileActivity.class); //// BRUNO CHANGE THE VIEWPROFILEACTIVITY
+        intent.putExtra("userAlongProfile", profile);
         context.startActivity(intent);
     }
 }
