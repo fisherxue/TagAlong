@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const debug = require("debug")("http /newTrip");
 const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
+const firebase = require("firebase-admin");
+
 
 
 const sendNotif = async (user) => {
@@ -96,9 +98,10 @@ const handleCreateTrip = async (req, res) => {
 
 		trip.save();
 		res.send(trip);
-		sendNotif(user);
 
 	});
+
+	sendNotif(user);
 
 };
 
