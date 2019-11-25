@@ -4,6 +4,33 @@ const mongoose = require("mongoose");
 const debug = require("debug")("http /newTrip");
 const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
+const firebase = require("firebase-admin");
+
+
+
+const sendNotif = async (user) => {
+	const firebaseToken = user.fbToken;
+	if (firebaseToken){
+		const payload = {
+			notification: {
+				title: "New Trip Created",
+				body: "You have created a new trip",
+			}
+		};
+	
+		const options = {
+			priority: "high",
+			timeToLive: 60 * 60 * 24, // 1 day
+		};
+
+		firebase.messaging().sendToDevice(firebaseToken, payload, options)
+		.catch((err) => {
+		});
+	}
+	else {
+		debug("invalid firebaseToken");
+	}
+};
 
 /**
  * createNewRoom: Creates a new chatroom with one user
@@ -60,7 +87,7 @@ const handleCreateTrip = async (req, res) => {
 	});
 
 	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
-		trip.tripRoute = resp.json;
+		trip.tripRoute = resp;
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
@@ -73,6 +100,8 @@ const handleCreateTrip = async (req, res) => {
 		res.send(trip);
 
 	});
+
+	sendNotif(user);
 
 };
 

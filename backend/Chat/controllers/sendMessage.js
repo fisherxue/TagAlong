@@ -10,14 +10,18 @@ const firebase = require("firebase-admin");
  * 				  the message
  */
 
-const sendChatNotif = async (user, message) => {
+const sendChatNotif = async (user, message, sentby, roomID) => {
 	const firebaseToken = user.fbToken;
 
 	if (typeof firebaseToken != "undefined"){
 		const payload = {
 			notification: {
 				title: "New Message",
-				body: message
+				body: sentby + ": " + message
+			},
+			data :{
+				type: "Chat",
+				roomID: roomID
 			}
 		};
 	
@@ -43,16 +47,18 @@ const sendChatNotif = async (user, message) => {
  * 				to send a push notification to them.   
  */
 
-const notifyUsers = async (users, message) => {
+const notifyUsers = async (users, message, sentby, roomID) => {
 
 	users.forEach(async (username) => {
-		debug("sending message to: ", username);
-		const user = await User.findOne({ username });
-		if (user) {
-			sendChatNotif(user, message);
-		}
-		else {
-			debug("user not found");
+		if (username != sentby) {
+			debug("sending message to: ", username);
+			const user = await User.findOne({ username });
+			if (user) {
+				sendChatNotif(user, message, sentby, roomID);
+			}
+			else {
+				debug("user not found");
+			}
 		}
 	});
 };
@@ -99,7 +105,7 @@ const handleSendMessages = async (req, res) => {
 	});
 	await chat.save();
 	res.send(chat);
-	notifyUsers(chat.users, message);
+	notifyUsers(chat.users, message, username, roomID);
 
 
 };
