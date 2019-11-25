@@ -10,7 +10,7 @@ const handleGetProfile = async (req, res) => {
 	debug("/getProfile");
 	debug(req.headers);
 
-	const username = req.header.username;
+	const username = req.headers.username;
 
 	const user = await User.findOne({ username });
 

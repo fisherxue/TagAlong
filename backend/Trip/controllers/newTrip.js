@@ -85,7 +85,7 @@ const handleCreateTrip = async (req, res) => {
 	});
 
 	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
-		trip.tripRoute = resp.json;
+		trip.tripRoute = resp;
 
 		if (isDriverTrip) {
 			debug("Trip is a DRIVER TRIP");
