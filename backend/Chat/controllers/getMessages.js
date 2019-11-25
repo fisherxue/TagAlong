@@ -3,6 +3,12 @@ const Chat = require("../models/Chat");
 const mongoose = require("mongoose");
 const debug = require("debug")("http /getMessages");
 
+/**
+ * handleGetMessages: Checks the given userID and roomID and returns the 
+ * 					  appropriate chatroom corresponding to roomID
+ */ 
+
+
 const handleGetMessages = async (req, res) => {
 	
 	debug("/getMessages hit");

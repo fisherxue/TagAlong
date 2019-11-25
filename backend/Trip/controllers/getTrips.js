@@ -3,7 +3,11 @@ const User = require("../../User/models/user");
 const mongoose = require("mongoose");
 const debug = require("debug")("http /getTrips");
 
-
+/**
+ * handleCreateTrip: Checks the userID and returns all the trips associated
+ * 					 with the userID.
+ *
+ */
 
 const handleGetTrips = async (req, res) => {
 	

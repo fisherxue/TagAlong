@@ -5,6 +5,11 @@ const debug = require("debug")("http /newTrip");
 const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 
+/**
+ * createNewRoom: Creates a new chatroom with one user
+ *				  which is given by the username and returns
+ * 				  the chatroom id
+ */
 
 const createNewRoom = async (username) => {
 	const users = [username];
@@ -16,6 +21,13 @@ const createNewRoom = async (username) => {
 	const updatedchat = await chat.save();
 	return updatedchat._id;
 };
+
+/**
+ * handleCreateTrip: Checks the userID and creates a new Trip object to store in the database.
+ * 					 If the trip was created by a driver, a new chat room is created along with
+ * 					 the trip.
+ *
+ */
 
 const handleCreateTrip = async (req, res) => {
 		

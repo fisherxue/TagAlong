@@ -4,6 +4,11 @@ const bcrypt = require("bcryptjs");
 const config = require("config");
 const debug = require("debug")("http");
 
+/**
+ * handleLogin: Checks the given username and password to see if
+ * 				it matches with the data in the database and returns
+ * 				the user if login was successful
+ */ 
 
 const handleLogin = async (req, res) => {
 

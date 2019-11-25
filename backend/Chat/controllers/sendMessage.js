@@ -5,14 +5,23 @@ const debug = require("debug")("http /sendMessages");
 const firebase = require("firebase-admin");
 
 
-const sendChatNotif = async (user, message) => {
+/**
+ * sendChatNotif: Sends a push notification to the given user containing
+ * 				  the message
+ */
+
+const sendChatNotif = async (user, message, sentby, roomID) => {
 	const firebaseToken = user.fbToken;
 
 	if (typeof firebaseToken != "undefined"){
 		const payload = {
 			notification: {
 				title: "New Message",
-				body: message
+				body: sentby + ": " + message;
+			},
+			data :{
+				type: "Chat",
+				roomID: roomID
 			}
 		};
 	
@@ -33,19 +42,32 @@ const sendChatNotif = async (user, message) => {
 	}
 };
 
-const notifyUsers = async (users, message) => {
+/**
+ * notifyUsers: Calls sendChatNotif to all users in the chatroom
+ * 				to send a push notification to them.   
+ */
+
+const notifyUsers = async (users, message, sentby, roomID) => {
 
 	users.forEach(async (username) => {
-		debug("sending message to: ", username);
-		const user = await User.findOne({ username });
-		if (user) {
-			sendChatNotif(user, message);
-		}
-		else {
-			debug("user not found");
+		if (username != sentby) {
+			debug("sending message to: ", username);
+			const user = await User.findOne({ username });
+			if (user) {
+				sendChatNotif(user, message, sentby, roomID);
+			}
+			else {
+				debug("user not found");
+			}
 		}
 	});
 };
+
+/**
+ * handleSendMessages: Checks the given userID and roomID and sends the message 
+ * 					   to the appropriate chatroom corresponding to roomID and 
+ * 					   notifies all the users in the room through a push notification
+ */ 
 
 const handleSendMessages = async (req, res) => {
 	
@@ -83,7 +105,7 @@ const handleSendMessages = async (req, res) => {
 	});
 	await chat.save();
 	res.send(chat);
-	notifyUsers(chat.users, message);
+	notifyUsers(chat.users, message, username, roomID);
 
 
 };

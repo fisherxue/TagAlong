@@ -2,6 +2,14 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const debug = require("debug")("http");
 
+
+/**
+ * handleRegister: Given the username, email password and firebasetoken 
+ *				   from the body of request, a new user object is created
+ * 				   and stored in the database. If the user is successfully
+ * 				   created, the user is sent back as the response. 
+ */ 
+
 const handleRegister = async (req, res) => {
 
 	debug("/register hit");
