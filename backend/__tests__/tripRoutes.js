@@ -8,6 +8,10 @@ const TripStore = require("../Trip/models/Trip");
 const ridertrip1 = require("./sampletrips/ridertrip1");
 const ridertrip2 = require("./sampletrips/ridertrip2");
 const ridertrip3 = require("./sampletrips/ridertrip3");
+const taggedridertrip1 = require("./sampletrips/ridertrip1_tagged");
+const taggeddrivertrip1 = require("./sampletrips/drivertrip1_tagged");
+const taggedrider = require("./sampletrips/rider_tagged_user");
+const taggeddriver = require("./sampletrips/driver_tagged_user");
 
 jest.mock("../triprecommender/recommender.js");
 
@@ -65,7 +69,7 @@ describe('testing trips', () => {
             username: "chatdemouser13",
             email: "chatdemouser13@demo.com",
             password: "demodemodemo",
-            fbToken: ""
+            fbToken: "examplefbToken"
         });
 
         let newuser;
@@ -305,7 +309,7 @@ describe('testing trips', () => {
           email: "bwong5@demo.com",
           password: "demodemodemo",
           fbToken: "",
-          isDriverTrip: false,
+          isDriver: true,
           interests: [5,5,5,5,5]
 
       });
@@ -375,6 +379,142 @@ describe('testing trips', () => {
 
       expect(res.text).toBe("Invalid userID or tripID");
       done();
+    })
+
+    it('deltrip for a driver that has attached user trip', async (done) => {
+      const rider = new User(taggedrider);
+      rider.save();
+      const driver = new User(taggeddriver);
+      driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: driver._id,
+          tripID: drivertrip._id
+        })
+        .expect(200);
+
+        expect(res.body.status).toBe("OK");
+        expect(res.body.message).toBe("trip successfully deleted");
+
+        trip = await TripStore.findById(drivertrip._id);
+        expect(trip).toBeNull();
+
+        done();
+    })
+
+    it('deltrip for a rider that has attached driver trip', async (done) => {
+      const rider = new User(taggedrider);
+      rider.save();
+      const driver = new User(taggeddriver);
+      driver.fbToken = undefined;
+      driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: rider._id,
+          tripID: ridertrip._id
+        })
+        .expect(200);
+
+        expect(res.body.status).toBe("OK");
+        expect(res.body.message).toBe("trip successfully deleted");
+
+        trip = await TripStore.findById(ridertrip._id);
+        expect(trip).toBeNull();
+
+        done();
+    })
+
+    it('deltrip on a valid tripid but nonexistent trip', async (done) => {
+
+      const rider = new User(taggedrider);
+      rider.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: rider._id,
+          tripID: rider._id
+        })
+        .expect(400);
+
+      expect(res.text).toBe("trip not found");
+
+      done();
+    })
+
+    it('deltrip for a rider that has attached driver trip, however, drivertrip is nonexistent', async (done) => {
+      const rider = new User(taggedrider);
+      rider.save();
+      const driver = new User(taggeddriver);
+      driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      ridertrip.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: rider._id,
+          tripID: ridertrip._id
+        })
+        .expect(400);
+
+        expect(res.text).toBe("Unable to find driver trip");
+
+        done();
+
+    })
+
+    it('deltrip for a rider that has attached driver trip, however, driver is nonexistent', async (done) => {
+      const rider = new User(taggedrider);
+      rider.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: rider._id,
+          tripID: ridertrip._id
+        })
+        .expect(400);
+
+        expect(res.text).toBe("Unable to find driver");
+
+        done();
+
+    })
+
+    it('deltrip for a driver that has no tagged users', async (done) => {
+
+      const driver = new User(taggeddriver);
+      driver.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.taggedTrips = [];
+      drivertrip.save();
+
+      const res = await request.del("/trips/delTrip")
+        .set({
+          userID: driver._id,
+          tripID: drivertrip._id
+        })
+        .expect(200);
+
+        expect(res.body.status).toBe("OK");
+        expect(res.body.message).toBe("trip successfully deleted");
+
+        trip = await TripStore.findById(drivertrip._id);
+        expect(trip).toBeNull();
+
+        done();
     })
 
 })

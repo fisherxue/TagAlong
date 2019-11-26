@@ -13,6 +13,9 @@ const sendChatNotif = async (user, message) => {
 			notification: {
 				title: "New Message",
 				body: message
+			}, 
+			data: {
+				type: "Trip"
 			}
 		};
 	
@@ -22,12 +25,7 @@ const sendChatNotif = async (user, message) => {
 		};
 
 		firebase.messaging().sendToDevice(firebaseToken, payload, options);
-		// .then((res) => {
-		// 	debug(res.results);
-		// })
-		// .catch((err) => {
-		// 	debug(err);
-		// });
+
 	} else {
 		debug("invalid firebaseToken");
 	}
@@ -62,7 +60,7 @@ const handleDelTrip = async (req, res) => {
 	}
 
 	if (trip.isDriverTrip) {
-		if (trip.taggedTrips) {
+		if (trip.taggedTrips.length != 0) {
 			for (const ridertrip of trip.taggedTrips) {
 				const foundridertrip = await TripStore.findByIdAndUpdate(ridertrip._id, {
 					isFulfilled: false,
@@ -93,14 +91,11 @@ const handleDelTrip = async (req, res) => {
 			}
 
 			const index = parenttrip.taggedUsers.indexOf(user.username);
-			if (index > -1) {
-				parenttrip.taggedUsers.splice(index, 1);
-			}
+			parenttrip.taggedUsers.splice(index, 1);
 
 			const tripindex = parenttrip.taggedTrips.indexOf(tripID);
-			if (tripindex > -1) {
-				parenttrip.taggedTrips.splice(tripindex, 1);
-			}
+			
+			parenttrip.taggedTrips.splice(tripindex, 1);
 			
 			await parenttrip.save();
 

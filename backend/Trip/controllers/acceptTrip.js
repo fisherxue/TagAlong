@@ -31,6 +31,9 @@ const sendNotif = async (user) => {
 			notification: {
 				title: "Trip Accepted",
 				body: "You have been matched with a driver and other riders for the requested trip",
+			}, 
+			data: {
+				type: "Trip"
 			}
 		};
 	
