@@ -1,12 +1,7 @@
 const latlng = require("../triprecommender/latlng.js");
 
 describe('getLatLngDistance', () => {
-    it('should exist', () => {
-        expect(latlng.getLatLngDistance).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof latlng.getLatLngDistance).toBe("function");
-    });
+
     it('should return number for input (1, 1, 1, 1)', () => {
         const result = latlng.getLatLngDistance(1, 1, 1, 1);
         expect(result).toBeDefined();
@@ -32,12 +27,7 @@ describe('getLatLngDistance', () => {
 });
 
 describe('getLatLngBearing', () => {
-    it('should exist', () => {
-        expect(latlng.getLatLngBearing).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof latlng.getLatLngBearing).toBe("function");
-    });
+
     it('should return number for input (1, 1, 1, 1)', () => {
         const result = latlng.getLatLngBearing(1, 1, 1, 1);
         expect(result).toBeDefined();
@@ -63,12 +53,7 @@ describe('getLatLngBearing', () => {
 });
 
 describe('getLatLngShortestDistanceLinePoint', () => {
-    it('should exist', () => {
-        expect(latlng.getLatLngShortestDistanceLinePoint).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof latlng.getLatLngShortestDistanceLinePoint).toBe("function");
-    });
+
     it('should return number for input (1, 1, 1, 1)', () => {
         const result = latlng.getLatLngShortestDistanceLinePoint(1, 1, 1, 1, 1, 1);
         expect(result).toBeDefined();

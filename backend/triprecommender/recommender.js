@@ -177,7 +177,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
  * @return Number similarity: similarity between two users
  */
 function getInterestSimilarity(user1, user2) {
-	if (user1.interests === undefined || user2.interests === undefined || user1.interests.length != 5 || user2.interests.length != 5) {
+	if (typeof user1.interests === "undefined" || typeof user2.interests === "undefined" || user1.interests.length != 5 || user2.interests.length != 5) {
 		throw new RangeError("RangeError: user interests invalid");
 	}
 
@@ -228,7 +228,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips) {
 		riderUser = await UserStore.findById(riderTrip.userID);
 		if (riderUser === null || typeof riderUser === "undefined" || typeof riderUser.interests === "undefined" || typeof driverUser.interests === "undefined") {
 			riderTrips = riderTrips.filter((value, index, arr) => {
-				return value != riderTrip;
+				return value !== riderTrip;
 			});
 		} else {
 			riderTrip.similarityWithDriver = getInterestSimilarity(driverUser, riderUser);
@@ -254,7 +254,7 @@ async function getRiderTripSimilarity(driverTrip, riderTrips) {
  */
 async function getRiderTrips(driverTrip) {
 	if (typeof driverTrip === "undefined") {
-		return []
+		return [];
 	}
 	
 	let riderTrips;
@@ -279,6 +279,7 @@ async function driverTripHandler(driverTrip) {
 	if (typeof driverTrip === "undefined") {
 		return [];
 	}
+	let riderTrips;
 	riderTrips = await getRiderTrips(driverTrip);
 	riderTrips = await getRiderTripSimilarity(driverTrip, riderTrips);
 	return riderTrips;
