@@ -91,19 +91,19 @@ const handleAcceptTrip = async (req, res) => {
 
 	debug("selected driver trip", driverTrip);
 
-	tripRecommender.modifyTrip(driverTrip, [riderTrip], (triproute) => {
+	tripRecommender.modifyTrip(driverTrip, [riderTrip], async (triproute) => {
 		driverTrip.tripRoute = triproute;
 		driverTrip.taggedUsers.push(riderTrip.username);
 		driverTrip.taggedTrips.push(riderTrip._id);
 
 		debug(driverTrip, "driverTrip update");
 		
-		driverTrip.save();
+		await driverTrip.save();
 		riderTrip.driverTripID = driverTrip._id;
 		riderTrip.chatroomID = driverTrip.chatroomID;
 		riderTrip.isFulfilled = true;
 		riderTrip.taggedUsers.push(driverTrip.username);
-		riderTrip.save();
+		await riderTrip.save();
 
 		sendNotif(riderUser);
 
