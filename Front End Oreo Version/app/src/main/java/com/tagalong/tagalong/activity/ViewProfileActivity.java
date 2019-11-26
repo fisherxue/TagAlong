@@ -78,6 +78,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(context, UpdateProfileActivity.class);
                 intent.putExtra("profile", userProfile);
+                intent.putExtra("New Sign Up", false);
                 startActivity(intent);
             }
         });

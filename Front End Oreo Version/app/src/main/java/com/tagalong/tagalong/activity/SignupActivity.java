@@ -189,6 +189,7 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG,"Successfully retrieved login profile information");
         Intent intent = new Intent(context, UpdateProfileActivity.class);
         intent.putExtra("profile", receivedProfile);
+        intent.putExtra("New Sign Up", true);
         startActivity(intent);
         SignupActivity.this.finish();
     }
