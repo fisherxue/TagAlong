@@ -13,14 +13,18 @@ const handleLogout = async (req, res) => {
 	debug("/logout hit");
 	debug(req.body);
 	
-	const { userID, fbToken } = req.body;
+	const { userID } = req.body;
+
+	const update = {
+		fbToken: ""
+	}
 
 	if (!mongoose.Types.ObjectId.isValid(userID)) {
 		debug("Invalid userID");
 		return res.status(400).send("Invalid userID");
 	}
 
-	const updateduser = await User.findByIdAndUpdate(userID, fbToken, {new: true});
+	const updateduser = await User.findByIdAndUpdate(userID, update, {new: true});
 
 	debug("updated user", updateduser);
 	res.json(updateduser);
