@@ -289,6 +289,41 @@ describe('testing login', () => {
 		done();
 	})
 
+	it('logs out a registered user', async (done) => {
+		user1 = new User({
+			username: "demo6",
+			email: "demo6@demo.com",
+			password: "demodemodemo",
+			fbToken: "1234"
+		});
+
+		const updateduser = await user1.save();
+		const res = await request.post("/users/logout")
+			.send({
+				userID: updateduser._id
+			})
+			.expect(200);
+
+		expect(res.body.fbToken).toBe("");
+		expect(res.body.username).toBe(user1.username);
+		expect(res.body.email).toBe(user1.email);
+
+		done();
+	})
+
+	it('logs out with invalid userID', async (done) => {
+		
+		const res = await request.post("/users/logout")
+			.send({
+				userID: "1234"
+			})
+			.expect(400);
+
+		expect(res.text).toBe("Invalid userID");
+
+		done();
+	})
+
 
 
 })
