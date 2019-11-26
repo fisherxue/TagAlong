@@ -59,8 +59,6 @@ public class ProposedTripFragment extends Fragment {
             initTripList(getString(R.string.getTripList), false);
         }
 
-        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
-                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -72,6 +70,9 @@ public class ProposedTripFragment extends Fragment {
                 }
             }
         };
+
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         return view;
     }
 
@@ -141,5 +142,24 @@ public class ProposedTripFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
     }
 }

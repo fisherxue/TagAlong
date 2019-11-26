@@ -54,15 +54,15 @@ public class MyTripFragment extends Fragment {
         profile = (Profile) inputBundle.getSerializable("profile");
         timingLogger = new TimingLogger(TAG, "My Trips Activity");
         initTripList();
-        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
-                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 initTripList();
             }
         };
-
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
+        );
         return view;
     }
 
@@ -120,5 +120,24 @@ public class MyTripFragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
     }
 }

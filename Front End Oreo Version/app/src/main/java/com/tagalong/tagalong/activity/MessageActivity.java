@@ -339,4 +339,10 @@ public class MessageActivity extends AppCompatActivity {
         startActivity(intent);
         MessageActivity.this.finish();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
 }
