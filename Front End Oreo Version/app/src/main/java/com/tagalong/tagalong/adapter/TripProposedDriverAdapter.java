@@ -108,38 +108,42 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                 Log.d(TAG, "Accepting Trip");
                 String url = context.getString(R.string.acceptTrip);
 
-                JsonObject acceptTrip = new JsonObject();
-                acceptTrip.addProperty("usertripID", trip.getTripID());
-                acceptTrip.addProperty("tripID", tripID);
-                acceptTrip.addProperty("userID",profile.getUserID());
-                JSONObject acceptTripJson;
+                if (trip.getTaggedUsers().length < profile.getCarCapacity()) {
+                    JsonObject acceptTrip = new JsonObject();
+                    acceptTrip.addProperty("usertripID", trip.getTripID());
+                    acceptTrip.addProperty("tripID", tripID);
+                    acceptTrip.addProperty("userID", profile.getUserID());
+                    JSONObject acceptTripJson;
 
-                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
-                VolleyCallback callback = new VolleyCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response){
-                        Log.d(TAG, "Trip accepted success");
-                        tripList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, tripList.size());
+                    VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+                    VolleyCallback callback = new VolleyCallback() {
+                        @Override
+                        public void onSuccess(JSONObject response) {
+                            Log.d(TAG, "Trip accepted success");
+                            tripList.remove(position);
+                            notifyItemRemoved(position);
+                            notifyItemRangeChanged(position, tripList.size());
+                        }
+
+                        @Override
+                        public void onError(String result) {
+                            Log.d(TAG, "Could not accept trip");
+                            Log.d(TAG, "Error: " + result);
+                            Toast.makeText(context, "We encountered some error,\nPlease try again", Toast.LENGTH_LONG).show();
+                        }
+
+                    };
+                    try {
+                        acceptTripJson = new JSONObject(acceptTrip.toString());
+                        communicator.volleyPost(url, acceptTripJson, callback);
+                    } catch (JSONException e) {
+                        Log.d(TAG, "Error making accepted-trip JSONObject");
+                        Log.d(TAG, "JSONException: " + e.toString());
+                        e.printStackTrace();
                     }
-
-                    @Override
-                    public void onError(String result){
-                        Log.d(TAG, "Could not accept trip");
-                        Log.d(TAG, "Error: " + result);
-                        Toast.makeText(context, "We encountered some error,\nPlease try again", Toast.LENGTH_LONG).show();
-                    }
-
-                };
-                try {
-                    acceptTripJson = new JSONObject(acceptTrip.toString());
-                    Log.d(TAG, acceptTrip.toString());
-                    communicator.volleyPost(url,acceptTripJson,callback);
-                } catch (JSONException e) {
-                    Log.d(TAG, "Error making accepted-trip JSONObject");
-                    Log.d(TAG, "JSONException: " + e.toString());
-                    e.printStackTrace();
+                } else {
+                    Toast.makeText(context, "You cannot accept this trip!\n Your car already reached full capacity!", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "Cannot accept trip due to full car capacity");
                 }
             }
         });

@@ -217,13 +217,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             Integer.parseInt(carCapacityEditText.getText().toString()) <= Profile.maxCarCapacity &&
                             Integer.parseInt(carCapacityEditText.getText().toString()) >= Profile.minCarCapacity ){
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
+                        Log.d(TAG, carCapacityEditText.getText().toString());
                         Log.d(TAG,"Car capacity and driver set");
                     } else if (carCapacityEditText.getText().toString().isEmpty()){
                         Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not set");
                         allSet = false;
                     } else {
-                        Toast.makeText(context, "Please enter car capacity between 0 and 10", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Please enter car capacity between 1 and 10, inclusive", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not in valid range");
                         allSet = false;
                     }
@@ -321,6 +322,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 interests[i] = jsonArray.getInt(i);
             }
             received_profile.setInterests(interests);
+            if (received_profile.getDriver()) {
+                received_profile.setCarCapacity(response.getInt("carCapacity"));
+            }
         } catch (JSONException e) {
             Log.d(TAG,"Error while retrieving profile");
             Log.d(TAG,"Error: " + e.toString());

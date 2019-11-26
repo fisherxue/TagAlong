@@ -107,7 +107,6 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
                     destination = new LatLng(destLat, destLng);
                 }
                 System.out.println(i);
-                //Log.d(TAG, destination.toString());
             }
 
         } catch (JSONException e) {
