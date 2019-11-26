@@ -1,12 +1,6 @@
 const directions = require("../triprecommender/directions.js");
 
 describe('getDirections', () => {
-    it('should exist', () => {
-        expect(directions.getDirections).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof directions.getDirections).toBe("function");
-    });
     it('should throw an error for empty input', async done => {
         let inputs = {
 
@@ -43,12 +37,6 @@ describe('getDirections', () => {
 });
 
 describe('getDirectionsWithWaypoints', () => {
-    it('should exist', () => {
-        expect(directions.getDirectionsWithWaypoints).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof directions.getDirectionsWithWaypoints).toBe("function");
-    });
     it('should throw an error for empty input', async (done) => {
         let inputs = {
 

@@ -74,12 +74,7 @@ function addMockTrips(callback) {
 }
 
 describe("cutTripsByBearing", () => {
-    it('should exist', () => {
-        expect(recommender.cutTripsByBearing).toBeDefined();
-    });
-    it('should be a function', () => {
-       expect(typeof recommender.cutTripsByBearing).toBe("function"); 
-    });
+
     it('should return empty on null inputs', () => {
         let driverTrip;
         let riderTrips;
@@ -115,12 +110,7 @@ describe("cutTripsByBearing", () => {
 });
 
 describe("cutTripsByTime", () => {
-    it('should exist', () => {
-        expect(recommender.cutTripsByTime).toBeDefined();
-    });
-    it('should be a function', () => {
-       expect(typeof recommender.cutTripsByTime).toBe("function"); 
-    });
+
     it('should return empty on null inputs', () => {
         let driverTrip;
         let riderTrips;
@@ -156,12 +146,7 @@ describe("cutTripsByTime", () => {
 });
 
 describe("cutTripsByDistance", () => {
-    it('should exist', () => {
-        expect(recommender.cutTripsByDistance).toBeDefined();
-    });
-    it('should be a function', () => {
-       expect(typeof recommender.cutTripsByDistance).toBe("function"); 
-    });
+
     it('should return empty on null inputs', () => {
         let driverTrip;
         let riderTrips;
@@ -218,12 +203,7 @@ describe("cutTripsByDistance", () => {
 });
 
 describe("modifyTrip", () => {
-    it('should exist', () => {
-        expect(recommender.modifyTrip).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof recommender.modifyTrip).toBe("function");
-    });
+
     it('should return json with one riderTrip', async done => {
         let driverTrip;
         let riderTrips = [];
@@ -311,12 +291,7 @@ describe("modifyTrip", () => {
 
 
 describe("getInterestSimilarity", () => {
-    it('should exist', () => {
-        expect(recommender.getInterestSimilarity).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof recommender.getInterestSimilarity).toBe("function");
-    });
+
     it('should fail on invalid interests', () => {
         let user1 = {
             interests: [1, 2, 3, 4, 5]
@@ -417,12 +392,7 @@ describe("getRiderTripSimilarity", () => {
         // Closes the Mongoose connection
         await mongoose.connection.close();
     });
-    it('should exist', () => {
-        expect(recommender.getRiderTripSimilarity).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof recommender.getRiderTripSimilarity).toBe("function");
-    });
+
     it('should return empty array on bad input', async done => {
         let driverTrip;
         let riderTrips;
@@ -537,12 +507,7 @@ describe("getRiderTrips", () => {
         // Closes the Mongoose connection
         await mongoose.connection.close();
     });
-    it('should exist', () => {
-        expect(recommender.getRiderTrips).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof recommender.getRiderTrips).toBe("function");
-    });
+
     it('should return empty array on incorrect input', async done => {
         addMockTrips((driverTrip, riderTrips) => {
             addMockUsers(async () => {
@@ -620,12 +585,6 @@ describe("driverTripHandler", () => {
         await mongoose.connection.close();
     });
 
-    it('should exist', () => {
-        expect(recommender.driverTripHandler).toBeDefined();
-    });
-    it('should be function', () => {
-        expect(typeof recommender.driverTripHandler).toBe("function");
-    });
     it('should return empty array when driverTrips is empty', async done => {
         let driverTrip;
         let res = await recommender.driverTripHandler(driverTrip);
@@ -654,12 +613,7 @@ describe("driverTripHandler", () => {
 
 
 describe("tripHandler", () => {
-    it('should exist', () => {
-        expect(recommender.tripHandler).toBeDefined();
-    });
-    it('should be a function', () => {
-       expect(typeof recommender.tripHandler).toBe("function"); 
-    });
+
     it('should return on valid input', async done => {
         let trip = {
             origin: 'Indigo, 2505 Granville St, Vancouver, BC V6H 3G7',

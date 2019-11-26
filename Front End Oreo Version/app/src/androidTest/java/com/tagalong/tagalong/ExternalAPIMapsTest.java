@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.tagalong.tagalong.Activity.MainActivity;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -107,10 +109,16 @@ public class ExternalAPIMapsTest {
                         isDisplayed()));
         textView2.check(matches(isDisplayed()));
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction imageView = onView(
                 allOf(withId(R.id.icon),
                         childAtPosition(
-                                allOf(withId(R.id.nav_home), withContentDescription("Home"),
+                                allOf(withId(R.id.nav_home), withContentDescription("My Trips"),
                                         childAtPosition(
                                                 IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
                                                 0)),
@@ -121,7 +129,7 @@ public class ExternalAPIMapsTest {
         ViewInteraction imageView2 = onView(
                 allOf(withId(R.id.icon),
                         childAtPosition(
-                                allOf(withId(R.id.nav_home), withContentDescription("Home"),
+                                allOf(withId(R.id.nav_home), withContentDescription("My Trips"),
                                         childAtPosition(
                                                 IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
                                                 0)),
@@ -130,7 +138,7 @@ public class ExternalAPIMapsTest {
         imageView2.check(matches(isDisplayed()));
 
         ViewInteraction bottomNavigationItemView = onView(
-                allOf(withId(R.id.nav_maps), withContentDescription("Maps"),
+                allOf(withId(R.id.nav_maps), withContentDescription("Plan My Trip"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.bottom_navigation),
