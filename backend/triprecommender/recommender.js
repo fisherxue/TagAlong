@@ -153,7 +153,7 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	});
 
 	let driverStartPoint = driverTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].start_location.lng;
-	let driverEndPoint = driverTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + driverTrip.tripRoute.routes[0].legs[0].end_location.lng;
+	let driverEndPoint = driverTrip.tripRoute.routes[0].legs[driverTrip.tripRoute.routes[0].legs.length-1].end_location.lat + "," + driverTrip.tripRoute.routes[0].legs[driverTrip.tripRoute.routes[0].legs.length-1].end_location.lng;
 	let req = {
 		origin: driverStartPoint,
 		destination: driverEndPoint,
