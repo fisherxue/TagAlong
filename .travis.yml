@@ -9,17 +9,17 @@ matrix:
         - cd backend
         - npm update
         - npm test
-    - language: android
-    - sudo: required
-    - jdk: oraclejdk8
+      - language: android
+        sudo: required
+        jdk: oraclejdk8
 
-    - env:
-      global:
-        - ANDROID_API_LEVEL=28
-        - ANDROID_BUILD_TOOLS_VERSION=28.0.3
-        - ANDROID_ABI=armeabi-v7a
+        env:
+          global:
+          - ANDROID_API_LEVEL=28
+          - ANDROID_BUILD_TOOLS_VERSION=28.0.3
+          - ANDROID_ABI=armeabi-v7a
 
-        - android:
+        android:
           components:
             - tools
             - platform-tools
@@ -30,25 +30,24 @@ matrix:
             - 'android-sdk-license-.+'
             - 'google-gdk-license-.+'
 
-        - before_install:
+        before_install:
           - touch $HOME/.android/repositories.cfg
           - yes | sdkmanager "platforms;android-28"
           - yes | sdkmanager "build-tools;28.0.3"
 
-        - before_cache:
+        before_cache:
           - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
           - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
 
-        - cache:
+        cache:
           directories:
           - $HOME/.gradle/caches/
           - $HOME/.gradle/wrapper/
           - $HOME/.android/build-cache
 
-        - before_script:
+        before_script:
           - chmod +x gradlew
 
-        - script:
+        script:
           - ./gradlew clean build
           - ./gradlew test
-
