@@ -192,7 +192,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onError(String result){
                 Log.d(TAG, "Saved login verification not successful");
-                Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
             }
 
         };

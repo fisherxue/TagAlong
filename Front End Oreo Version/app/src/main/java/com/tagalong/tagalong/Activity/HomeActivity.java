@@ -7,21 +7,37 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
 
+import java.io.BufferedReader;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.login.LoginManager;
+import com.tagalong.tagalong.Communication.FirebaseCallback;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
 import com.tagalong.tagalong.Fragment.MyTripFragment;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.Fragment.ProposedTripFragment;
 import com.tagalong.tagalong.R;
 import com.tagalong.tagalong.Fragment.SetTripFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "Home Activity";
@@ -36,6 +52,17 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         userProfile = (Profile) getIntent().getSerializableExtra("profile");
+        if (userProfile == null) {
+            loadProfile();
+        }
+        else {
+            saveUserProfile();
+            loadupMyTripFragmenet();
+        }
+
+    }
+
+    private void loadupMyTripFragmenet() {
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
 
@@ -126,6 +153,10 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        saveUserProfile();
+    }
+
+    private void saveUserProfile() {
         if (userProfile != null) {
             String filename = "Saved_Profile.txt";
             Gson gson = new Gson();
@@ -144,6 +175,108 @@ public class HomeActivity extends AppCompatActivity {
             } finally {
                 Log.d(TAG, "Saved profile in Saved_Profile.txt");
             }
+        }
+    }
+
+    private void loadProfile(){
+        String profileFilename = "Saved_Profile.txt";
+        StringBuffer stringBuffer = new StringBuffer();
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(openFileInput(profileFilename)))) {
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuffer.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.d(TAG, "Could not load a saved profile.");
+            Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+            return ;
+        }
+
+        String contents = stringBuffer.toString();
+        JSONObject profileJSON;
+        try {
+            profileJSON = new JSONObject(contents);
+            System.out.println(profileJSON);
+            this.userProfile = new Profile();
+            userProfile.setUserID(profileJSON.getString("userID"));
+            userProfile.setUsername(profileJSON.getString("username"));
+            userProfile.setFirstName(profileJSON.getString("firstName"));
+            userProfile.setLastName(profileJSON.getString("lastName"));
+            userProfile.setAge(profileJSON.getInt("age"));
+            userProfile.setGender(profileJSON.getString("gender"));
+            userProfile.setEmail(profileJSON.getString("email"));
+            userProfile.setDriver(profileJSON.getBoolean("isDriver"));
+            userProfile.setJoinedDate(profileJSON.getString("joinedDate"));
+            JSONArray jsonArray = profileJSON.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            userProfile.setInterests(interests);
+
+            FirebaseCallback firebaseCallback = new FirebaseCallback() {
+                @Override
+                public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                    String token = task.getResult().getToken();
+                    userProfile.setFbToken(token);
+                    loginSavedProfile();
+                }
+            };
+            getFCMToken(firebaseCallback);
+        } catch (JSONException e) {
+            Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Failed to convert stored json string to profile");
+            Log.d(TAG, ("JSONException: " + e.toString()));
+            this.userProfile = null;
+            return ;
+        }
+    }
+
+    private void getFCMToken(final FirebaseCallback firebaseCallback){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "FCM failed", task.getException());
+                            return;
+                        }
+                        Log.d(TAG,"Got FCM Device Token");
+                        firebaseCallback.onSuccess(task);
+                    }
+                });
+    }
+
+    private void loginSavedProfile(){
+        String url = getString(R.string.updateProfile);
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(userProfile);
+        JSONObject profileJsonObject;
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+                loadupMyTripFragmenet();
+            }
+
+            @Override
+            public void onError(String result){
+                Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "Saved login verification not successful");
+                Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+            }
+
+        };
+
+        try {
+            profileJsonObject = new JSONObject((profileJson));
+            communicator.VolleyPut(url,profileJsonObject,callback);
+        } catch (JSONException e) {
+            Log.d(TAG, "Error making login JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
+            e.printStackTrace();
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.tagalong.tagalong.Activity;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -17,7 +18,12 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
+import com.tagalong.tagalong.Communication.FirebaseCallback;
 import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
 import com.tagalong.tagalong.Adapter.MessageAdapter;
 import com.tagalong.tagalong.Models.Chat;
@@ -31,6 +37,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,17 +64,27 @@ public class MessageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_message);
         Log.d(TAG, "message activity created");
         context = this;
-        profile = (Profile) getIntent().getSerializableExtra("profile");
-        ID =  getIntent().getStringExtra("ID");
         sendMessageButton = (ImageButton) findViewById(R.id.sendButton);
         messageToSend = (EditText) findViewById(R.id.sendMessage);
+        profile = (Profile) getIntent().getSerializableExtra("profile");
+        if (profile == null) {
+            loadProfile();
+        } else {
+            setup();
+        }
+
+    }
+
+    private void setup (){
+        ID =  getIntent().getStringExtra("ID");
+        chat = new Chat(ID);
+        chat.setUserID(profile.getUserID());
+        initChat();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        chat = new Chat(ID);
-        chat.setUserID(profile.getUserID());
         sendMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,15 +97,12 @@ public class MessageActivity extends AppCompatActivity {
                 messageToSend.setText("");
             }
         });
-        initChat();
-
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
                 initChat();
             }
         };
-
         LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
                 new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
         );
@@ -213,5 +229,114 @@ public class MessageActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    private void loadProfile(){
+        String profileFilename = "Saved_Profile.txt";
+        StringBuffer stringBuffer = new StringBuffer();
+        try (BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(openFileInput(profileFilename)))) {
+            String line = reader.readLine();
+            while (line != null) {
+                stringBuffer.append(line).append('\n');
+                line = reader.readLine();
+            }
+        } catch (IOException e) {
+            Log.d(TAG, "Could not load a saved profile.");
+            Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+            return ;
+        }
+
+        String contents = stringBuffer.toString();
+        JSONObject profileJSON;
+        try {
+            this.profile = new Profile();
+            profileJSON = new JSONObject(contents);
+            profile.setUserID(profileJSON.getString("userID"));
+            profile.setUsername(profileJSON.getString("username"));
+            profile.setFirstName(profileJSON.getString("firstName"));
+            profile.setLastName(profileJSON.getString("lastName"));
+            profile.setAge(profileJSON.getInt("age"));
+            profile.setGender(profileJSON.getString("gender"));
+            profile.setEmail(profileJSON.getString("email"));
+            profile.setDriver(profileJSON.getBoolean("isDriver"));
+            profile.setJoinedDate(profileJSON.getString("joinedDate"));
+            JSONArray jsonArray = profileJSON.getJSONArray("interests");
+            int [] interests = new int[jsonArray.length()];
+            for (int i = 0; i < jsonArray.length(); i++){
+                interests[i] = jsonArray.getInt(i);
+            }
+            profile.setInterests(interests);
+
+            FirebaseCallback firebaseCallback = new FirebaseCallback() {
+                @Override
+                public void onSuccess(@NonNull Task<InstanceIdResult> task) {
+                    String token = task.getResult().getToken();
+                    profile.setFbToken(token);
+                    loginSavedProfile();
+                }
+            };
+            getFCMToken(firebaseCallback);
+        } catch (JSONException e) {
+            Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Failed to convert stored json string to profile");
+            Log.d(TAG, ("JSONException: " + e.toString()));
+            this.profile = null;
+            return ;
+        }
+    }
+
+    private void getFCMToken(final FirebaseCallback firebaseCallback){
+        FirebaseInstanceId.getInstance().getInstanceId()
+                .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "FCM failed", task.getException());
+                            return;
+                        }
+                        Log.d(TAG,"Got FCM Device Token");
+                        firebaseCallback.onSuccess(task);
+                    }
+                });
+    }
+
+    private void loginSavedProfile(){
+        String url = getString(R.string.updateProfile);
+        Gson gson = new Gson();
+        String profileJson = gson.toJson(profile);
+        JSONObject profileJsonObject;
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+            @Override
+            public void onSuccess(JSONObject response){
+               setup();
+            }
+
+            @Override
+            public void onError(String result){
+                Toast.makeText(context, "Sorry we faced some issue,\n Please reload the page", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "Saved login verification not successful");
+                Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
+            }
+
+        };
+
+        try {
+            profileJsonObject = new JSONObject((profileJson));
+            communicator.VolleyPut(url,profileJsonObject,callback);
+        } catch (JSONException e) {
+            Log.d(TAG, "Error making login JSONObject");
+            Log.d(TAG, "JSONException: " + e.toString());
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(context, HomeActivity.class);
+        intent.putExtra("profile",profile);
+        startActivity(intent);
+        MessageActivity.this.finish();
     }
 }

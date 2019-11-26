@@ -104,6 +104,10 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
             public void onClick(View v) {
                 //check and assign all inputs of user to profile
                 boolean allChecked = true;
+                if (markerLocation == null) {
+                    Toast.makeText(context, "Please set the destination", Toast.LENGTH_LONG).show();
+                    return;
+                }
                 end_latitude = markerLocation.latitude;
                 end_longitude = markerLocation.longitude;
                 if (arrivalDate.getResources().toString().isEmpty()) {

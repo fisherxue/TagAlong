@@ -1,6 +1,9 @@
 package com.tagalong.tagalong.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 
 import com.tagalong.tagalong.Adapter.ListProposedTripAdapter;
 import com.tagalong.tagalong.Adapter.TripProposedRiderAdapter;
+import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.Models.Trip;
 import com.tagalong.tagalong.R;
@@ -27,6 +31,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +43,7 @@ public class ProposedTripFragment extends Fragment {
     private View view;
     private Context context;
     private Profile profile;
+    private BroadcastReceiver receiver;
 
     @Nullable
     @Override
@@ -52,6 +58,20 @@ public class ProposedTripFragment extends Fragment {
         else {
             initTripList(getString(R.string.getTripList), false);
         }
+
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                if (profile.getDriver()){
+                    initTripList(getString(R.string.getRecommendedTrips), true);
+                }
+                else {
+                    initTripList(getString(R.string.getTripList), false);
+                }
+            }
+        };
         return view;
     }
 

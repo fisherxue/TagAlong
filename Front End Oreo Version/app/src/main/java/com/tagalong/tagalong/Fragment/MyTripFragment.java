@@ -1,6 +1,9 @@
 package com.tagalong.tagalong.Fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.TimingLogger;
@@ -10,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.tagalong.tagalong.Adapter.TripViewAdapter;
+import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
 import com.tagalong.tagalong.Models.Profile;
 import com.tagalong.tagalong.Models.Trip;
 import com.tagalong.tagalong.R;
@@ -27,6 +31,7 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -38,6 +43,7 @@ public class MyTripFragment extends Fragment {
     private Profile profile;
 
     private TimingLogger timingLogger;
+    private BroadcastReceiver receiver;
 
     @Nullable
     @Override
@@ -48,6 +54,15 @@ public class MyTripFragment extends Fragment {
         profile = (Profile) inputBundle.getSerializable("profile");
         timingLogger = new TimingLogger(TAG, "My Trips Activity");
         initTripList();
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                initTripList();
+            }
+        };
+
         return view;
     }
 

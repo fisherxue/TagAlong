@@ -121,9 +121,7 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
             Log.d(TAG, "JSONException: " + e.toString());
         }
 
-        Toast.makeText(context, "Successfully logged in", Toast.LENGTH_LONG).show();
-
-        Intent intent = new Intent(context, ViewUserAlongProfileActivity.class); //// BRUNO CHANGE THE VIEWPROFILEACTIVITY
+        Intent intent = new Intent(context, ViewUserAlongProfileActivity.class);
         intent.putExtra("userAlongProfile", profile);
         context.startActivity(intent);
     }
