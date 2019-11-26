@@ -33,7 +33,9 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	let driverDepartureDate = new Date(driverTrip.arrivalTime);
 	let driverTime = 0;
 	for (const leg in driverTrip.tripRoute.routes[0].legs) {
-		driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
+		if (typeof driverTrip.tripRoute.routes[0].legs[leg] !== "undefined") {
+			driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
+		}
 	}
 	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTime - MaxDriverTimeDiff);
 	
@@ -151,8 +153,10 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("modify trip riders", riderTrips);
 
 	for (const trip in driverTrip.taggedTrips) {
-		let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
-		riderTrips.push(riderTrip);
+		if (typeof driverTrip.taggedTrips[trip] !== "undefined") {
+			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
+			riderTrips.push(riderTrip);
+		}
 	}
 
 	riderTrips.forEach(function(riderTrip) {
@@ -187,7 +191,7 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
  * @return Number similarity: similarity between two users
  */
 function getInterestSimilarity(user1, user2) {
-	if (typeof user1.interests === "undefined" || typeof user2.interests === "undefined" || user1.interests.length != 5 || user2.interests.length != 5) {
+	if (typeof user1.interests === "undefined" || typeof user2.interests === "undefined" || user1.interests.length !== 5 || user2.interests.length !== 5) {
 		throw new RangeError("RangeError: user interests invalid");
 	}
 
@@ -280,7 +284,7 @@ async function getRiderTrips(driverTrip) {
 	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
 
 	let newRiderTrips = [];
-	driverRiders = driverTrip.taggedUsers;
+	let driverRiders = driverTrip.taggedUsers;
 	for (const trip in riderTrips) {
 		if (!driverRiders.includes(riderTrips[trip].username)) {
 			newRiderTrips.push(riderTrips[trip]);
