@@ -169,6 +169,8 @@ public class UpdateProfileActivity extends AppCompatActivity {
         newUserProfile = new Profile();
         if (!newSignUp) {
             isDriverSwitch.setEnabled(false);
+            newUserProfile.setDriver(userProfile.getDriver());
+            newUserProfile.setCarCapacity(userProfile.getCarCapacity());
         }
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,14 +220,34 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 if (newSignUp) {
                     newUserProfile.setDriver(false);
                     newUserProfile.setCarCapacity(0);
-                }
-                if (isDriverSwitch.isChecked() && newUserProfile.getAge() >= newUserProfile.minAgeDriver) {
-                    newUserProfile.setDriver(true);
+
+                    if (isDriverSwitch.isChecked() && newUserProfile.getAge() >= newUserProfile.minAgeDriver) {
+                        newUserProfile.setDriver(true);
+                        if (!carCapacityEditText.getText().toString().isEmpty() &&
+                                Integer.parseInt(carCapacityEditText.getText().toString()) <= Profile.maxCarCapacity &&
+                                Integer.parseInt(carCapacityEditText.getText().toString()) >= Profile.minCarCapacity) {
+                            newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
+                            Log.d(TAG, "Car capacity and driver set");
+                        } else if (carCapacityEditText.getText().toString().isEmpty()) {
+                            Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Car capacity not set");
+                            allSet = false;
+                        } else {
+                            Toast.makeText(context, "Please enter car capacity between 1 and 10, inclusive", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Car capacity not in valid range");
+                            allSet = false;
+                        }
+                    } else if (isDriverSwitch.isChecked() && newUserProfile.getAge() < newUserProfile.minAgeDriver) {
+                        Toast.makeText(context, "You are underage to be a driver \n Please register as a rider", Toast.LENGTH_LONG).show();
+                        allSet = false;
+                        Log.d(TAG, "Age requirements not met to be driver");
+                    }
+                } else {
                     if (!carCapacityEditText.getText().toString().isEmpty() &&
                             Integer.parseInt(carCapacityEditText.getText().toString()) <= Profile.maxCarCapacity &&
                             Integer.parseInt(carCapacityEditText.getText().toString()) >= Profile.minCarCapacity) {
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
-                        Log.d(TAG, "Car capacity and driver set");
+                        Log.d(TAG, "Car capacity set");
                     } else if (carCapacityEditText.getText().toString().isEmpty()) {
                         Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
                         Log.d(TAG, "Car capacity not set");
@@ -235,10 +257,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                         Log.d(TAG, "Car capacity not in valid range");
                         allSet = false;
                     }
-                } else if (isDriverSwitch.isChecked() && newUserProfile.getAge() < newUserProfile.minAgeDriver) {
-                    Toast.makeText(context, "You are underage to be a driver \n Please register as a rider", Toast.LENGTH_LONG).show();
-                    allSet = false;
-                    Log.d(TAG, "Age requirements not met to be driver");
                 }
 
                 newUserProfile.setInterests(interests);
