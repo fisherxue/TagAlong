@@ -34,7 +34,8 @@ const handleRegister = async (req, res) => {
 				age: 0,
 				gender: "",
 				firstName: "",
-				lastName: ""
+				lastName: "",
+				carCapacity: 0
 
 			});
 			await user.save((err) => {
