@@ -80,8 +80,8 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 		let newRiderRoute = riderTrip.tripRoute;
 		let riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
 				newRiderRoute.routes[0].legs[0].start_location.lng,
-				newRiderRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lat,
-				newRiderRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lng);
+				newRiderRoute.routes[0].legs[0].end_location.lat,
+				newRiderRoute.routes[0].legs[0].end_location.lng);
 		if (Math.abs(driverBearing - riderBearing) <= MaxDriverBearingDiff) {
 			riderTripsBearing.push(riderTrip);
 		}
