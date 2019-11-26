@@ -19,9 +19,9 @@ const sendChatNotif = async (user, message, sentby, roomID) => {
 				title: "New Message",
 				body: sentby + ": " + message
 			},
-			data :{
+			data: {
 				type: "Chat",
-				roomID: roomID
+				roomID
 			}
 		};
 	
@@ -44,7 +44,7 @@ const sendChatNotif = async (user, message, sentby, roomID) => {
 const notifyUsers = async (users, message, sentby, roomID) => {
 
 	users.forEach(async (username) => {
-		if (username != sentby) {
+		if (username !== sentby) {
 			debug("sending message to: ", username);
 			const user = await User.findOne({ username });
 			if (user) {

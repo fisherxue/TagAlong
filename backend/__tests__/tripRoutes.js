@@ -383,13 +383,13 @@ describe('testing trips', () => {
 
     it('deltrip for a driver that has attached user trip', async (done) => {
       const rider = new User(taggedrider);
-      rider.save();
+      await rider.save();
       const driver = new User(taggeddriver);
-      driver.save();
+      await driver.save();
       const ridertrip = new TripStore(taggedridertrip1);
-      ridertrip.save();
+      await ridertrip.save();
       const drivertrip = new TripStore(taggeddrivertrip1);
-      drivertrip.save();
+      await drivertrip.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -409,14 +409,14 @@ describe('testing trips', () => {
 
     it('deltrip for a rider that has attached driver trip', async (done) => {
       const rider = new User(taggedrider);
-      rider.save();
+      await rider.save();
       const driver = new User(taggeddriver);
       driver.fbToken = undefined;
-      driver.save();
+      await driver.save();
       const ridertrip = new TripStore(taggedridertrip1);
-      ridertrip.save();
+      await ridertrip.save();
       const drivertrip = new TripStore(taggeddrivertrip1);
-      drivertrip.save();
+      await drivertrip.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -437,7 +437,7 @@ describe('testing trips', () => {
     it('deltrip on a valid tripid but nonexistent trip', async (done) => {
 
       const rider = new User(taggedrider);
-      rider.save();
+      await rider.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -453,11 +453,11 @@ describe('testing trips', () => {
 
     it('deltrip for a rider that has attached driver trip, however, drivertrip is nonexistent', async (done) => {
       const rider = new User(taggedrider);
-      rider.save();
+      await rider.save();
       const driver = new User(taggeddriver);
-      driver.save();
+      await driver.save();
       const ridertrip = new TripStore(taggedridertrip1);
-      ridertrip.save();
+      await ridertrip.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -474,11 +474,11 @@ describe('testing trips', () => {
 
     it('deltrip for a rider that has attached driver trip, however, driver is nonexistent', async (done) => {
       const rider = new User(taggedrider);
-      rider.save();
+      await rider.save();
       const ridertrip = new TripStore(taggedridertrip1);
-      ridertrip.save();
+      await ridertrip.save();
       const drivertrip = new TripStore(taggeddrivertrip1);
-      drivertrip.save();
+      await drivertrip.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -496,10 +496,10 @@ describe('testing trips', () => {
     it('deltrip for a driver that has no tagged users', async (done) => {
 
       const driver = new User(taggeddriver);
-      driver.save();
+      await driver.save();
       const drivertrip = new TripStore(taggeddrivertrip1);
       drivertrip.taggedTrips = [];
-      drivertrip.save();
+      await drivertrip.save();
 
       const res = await request.del("/trips/delTrip")
         .set({
@@ -516,5 +516,157 @@ describe('testing trips', () => {
 
         done();
     })
+
+    it('driver accepting a trip from a rider ', async (done) => {
+      const rider = new User(taggedrider);
+      await rider.save();
+      const driver = new User(taggeddriver);
+      await driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      await ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.taggedUsers = [];
+      await drivertrip.save();
+
+      const chat = new Chat({
+        _id: drivertrip.chatroomID,
+        users: [driver.username],
+        message: []
+      })
+      await chat.save();
+
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: driver._id,
+          tripID: drivertrip._id,
+          usertripID: ridertrip._id
+        })
+        .expect(200);
+
+      expect(res.body.status).toBe("OK");
+      expect(res.body.message).toBe("user successfully added to trip");
+
+      const updateddrivertrip = await TripStore.findById(taggeddrivertrip1._id);
+      expect(updateddrivertrip.taggedUsers).toEqual(expect.arrayContaining([ridertrip.username]));
+    
+      done();
+    })
+
+    it('attempting to accept with invalid userid and drivertripID and usertripID', async (done) => {
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: "1234",
+          tripID: "1234",
+          usertripID: "1234"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("Invalid user ID or drivertripID or usertripID");
+      done();
+    })
+
+    it('attempting to accept with nonexistent driver user', async (done) => {
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: "5dd5d1cfa91303a30fc2fe58",
+          tripID: "5dd5d1cfa91303a30fc2fe58",
+          usertripID: "5dd5d1cfa91303a30fc2fe58"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("Unable to find user");
+      done();
+    })
+
+    it('attempting to accpet with valid driver but nonexistent driver trip', async (done) => {
+      const driver = new User(taggeddriver);
+      driver.save();
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: driver._id,
+          tripID: "5dd5d1cfa91303a30fc2fe58",
+          usertripID: "5dd5d1cfa91303a30fc2fe58"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("driver trip not found");
+      done();
+    })
+
+    it('attempting to accept with valid driver but non existent ridertrip', async (done) => {
+      const driver = new User(taggeddriver);
+      driver.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.save();
+
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: driver._id,
+          tripID: drivertrip._id,
+          usertripID: "5dd5d1cfa91303a30fc2fe58"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("rider trip not found");
+
+      done();
+    })
+
+    it('attempting to accept with valid driver but non existent user associated with accepting user trip', async (done) => {
+
+      const driver = new User(taggeddriver);
+      driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.save();
+
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: driver._id,
+          tripID: drivertrip._id,
+          usertripID: ridertrip._id
+        })
+        .expect(400);
+
+      expect(res.text).toBe("rider user not found");
+
+      done();
+    })
+
+    it('driver accepting a trip from a rider nonexistent chatroom / fbtoken ', async (done) => {
+      const rider = new User(taggedrider);
+      rider.fbToken = "";
+      await rider.save();
+      const driver = new User(taggeddriver);
+      await driver.save();
+      const ridertrip = new TripStore(taggedridertrip1);
+      await ridertrip.save();
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      drivertrip.taggedUsers = [];
+      await drivertrip.save();
+
+      const res = await request.post("/trips/acceptTrip")
+        .send({
+          userID: driver._id,
+          tripID: drivertrip._id,
+          usertripID: ridertrip._id
+        })
+        .expect(200);
+
+      expect(res.body.status).toBe("OK");
+      expect(res.body.message).toBe("user successfully added to trip");
+
+      const updateddrivertrip = await TripStore.findById(taggeddrivertrip1._id);
+      expect(updateddrivertrip.taggedUsers).toEqual(expect.arrayContaining([ridertrip.username]));
+    
+      done();
+    })
+
+
+
+
+
+
 
 })
