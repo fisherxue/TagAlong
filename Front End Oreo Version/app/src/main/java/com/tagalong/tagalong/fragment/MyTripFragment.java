@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MyTripFragment extends Fragment {
-    private final String TAG = "My Trips Fragment";
+    private final String TAG = "MyTripsFragment";
     private List<Trip> tripList;
     private View view;
     private Context context;
@@ -76,39 +76,40 @@ public class MyTripFragment extends Fragment {
             @Override
             public void onSuccess(JSONObject response){
                 Log.d(TAG, "Received list of trips for the user");
-                timingLogger.addSplit("initTripList - Got list of trips");
+                timingLogger.addSplit("Method: initTripList() - Successful get request for list of trips");
                 setTripList(response);
                 initTripView();
             }
 
             @Override
             public void onError(String result){
-                timingLogger.addSplit("initTripList - Received error");
+                timingLogger.addSplit("Method: initTripList() - Failure get request for list of trips");
                 Log.d(TAG, "Error: Could not get list of trips");
                 Log.d(TAG, "Error: " + result);
                 Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
             }
         };
 
-        timingLogger.addSplit("initTripList - Send Request to get list of trips");
+        timingLogger.addSplit("Method: initTripList() - get request for list of trips");
         communicator.volleyGet(url,callback,headers);
     }
 
     private void initTripView(){
-        Log.d(TAG,"initializing TripView");
-        timingLogger.addSplit("initTripView - Start Adapter");
+        Log.d(TAG,"start loading TripView");
+        timingLogger.addSplit("Method: initTripView() - Initiating recycler view to load of trip view");
         timingLogger.dumpToLog();
         timingLogger.reset();
         RecyclerView recyclerView = view.findViewById(R.id.my_trips_recycler_view);
         TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
         recyclerView.setAdapter(tripViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
     }
 
     private void setTripList (JSONObject response){
         JSONArray inputTripList;
         tripList = new ArrayList<>();
-        timingLogger.addSplit("setTripList - creating tripList");
+        timingLogger.addSplit("Method: setTripList() - begin to set local list of trips");
         try {
             inputTripList = response.getJSONArray("trips");
             for (int i = 0; i < inputTripList.length(); i++){
@@ -116,7 +117,7 @@ public class MyTripFragment extends Fragment {
                     this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
                 }
             }
-            timingLogger.addSplit("setTripList - created tripList");
+            timingLogger.addSplit("Method: setTripList() - done setting local list of trips");
         } catch (JSONException e) {
             e.printStackTrace();
         }

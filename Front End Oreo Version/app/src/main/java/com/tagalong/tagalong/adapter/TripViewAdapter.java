@@ -77,6 +77,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+        timingLogger.addSplit("Method:onCreateViewHolder() - new view holder created");
         return viewHolder;
     }
 
@@ -154,6 +155,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         });
         timingLogger.addSplit("Done setting all trip cards");
         timingLogger.dumpToLog();
+        timingLogger.reset();
     }
 
     @Override
