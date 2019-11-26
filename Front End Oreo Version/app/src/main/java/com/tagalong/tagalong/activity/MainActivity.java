@@ -148,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             };
             getFCMToken(firebaseCallback);
-            System.out.println("Main Date: " + profile.getJoinedDate());
         } catch (JSONException e) {
             Log.d(TAG, "Failed to convert stored json string to profile");
             Log.d(TAG, ("JSONException: " + e.toString()));

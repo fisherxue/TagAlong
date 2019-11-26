@@ -354,7 +354,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
             Log.d(TAG,"Error while retrieving profile");
             Log.d(TAG,"Error: " + e.toString());
         }
-        System.out.println("Update Profile Date: " + received_profile.getJoinedDate());
         Log.d(TAG,"Successfully retrieved profile");
         Intent intent = new Intent(UpdateProfileActivity.this, HomeActivity.class);
         intent.putExtra("profile", received_profile);

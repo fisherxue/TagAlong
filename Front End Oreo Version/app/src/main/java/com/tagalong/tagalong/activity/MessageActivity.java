@@ -288,7 +288,6 @@ public class MessageActivity extends AppCompatActivity {
   }
 
   private void loginSavedProfile(){
-    System.out.println("MessageActivity Date: " + profile.getJoinedDate());
     String url = getString(R.string.updateProfile);
     Gson gson = new Gson();
     String profileJson = gson.toJson(profile);
