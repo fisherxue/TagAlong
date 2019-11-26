@@ -38,6 +38,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
+import com.tagalong.tagalong.NotificationTimmingLogger;
 import com.tagalong.tagalong.activity.HomeActivity;
 import com.tagalong.tagalong.GetDirectionsData;
 import com.tagalong.tagalong.models.Profile;
@@ -76,6 +77,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
     private SearchView locationSearch;
     private Button setOrigin;
     private final String TAG = "MapFragment";
+    private NotificationTimmingLogger notificationTimmingLogger;
 
 
     @Override
@@ -94,7 +96,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
         arrivalTime = (TextInputEditText) findViewById(R.id.arrivalTime);
         arrivalDate = (TextInputEditText) findViewById(R.id.arrivalDate);
         locationSearch = (SearchView) findViewById(R.id.search);
-
+        notificationTimmingLogger = NotificationTimmingLogger.getInstance();
         initializeSearch();
         initializeOrigin();
         initializeArrivalButtons();
@@ -103,6 +105,8 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
             @Override
             public void onClick(View v) {
                 //check and assign all inputs of user to profile
+                notificationTimmingLogger.reset();
+                notificationTimmingLogger.addSplit("Set Trip Fragment: Clicked on searchRoute");
                 boolean allChecked = true;
                 if (markerLocation == null) {
                     Toast.makeText(context, "Please set the destination", Toast.LENGTH_LONG).show();
@@ -162,6 +166,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
                     trip.setUserID(userProfile.getUserID());
                     trip.setDriverTrip(userProfile.getDriver());
                     trip.setArrivalTime(arrivalDate);
+                    notificationTimmingLogger.addSplit("Set Trip Fragment: all checks before post pass");
                     generateTrip(trip);
                 }
 
@@ -309,6 +314,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
             public void onSuccess(JSONObject response) {
                 Toast.makeText(context, "Successfully set trip", Toast.LENGTH_LONG).show();
                 Log.d(TAG,"Trip was successfully set.");
+                notificationTimmingLogger.addSplit("Set Trip Fragment: Method generateTrip() - post the trip Success");
                 Intent intent = new Intent(SetTripFragment.this, HomeActivity.class);
                 intent.putExtra("profile", userProfile);
                 startActivity(intent);
@@ -319,10 +325,12 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
             public void onError(String result) {
                 Log.d(TAG, "Error: while sending trip");
                 Log.d(TAG, "Error: " + result);
+                notificationTimmingLogger.addSplit("Set Trip Fragment: Method generateTrip() - post the trip Error");
                 Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
             }
         };
 
+        notificationTimmingLogger.addSplit("Set Trip Fragment: Method generateTrip() - post the trip");
         try {
             tripJSONObject = new JSONObject((tripJson));
             communicator.volleyPost(url,tripJSONObject,callback);

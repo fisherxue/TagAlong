@@ -2,12 +2,12 @@ package com.tagalong.tagalong.adapter;
 
 import android.content.Context;
 import android.text.Html;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.tagalong.tagalong.NotificationTimmingLogger;
 import com.tagalong.tagalong.models.Conversation;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
@@ -27,13 +27,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     private List<Conversation> conversationList;
     private Profile currentUser;
 
-    private TimingLogger timingLogger;
 
     public MessageAdapter (Context context, List<Conversation> conversationList, Profile profile) {
         this.context = context;
         this.conversationList = conversationList;
         this.currentUser = profile;
-        timingLogger = new TimingLogger(TAG, "Message Adapter");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -62,7 +60,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        timingLogger.addSplit("Starting to setup conversations");
         Conversation conversation = conversationList.get(position);
         if (conversation.getUserName().equals(currentUser.getUsername())){
             holder.displayMessage.setText(conversation.getMessage());
@@ -70,8 +67,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         else {
             holder.displayMessage.setText(Html.fromHtml("<b>"+ conversation.getUserName() + ": </b>" + conversation.getMessage()));
         }
-        timingLogger.addSplit("Done setting all conversations");
-        timingLogger.dumpToLog();
     }
 
     @Override

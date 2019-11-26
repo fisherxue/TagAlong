@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tagalong.tagalong.TripListTimmingLogger;
 import com.tagalong.tagalong.activity.MessageActivity;
 import com.tagalong.tagalong.activity.TripDisplayActivity;
 import com.tagalong.tagalong.models.Profile;
@@ -38,13 +39,13 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     private List<Trip> tripList;
     private Profile profile;
 
-    private TimingLogger timingLogger;
+    private TripListTimmingLogger tripListTimmingLogger;
 
     public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
-        timingLogger = new TimingLogger(TAG, "Trip View Adapter");
+        tripListTimmingLogger = TripListTimmingLogger.getInstance();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -77,14 +78,14 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
-        timingLogger.addSplit("Method:onCreateViewHolder() - new view holder created");
+        tripListTimmingLogger.addSplit("Method:onCreateViewHolder() - new view holder created");
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Trip trip = tripList.get(position);
-        timingLogger.addSplit("Starting to setup trip cards");
+        tripListTimmingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
         List<String> useralonglist;
 
@@ -149,13 +150,13 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
 
                     }
                 };
-                timingLogger.addSplit("Deleted a trip");
+                tripListTimmingLogger.addSplit("Deleted a trip");
                 communicator.volleyDelete(url,callback,headers);
             }
         });
-        timingLogger.addSplit("Done setting all trip cards");
-        timingLogger.dumpToLog();
-        timingLogger.reset();
+        tripListTimmingLogger.addSplit("Done setting all trip cards");
+        tripListTimmingLogger.dumpToLog();
+        tripListTimmingLogger.reset();
     }
 
     @Override
