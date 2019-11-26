@@ -55,59 +55,6 @@ afterAll(async () => {
 
 describe('testing chat', () => {
 
-	it('should create a new room with 3 demo users with no messages', async (done) => {
-
-		// Registration of 3 new users
-		user1 = new User({
-			username: "chatdemouser1",
-			email: "chatdemouser1@demo.com",
-			password: "demodemodemo"
-		});
-
-		await user1.save();
-
-		user2 = new User({
-			username: "chatdemouser2",
-			email: "chatdemouser2@demo.com",
-			password: "demodemodemo"
-		});
-
-		await user2.save();
-
-		user3 = new User({
-			username: "chatdemouser3",
-			email: "chatdemouser3@demo.com",
-			password: "demodemodemo"
-		});
-
-		await user3.save();
-
-		const users = [user1.username, user2.username, user3.username];
-
-		const res = await request.post("/chat/newRoom")
-			.send({
-				users: users
-			})
-			.expect(200);
-
-		expect(res.body).toBeTruthy();
-		expect(res.body.users).toEqual(expect.arrayContaining(users));
-		expect(res.body.messages).toEqual(expect.arrayContaining([]));
-
-		done();
-	});
-
-	it('should fail to create a chat room with no users', async (done) => {
-		const res = await request.post("/chat/newRoom")
-			.send()
-			.expect(400);
-
-		expect(res.text).toBe("No users supplied");
-
-		done();
-	})
-
-
 	it('demo1 should send a message to the chat', async (done) => {
 
 		// Registration of 3 new users
