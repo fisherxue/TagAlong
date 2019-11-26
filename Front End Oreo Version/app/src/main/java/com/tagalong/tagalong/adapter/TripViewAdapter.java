@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Adapter;
+package com.tagalong.tagalong.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +12,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tagalong.tagalong.Activity.MessageActivity;
-import com.tagalong.tagalong.Activity.TripDisplayActivity;
-import com.tagalong.tagalong.Models.Profile;
-import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.activity.MessageActivity;
+import com.tagalong.tagalong.activity.TripDisplayActivity;
+import com.tagalong.tagalong.models.Profile;
+import com.tagalong.tagalong.models.Trip;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
 
 import org.json.JSONObject;
 

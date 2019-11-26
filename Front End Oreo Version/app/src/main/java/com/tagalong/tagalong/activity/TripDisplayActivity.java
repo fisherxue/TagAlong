@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import androidx.fragment.app.FragmentActivity;
 

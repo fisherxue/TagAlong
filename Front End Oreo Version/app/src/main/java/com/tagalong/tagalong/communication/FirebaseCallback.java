@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Communication;
+package com.tagalong.tagalong.communication;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.InstanceIdResult;

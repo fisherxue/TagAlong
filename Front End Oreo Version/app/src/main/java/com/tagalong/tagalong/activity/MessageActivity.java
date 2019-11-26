@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,15 +23,15 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.gson.Gson;
-import com.tagalong.tagalong.Communication.FirebaseCallback;
+import com.tagalong.tagalong.communication.FirebaseCallback;
 import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
-import com.tagalong.tagalong.Adapter.MessageAdapter;
-import com.tagalong.tagalong.Models.Chat;
-import com.tagalong.tagalong.Models.Conversation;
-import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.adapter.MessageAdapter;
+import com.tagalong.tagalong.models.Chat;
+import com.tagalong.tagalong.models.Conversation;
+import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;

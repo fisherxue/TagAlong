@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Models;
+package com.tagalong.tagalong.models;
 
 public class Conversation {
     private String userID;

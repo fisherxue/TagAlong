@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Adapter;
+package com.tagalong.tagalong.adapter;
 
 import android.content.Context;
 import android.text.Html;
@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.models.Trip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
