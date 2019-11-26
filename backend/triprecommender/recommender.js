@@ -33,7 +33,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	let driverDepartureDate = new Date(driverTrip.arrivalTime);
 	let driverTime = 0;
 	for (const leg in driverTrip.tripRoute.routes[0].legs) {
-		if (typeof driverTrip.tripRoute.routes[0].legs[leg] !== "undefined") {
+		if (typeof driverTrip.tripRoute.routes[0].legs[parseInt(leg, 10)] !== "undefined") {
 			driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
 		}
 	}
@@ -153,7 +153,7 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("modify trip riders", riderTrips);
 
 	for (const trip in driverTrip.taggedTrips) {
-		if (typeof driverTrip.taggedTrips[trip] !== "undefined") {
+		if (typeof driverTrip.taggedTrips[parseInt(trip)] !== "undefined") {
 			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
 			riderTrips.push(riderTrip);
 		}
