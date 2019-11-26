@@ -31,7 +31,6 @@ import com.tagalong.tagalong.communication.FirebaseCallback;
 import com.tagalong.tagalong.communication.VolleyCallback;
 import com.tagalong.tagalong.communication.VolleyCommunicator;
 import com.tagalong.tagalong.fragment.MyTripFragment;
-import com.tagalong.tagalong.models.Conversation;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.fragment.ProposedTripFragment;
 import com.tagalong.tagalong.R;

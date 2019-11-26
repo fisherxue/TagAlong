@@ -24,7 +24,7 @@ public class Profile implements Serializable {
     private String fbToken;
     private Boolean isDriver;
     private int age;
-    private Date joinedDate;
+    private String joinedDate;
     private int carCapacity;
     private int[] interests;
 
@@ -36,7 +36,7 @@ public class Profile implements Serializable {
         this.username = "Not Set";
         this.password = "Not Set";
         this.email = "Not Set";
-        this.joinedDate = new Date();
+        this.joinedDate = "Not Set";
         this.gender = "Not Set";
         this.isDriver = true;
         this.age = 0;
@@ -54,8 +54,15 @@ public class Profile implements Serializable {
     }
 
     public String getJoinedDate() {
+        Date date = new Date();
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+                    .parse(this.joinedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         DateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY, hh:mm:ss");
-        return dateFormat.format(joinedDate);
+        return dateFormat.format(date);
     }
 
     public String getFirstName() {
@@ -148,12 +155,7 @@ public class Profile implements Serializable {
     }
 
     public void setJoinedDate(String joinedDate) {
-        try {
-            this.joinedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
-                    .parse(joinedDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        this.joinedDate = joinedDate;
     }
 
     public void setFbToken(String fbToken) {

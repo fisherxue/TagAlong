@@ -111,6 +111,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
             notificationTimmingLogger.addSplit("handleChatNotification(): chat notification received");
             Intent intent = new Intent(this, MessageActivity.class);
             intent.putExtra("ID",data.get("roomID") );
+            System.out.println("ID" + data.get("roomID"));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
             NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
