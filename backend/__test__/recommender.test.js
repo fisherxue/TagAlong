@@ -38,6 +38,7 @@ function addMockUsers(callback) {
     });
 } 
 
+
 function addMockTrips(callback) {
     let driverTrip;
     let riderTrips = [];
@@ -72,6 +73,43 @@ function addMockTrips(callback) {
         });
     });
 }
+
+function addMockTripsBugged(callback) {
+    let driverTrip;
+    let riderTrips = [];
+    let trip;
+    fs.readFile("./__test__/trips/driverTrip1.copy.json", "utf8", (err, data) => {
+        trip = JSON.parse(data);
+        driverTrip = trip;
+        trip = TripStore(trip);
+        trip.save((err, res) => {
+            fs.readFile("./__test__/trips/riderTrip1.json", "utf8", (err, data1) => {
+                trip = JSON.parse(data1);
+                riderTrips.push(trip);
+                trip = TripStore(trip);
+                trip.save((err, res) => {
+                    fs.readFile("./__test__/trips/riderTrip2.json", "utf8", (err, data2) => {
+                        trip = JSON.parse(data2);
+                        riderTrips.push(trip);
+                        trip = TripStore(trip);
+                        trip.save((err, res) => {
+                            fs.readFile("./__test__/trips/riderTrip3.json", "utf8", (err, data3) => {
+                                trip = JSON.parse(data3);
+                                riderTrips.push(trip);
+                                trip = TripStore(trip);
+                                trip.save((err, res) => {
+                                    callback(driverTrip, riderTrips);
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+    });
+}
+
+
 
 describe("cutTripsByBearing", () => {
 
@@ -534,6 +572,15 @@ describe("getRiderTrips", () => {
                 let res = await recommender.getRiderTrips(driverTrip);
                 expect(JSON.stringify(res[1]._id)).toBe(JSON.stringify(riderTrips[2]._id));
                 expect(JSON.stringify(res[0]._id)).toBe(JSON.stringify(riderTrips[0]._id));
+                done();
+            });
+        });
+    });
+    it('should return something correct on correct input', async done => {
+        addMockTripsBugged((driverTrip, riderTrips) => {
+            addMockUsers(async () => {
+                let res = await recommender.getRiderTrips(driverTrip);
+                expect(res).toHaveLength(1);
                 done();
             });
         });
