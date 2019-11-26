@@ -31,7 +31,11 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	let riderTripsTime = [];
 
 	let driverDepartureDate = new Date(driverTrip.arrivalTime);
-	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTrip.tripRoute.routes[0].legs[0].duration.value - MaxDriverTimeDiff);
+	let driverTime = 0;
+	for (const leg in driverTrip.tripRoute.routes[0].legs) {
+		driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
+	}
+	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTime - MaxDriverTimeDiff);
 	
 	driverTrip.arrivalTime = new Date(driverTrip.arrivalTime);
 
@@ -68,16 +72,16 @@ function cutTripsByBearing(driverTrip, riderTrips) {
 	let newDriverRoute = driverTrip.tripRoute;
 	let driverBearing = LatLng.getLatLngBearing(newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
-			newDriverRoute.routes[0].legs[0].end_location.lat,
-			newDriverRoute.routes[0].legs[0].end_location.lng);
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lat,
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lng);
 	let riderTripsBearing = [];
 
 	riderTrips.forEach(function(riderTrip) {
 		let newRiderRoute = riderTrip.tripRoute;
 		let riderBearing = LatLng.getLatLngBearing(newRiderRoute.routes[0].legs[0].start_location.lat,
 				newRiderRoute.routes[0].legs[0].start_location.lng,
-				newRiderRoute.routes[0].legs[0].end_location.lat,
-				newRiderRoute.routes[0].legs[0].end_location.lng);
+				newRiderRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lat,
+				newRiderRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lng);
 		if (Math.abs(driverBearing - riderBearing) <= MaxDriverBearingDiff) {
 			riderTripsBearing.push(riderTrip);
 		}
@@ -108,16 +112,16 @@ function cutTripsByDistance(driverTrip, riderTrips) {
 		let riderDistanceStart = LatLng.getLatLngShortestDistanceLinePoint(
 			newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
-			newDriverRoute.routes[0].legs[0].end_location.lat,
-			newDriverRoute.routes[0].legs[0].end_location.lng,
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lat,
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lng,
 			newRiderRoute.routes[0].legs[0].start_location.lat,
 			newRiderRoute.routes[0].legs[0].start_location.lng
 		);
 		let riderDistanceEnd = LatLng.getLatLngShortestDistanceLinePoint(
 			newDriverRoute.routes[0].legs[0].start_location.lat,
 			newDriverRoute.routes[0].legs[0].start_location.lng,
-			newDriverRoute.routes[0].legs[0].end_location.lat,
-			newDriverRoute.routes[0].legs[0].end_location.lng,
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lat,
+			newDriverRoute.routes[0].legs[newDriverRoute.routes[0].legs.length - 1].end_location.lng,
 			newRiderRoute.routes[0].legs[0].end_location.lat,
 			newRiderRoute.routes[0].legs[0].end_location.lng
 		);
