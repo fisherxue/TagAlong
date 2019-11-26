@@ -254,6 +254,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
         done();
@@ -342,6 +343,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo2");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
         done();
@@ -429,6 +431,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -513,6 +516,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -610,6 +614,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -694,6 +699,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -811,6 +817,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -895,6 +902,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -1025,6 +1033,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -1109,6 +1118,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -1249,6 +1259,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -1333,6 +1344,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -1484,6 +1496,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -1568,6 +1581,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -1733,6 +1747,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -1817,6 +1832,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -1992,6 +2008,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -2076,6 +2093,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -2251,6 +2269,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -2335,6 +2354,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
@@ -2526,6 +2546,7 @@ describe('integration tests', () => {
 
         expect(res4.body).toBeTruthy();
         expect(res4.body.username).toBe("demo1");
+        expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
 
 
@@ -2610,6 +2631,7 @@ describe('integration tests', () => {
 
         expect(res8.body).toBeTruthy();
         expect(res8.body.username).toBe("demo2");
+        expect(res8.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res8.body.tripRoute.status).toBe("OK");
 
         const res9 = await request.get("/trips/getRecommendedTrips")
