@@ -91,7 +91,7 @@ public class MyTripFragment extends Fragment {
         };
 
         timingLogger.addSplit("initTripList - Send Request to get list of trips");
-        communicator.VolleyGet(url,callback,headers);
+        communicator.volleyGet(url,callback,headers);
     }
 
     private void initTripView(){

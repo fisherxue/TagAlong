@@ -85,7 +85,7 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
                 };
 
                 Log.d(TAG, "Retrieving userAlong profile");
-                communicator.VolleyGet(url,callback,headers);
+                communicator.volleyGet(url,callback,headers);
             }
         });
     }

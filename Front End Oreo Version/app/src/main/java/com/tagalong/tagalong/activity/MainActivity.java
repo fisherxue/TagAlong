@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPut(url,profileJsonObject,callback);
+            communicator.volleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making login JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             loginJsonObject = new JSONObject((loginJson));
-            communicator.VolleyPost(url,loginJsonObject,callback);
+            communicator.volleyPost(url,loginJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making login JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
@@ -470,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             loginJsonObject = new JSONObject((loginJson));
-            communicator.VolleyPost(url,loginJsonObject,callback);
+            communicator.volleyPost(url,loginJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making new login JSONObject");
             Log.d(TAG, "Exception" + e.toString());

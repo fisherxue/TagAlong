@@ -36,7 +36,6 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
-    private List<String> useralonglist;
     private String tripID;
 
     public TripProposedDriverAdapter(Context context, List<Trip> tripList, String tripID, Profile profile) {
@@ -81,7 +80,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Trip trip = tripList.get(position);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-
+        List<String> useralonglist;
         useralonglist = new ArrayList<>();
         useralonglist.add(trip.getUsername());
 
@@ -136,7 +135,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                 try {
                     acceptTripJson = new JSONObject(acceptTrip.toString());
                     Log.d(TAG, acceptTrip.toString());
-                    communicator.VolleyPost(url,acceptTripJson,callback);
+                    communicator.volleyPost(url,acceptTripJson,callback);
                 } catch (JSONException e) {
                     Log.d(TAG, "Error making accepted-trip JSONObject");
                     Log.d(TAG, "JSONException: " + e.toString());

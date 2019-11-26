@@ -20,7 +20,6 @@ public class ViewUserAlongProfileActivity extends AppCompatActivity {
     private TextView carCap;
     private TextView registeredAs;
     private TextView gender;
-    private Context context;
 
     private Profile userProfile;
 
@@ -28,7 +27,6 @@ public class ViewUserAlongProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_useralong_profile);
-        context = getApplicationContext();
         userProfile = (Profile) getIntent().getSerializableExtra("userAlongProfile");
 
         name = (TextView) findViewById(R.id.userAlongName);

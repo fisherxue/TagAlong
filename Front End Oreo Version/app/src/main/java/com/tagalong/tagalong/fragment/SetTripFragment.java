@@ -324,7 +324,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
 
         try {
             tripJSONObject = new JSONObject((tripJson));
-            communicator.VolleyPost(url,tripJSONObject,callback);
+            communicator.volleyPost(url,tripJSONObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making trip JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());

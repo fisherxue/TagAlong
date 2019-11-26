@@ -291,7 +291,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         try {
             Log.d(TAG,"Sending user profile information");
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPut(url,profileJsonObject,callback);
+            communicator.volleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making update profile JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());

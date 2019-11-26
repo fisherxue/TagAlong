@@ -119,7 +119,7 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
 
                     }
                 };
-                communicator.VolleyDelete(url,callback,headers);
+                communicator.volleyDelete(url,callback,headers);
             }
         });
     }

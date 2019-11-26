@@ -37,7 +37,6 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
-    private List<String> useralonglist;
 
     private TimingLogger timingLogger;
 
@@ -86,6 +85,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         final Trip trip = tripList.get(position);
         timingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
+        List<String> useralonglist;
 
         useralonglist = new ArrayList<>();
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
@@ -149,7 +149,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
                     }
                 };
                 timingLogger.addSplit("Deleted a trip");
-                communicator.VolleyDelete(url,callback,headers);
+                communicator.volleyDelete(url,callback,headers);
             }
         });
         timingLogger.addSplit("Done setting all trip cards");

@@ -143,7 +143,7 @@ public class MessageActivity extends AppCompatActivity {
         timingLogger.addSplit("Sending Message");
         try {
             conversationJsonObject = new JSONObject(conversationJson);
-            communicator.VolleyPost(url,conversationJsonObject,callback);
+            communicator.volleyPost(url,conversationJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making conversation JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
@@ -222,7 +222,7 @@ public class MessageActivity extends AppCompatActivity {
 
         timingLogger.addSplit("getting list of messages");
         Log.d(TAG, "Retrieving list of messages");
-        communicator.VolleyGet(url,callback,headers);
+        communicator.volleyGet(url,callback,headers);
     }
 
     @Override
@@ -324,7 +324,7 @@ public class MessageActivity extends AppCompatActivity {
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPut(url,profileJsonObject,callback);
+            communicator.volleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making login JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());

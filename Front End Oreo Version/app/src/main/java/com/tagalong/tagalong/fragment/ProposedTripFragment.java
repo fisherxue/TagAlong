@@ -97,7 +97,7 @@ public class ProposedTripFragment extends Fragment {
 
             }
         };
-        communicator.VolleyGet(url,callback,headers);
+        communicator.volleyGet(url,callback,headers);
 
     }
     private void initTripView(Boolean isDriver){

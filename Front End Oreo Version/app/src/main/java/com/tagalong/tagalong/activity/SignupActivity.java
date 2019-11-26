@@ -138,7 +138,7 @@ public class SignupActivity extends AppCompatActivity {
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPost(url,profileJsonObject,callback);
+            communicator.volleyPost(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making signup profile JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
