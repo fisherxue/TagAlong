@@ -32,11 +32,6 @@ const handleGetTrips = async (req, res) => {
 
 	const trips = await TripStore.find({ userID });
 
-	if (!trips) {
-		debug("no trips found");
-		return res.status(400).send("No trips found");
-	}
-
 	debug("responded with trips", trips);
 	res.json({trips});
 

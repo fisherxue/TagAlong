@@ -256,6 +256,39 @@ describe('testing login', () => {
 		done();
 	})
 
+	it('getProfile of a valid user', async (done) => {
+		user1 = new User({
+			username: "demo6",
+			email: "demo6@demo.com",
+			password: "demodemodemo"
+		});
+
+		await user1.save();
+
+		const res = await request.get("/users/getProfile")
+			.set({
+				username: "demo6"
+			})
+			.expect(200);
+
+		expect(res.body).toBeTruthy();
+		expect(res.body.username).toBe("demo6");
+		expect(res.body.email).toBe("demo6@demo.com");
+
+		done();
+	})
+
+	it('getProfile of an invalid user', async (done) => {
+		const res = await request.get("/users/getProfile")
+			.set({
+				username: "demo6"
+			})
+			.expect(400);
+
+		expect(res.text).toBe("User not found");
+		done();
+	})
+
 
 
 })

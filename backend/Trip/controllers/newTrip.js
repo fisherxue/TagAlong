@@ -15,6 +15,9 @@ const sendNotif = async (user) => {
 			notification: {
 				title: "New Trip Created",
 				body: "You have created a new trip",
+			}, 
+			data: {
+				type: "Trip"
 			}
 		};
 	
@@ -23,9 +26,7 @@ const sendNotif = async (user) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 
-		firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.catch((err) => {
-		});
+		firebase.messaging().sendToDevice(firebaseToken, payload, options);
 	}
 	else {
 		debug("invalid firebaseToken");

@@ -1,8 +1,10 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.text.Html;
 import android.util.Log;
+import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,34 +12,40 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
+import com.tagalong.tagalong.Activity.MessageActivity;
+import com.tagalong.tagalong.Activity.TripDisplayActivity;
+import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.R;
+import com.tagalong.tagalong.Communication.VolleyCallback;
+import com.tagalong.tagalong.Communication.VolleyCommunicator;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
 
-    private final String TAG = "Trip View Adapter";
+    private final String TAG = "TripViewAdapter";
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
+    private List<String> useralonglist;
+
+    private TimingLogger timingLogger;
 
     public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
+        timingLogger = new TimingLogger(TAG, "Trip View Adapter");
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -49,7 +57,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         private TextView arrivalPlace;
         private TextView departureTime;
         private TextView arrivalTime;
-        private TextView usersAlong;
+        private RecyclerView recyclerView;
 
 
         public ViewHolder(@NonNull View itemView) {
@@ -61,7 +69,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
             arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
             departureTime = itemView.findViewById(R.id.departureClock);
             arrivalTime = itemView.findViewById(R.id.arrivalClock);
-            usersAlong = itemView.findViewById(R.id.usersAlong);
+            recyclerView = itemView.findViewById(R.id.user_along_recycler_view);
         }
     }
 
@@ -76,19 +84,22 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         final Trip trip = tripList.get(position);
+        timingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-        StringBuilder userSB = new StringBuilder();
 
+        useralonglist = new ArrayList<>();
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            userSB.append(trip.getTaggedUsers()[i]).append(",\t");
+            useralonglist.add(trip.getTaggedUsers()[i]);
         }
-        String usersAlong = userSB.toString();
 
-        holder.departurePlace.setText("Departure Place: " + trip.getDeparturePlace());
-        holder.departureTime.setText("Departure Time: " + format.format(trip.getDepartureTime()));
-        holder.arrivalTime.setText("Arrival Time: " + format.format(trip.getArrivalTime()));
-        holder.arrivalPlace.setText("Arrival Place" + trip.getArrivalPlace());
-        holder.usersAlong.setText("UserAlong" + usersAlong);
+        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
+        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
+        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
+        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
+
+        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist, profile);
+        holder.recyclerView.setAdapter(userAlongAdapter);
+        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         holder.map.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -113,39 +124,36 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RequestQueue queue = Volley.newRequestQueue(context);
+
                 String url = context.getString(R.string.deleteTrip);
-                final Gson gson = new Gson();
-                final String tripJson = gson.toJson(trip);
-                JSONObject tripJsonObject;
-                try {
-                    tripJsonObject = new JSONObject((tripJson));
-                    Log.d(TAG, "profileJsonObject" + tripJsonObject);
-                    JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, tripJsonObject, new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(TAG, "Trip Deleted");
-                            tripList.remove(position);
-                            notifyItemRemoved(position);
-                            notifyItemRangeChanged(position, tripList.size());
-                        }
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("userID",profile.getUserID());
+                headers.put("tripID",trip.getTripID());
 
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            Log.d(TAG, "Error: Could delete Trips");
-                            Log.d(TAG, "Error: " + error.getMessage());
-                            Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
-                        }
-                    });
+                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+                VolleyCallback callback = new VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response){
+                        Log.d(TAG, "Trip Deleted");
+                        tripList.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, tripList.size());
+                    }
 
-                    queue.add(jsonObjectRequest);
+                    @Override
+                    public void onError(String result){
+                        Log.d(TAG, "Could not delete trips");
+                        Log.d(TAG, "Error: " + result);
+                        Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
 
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                    }
+                };
+                timingLogger.addSplit("Deleted a trip");
+                communicator.VolleyDelete(url,callback,headers);
             }
         });
+        timingLogger.addSplit("Done setting all trip cards");
+        timingLogger.dumpToLog();
     }
 
     @Override

@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.tagalong.tagalong.Activity.MainActivity;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -61,7 +63,7 @@ public class SignupTestII {
                                         0),
                                 1),
                         isDisplayed()));
-        appCompatEditText.perform(replaceText("fisher3"), closeSoftKeyboard());
+        appCompatEditText.perform(replaceText("fisher9"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText2 = onView(
                 allOf(withId(R.id.password),
@@ -91,10 +93,10 @@ public class SignupTestII {
                                         0),
                                 4),
                         isDisplayed()));
-        appCompatEditText4.perform(replaceText("fisher3@xu.com"), closeSoftKeyboard());
+        appCompatEditText4.perform(replaceText("fisher9@xu.com"), closeSoftKeyboard());
 
         ViewInteraction appCompatEditText5 = onView(
-                allOf(withId(R.id.Email), withText("fisher3@xu.com"),
+                allOf(withId(R.id.Email), withText("fisher9@xu.com"),
                         childAtPosition(
                                 childAtPosition(
                                         withClassName(is("androidx.constraintlayout.widget.ConstraintLayout")),

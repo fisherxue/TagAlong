@@ -44,7 +44,15 @@ public class DataParser {
 
         try {
             jsonObject = new JSONObject(jsonData);
-            jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONArray("steps");
+            for(int i = 0; i < jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").length(); i++) {
+                if (i == 0) {
+                    jsonArray = jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONArray("steps");
+                } else {
+                    for (int j = 0; j < jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONArray("steps").length(); j++) {
+                        jsonArray.put(jsonObject.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONArray("steps").getJSONObject(j));
+                    }
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

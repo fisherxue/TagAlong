@@ -31,12 +31,6 @@ const sendChatNotif = async (user, message, sentby, roomID) => {
 		};
 
 		firebase.messaging().sendToDevice(firebaseToken, payload, options);
-		// .then((res) => {
-		// 	debug(res.results);
-		// })
-		// .catch((err) => {
-		// 	debug(err);
-		// });
 	} else {
 		debug("invalid firebaseToken");
 	}

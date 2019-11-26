@@ -31,6 +31,9 @@ const sendNotif = async (user) => {
 			notification: {
 				title: "Trip Accepted",
 				body: "You have been matched with a driver and other riders for the requested trip",
+			}, 
+			data: {
+				type: "Trip"
 			}
 		};
 	
@@ -108,6 +111,8 @@ const handleAcceptTrip = async (req, res) => {
 		riderTrip.isFulfilled = true;
 		riderTrip.taggedUsers.push(driverTrip.username);
 		riderTrip.save();
+
+		sendNotif(riderUser);
 
 		addUsertoChatRoom(riderUser.username, driverTrip.chatroomID);
 		debug("added ", riderUser.username, "to chatroom", driverTrip.chatroomID);
