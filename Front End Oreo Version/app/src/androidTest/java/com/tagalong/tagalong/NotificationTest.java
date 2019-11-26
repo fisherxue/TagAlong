@@ -5,6 +5,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
+import com.tagalong.tagalong.Activity.MainActivity;
+
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -16,6 +18,8 @@ import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.pressBack;
@@ -69,6 +73,12 @@ public class NotificationTest {
                         isDisplayed()));
         appCompatButton.perform(click());
 
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.chat), withText("chat"),
                         childAtPosition(
@@ -100,8 +110,6 @@ public class NotificationTest {
                                 1),
                         isDisplayed()));
         appCompatImageButton.perform(click());
-
-        pressBack();
 
         pressBack();
 

@@ -1,12 +1,18 @@
-package com.tagalong.tagalong;
+package com.tagalong.tagalong.Models;
 
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Profile implements Serializable {
 
     public static final int minAgeDriver = 19;
     public static final int minAgeRider = 15;
     public static final int maxAge = 100;
+    public static final int minCarCapacity = 1;
+    public static final int maxCarCapacity = 10;
 
     private String userID;
     private String username;
@@ -15,10 +21,10 @@ public class Profile implements Serializable {
     private String firstName;
     private String lastName;
     private String gender;
-    private String joinedDate;
     private String fbToken;
     private Boolean isDriver;
     private int age;
+    private Date joinedDate;
     private int carCapacity;
     private int[] interests;
 
@@ -30,12 +36,15 @@ public class Profile implements Serializable {
         this.username = "Not Set";
         this.password = "Not Set";
         this.email = "Not Set";
-        this.joinedDate = "Not Set";
+        this.joinedDate = new Date();
         this.gender = "Not Set";
-        this.isDriver = false;
+        this.isDriver = true;
         this.age = 0;
         this.carCapacity = 0;
         this.interests = new int[5];
+        for (int i = 0; i < interests.length; i++){
+            interests[i] = 2;
+        }
     }
 
 
@@ -45,7 +54,8 @@ public class Profile implements Serializable {
     }
 
     public String getJoinedDate() {
-        return joinedDate;
+        DateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY, hh:mm:ss");
+        return dateFormat.format(joinedDate);
     }
 
     public String getFirstName() {
@@ -64,7 +74,7 @@ public class Profile implements Serializable {
         return lastName;
     }
 
-    public String getUserName() {
+    public String getUsername() {
         return username;
     }
 
@@ -109,8 +119,8 @@ public class Profile implements Serializable {
         this.lastName = lastName;
     }
 
-    public void setUserName(String userName) {
-        this.username = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public void setPassword(String password) {
@@ -138,7 +148,12 @@ public class Profile implements Serializable {
     }
 
     public void setJoinedDate(String joinedDate) {
-        this.joinedDate = joinedDate;
+        try {
+            this.joinedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+                    .parse(joinedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setFbToken(String fbToken) {

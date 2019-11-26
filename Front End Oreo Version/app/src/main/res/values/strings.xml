@@ -4,13 +4,18 @@
     <string name="fb_login_protocol_scheme">fb380658912814380</string>
     <string name="default_notification_channel_id">fcm_event_channel</string>
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyBkJOd7BbpK9xtuNfBmq6JmzH5CHiO8Cz8</string>
-
-    <string name="register">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/register</string>
-    <string name="updateProfile">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/updateProfile</string>
-    <string name="login">http://ec2-50-17-82-63.compute-1.amazonaws.com/users/login</string>
-    <string name="getTripList">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/myTrips</string>
-    <string name="getChatList">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/getMessages</string>
-    <string name="sendMessage">http://ec2-50-17-82-63.compute-1.amazonaws.com/chat/sendMessage</string>
-    <string name="deleteTrip">http://ec2-50-17-82-63.compute-1.amazonaws.com/trips/delTrip</string>
+    <string name="domain">http://ec2-54-91-105-39.compute-1.amazonaws.com/</string>
+    <string name="register">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/register</string>
+    <string name="updateProfile">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/updateProfile</string>
+    <string name="login">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/login</string>
+    <string name="getTripList">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/myTrips</string>
+    <string name="getChatList">http://ec2-54-91-105-39.compute-1.amazonaws.com/chat/getMessages</string>
+    <string name="sendMessage">http://ec2-54-91-105-39.compute-1.amazonaws.com/chat/sendMessage</string>
+    <string name="createTrip">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/newTrip</string>
+    <string name="deleteTrip">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/delTrip</string>
+    <string name="acceptTrip">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/acceptTrip</string>
+    <string name="getUserAlongProfile">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/getProfile</string>
+    <string name="getRecommendedTrips">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/getRecommendedTrips</string>
+    <string name="google_directions_key">AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ</string>
     <string name="title_activity_trip_display">Map</string>
 </resources>
