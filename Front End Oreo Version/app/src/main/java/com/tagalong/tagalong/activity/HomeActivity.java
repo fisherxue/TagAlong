@@ -236,6 +236,7 @@ public class HomeActivity extends AppCompatActivity {
             profileJSON = new JSONObject(contents);
             System.out.println(profileJSON);
             this.userProfile = new Profile();
+            userProfile.setCarCapacity(profileJSON.getInt("carCapacity"));
             userProfile.setUserID(profileJSON.getString("userID"));
             userProfile.setUsername(profileJSON.getString("username"));
             userProfile.setFirstName(profileJSON.getString("firstName"));

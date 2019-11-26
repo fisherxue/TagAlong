@@ -390,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
             profile.setGender(response.getString("gender"));
             profile.setEmail(response.getString("email"));
             profile.setDriver(response.getBoolean("isDriver"));
+            profile.setCarCapacity(response.getInt("carCapacity"));
             profile.setJoinedDate(response.getString("joinedDate"));
 
             JSONArray jsonArray = response.getJSONArray("interests");
