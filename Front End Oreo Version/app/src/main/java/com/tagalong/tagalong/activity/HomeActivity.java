@@ -53,6 +53,7 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         userProfile = (Profile) getIntent().getSerializableExtra("profile");
+        System.out.println("Home on create Date: " + userProfile.getJoinedDate());
         if (userProfile == null) {
             loadProfile();
         }
@@ -251,7 +252,7 @@ public class HomeActivity extends AppCompatActivity {
                 interests[i] = jsonArray.getInt(i);
             }
             userProfile.setInterests(interests);
-
+            System.out.println("HomeActivity: " + userProfile.getJoinedDate());
             FirebaseCallback firebaseCallback = new FirebaseCallback() {
                 @Override
                 public void onSuccess(@NonNull Task<InstanceIdResult> task) {

@@ -36,7 +36,6 @@ public class Profile implements Serializable {
         this.username = "Not Set";
         this.password = "Not Set";
         this.email = "Not Set";
-        this.joinedDate = "Not Set";
         this.gender = "Not Set";
         this.isDriver = true;
         this.age = 0;
@@ -45,6 +44,7 @@ public class Profile implements Serializable {
         for (int i = 0; i < interests.length; i++){
             interests[i] = 2;
         }
+        this.joinedDate = "Not Set";
     }
 
 

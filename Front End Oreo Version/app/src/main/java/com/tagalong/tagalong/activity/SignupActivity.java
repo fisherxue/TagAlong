@@ -185,7 +185,7 @@ public class SignupActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(TAG, "Error getting joinedDate from received profile");
         }
-
+        System.out.println("Sighup Date: " + receivedProfile.getJoinedDate());
         Log.d(TAG,"Successfully retrieved login profile information");
         Intent intent = new Intent(context, UpdateProfileActivity.class);
         intent.putExtra("profile", receivedProfile);

@@ -34,133 +34,133 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
 
-    private final String TAG = "TripViewAdapter";
-    private Context context;
-    private List<Trip> tripList;
-    private Profile profile;
+  private final String TAG = "TripViewAdapter";
+  private Context context;
+  private List<Trip> tripList;
+  private Profile profile;
 
-    private TripListTimmingLogger tripListTimmingLogger;
+  private TripListTimmingLogger tripListTimmingLogger;
 
-    public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
-        this.context = context;
-        this.tripList = tripList;
-        this.profile = profile;
-        tripListTimmingLogger = TripListTimmingLogger.getInstance();
+  public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
+    this.context = context;
+    this.tripList = tripList;
+    this.profile = profile;
+    tripListTimmingLogger = TripListTimmingLogger.getInstance();
+  }
+
+  public class ViewHolder extends RecyclerView.ViewHolder{
+
+    private Button map;
+    private Button chat;
+    private Button delete;
+    private TextView departurePlace;
+    private TextView arrivalPlace;
+    private TextView departureTime;
+    private TextView arrivalTime;
+    private RecyclerView recyclerView;
+
+
+    public ViewHolder(@NonNull View itemView) {
+      super(itemView);
+      map = itemView.findViewById(R.id.map);
+      chat = itemView.findViewById(R.id.chat);
+      delete = itemView.findViewById(R.id.delete);
+      departurePlace = itemView.findViewById(R.id.departurePlace);
+      arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
+      departureTime = itemView.findViewById(R.id.departureClock);
+      arrivalTime = itemView.findViewById(R.id.arrivalClock);
+      recyclerView = itemView.findViewById(R.id.user_along_recycler_view);
+    }
+  }
+
+  @NonNull
+  @Override
+  public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
+    ViewHolder viewHolder = new ViewHolder(view);
+    tripListTimmingLogger.addSplit("Method:onCreateViewHolder() - new view holder created");
+    return viewHolder;
+  }
+
+  @Override
+  public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+    final Trip trip = tripList.get(position);
+    tripListTimmingLogger.addSplit("Starting to setup trip cards");
+    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
+    List<String> useralonglist;
+
+    useralonglist = new ArrayList<>();
+    for (int i = 0; i < trip.getTaggedUsers().length; i++) {
+      useralonglist.add(trip.getTaggedUsers()[i]);
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
+    holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
+    holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
+    holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
-        private Button map;
-        private Button chat;
-        private Button delete;
-        private TextView departurePlace;
-        private TextView arrivalPlace;
-        private TextView departureTime;
-        private TextView arrivalTime;
-        private RecyclerView recyclerView;
+    UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
+    holder.recyclerView.setAdapter(userAlongAdapter);
+    holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
+    holder.map.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(context, TripDisplayActivity.class);
+        intent.putExtra("tripRoute", trip.getTripRoute().toString());
+        context.startActivity(intent);
+      }
+    });
 
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            map = itemView.findViewById(R.id.map);
-            chat = itemView.findViewById(R.id.chat);
-            delete = itemView.findViewById(R.id.delete);
-            departurePlace = itemView.findViewById(R.id.departurePlace);
-            arrivalPlace = itemView.findViewById(R.id.arrivalPlace);
-            departureTime = itemView.findViewById(R.id.departureClock);
-            arrivalTime = itemView.findViewById(R.id.arrivalClock);
-            recyclerView = itemView.findViewById(R.id.user_along_recycler_view);
-        }
-    }
+    holder.chat.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        Intent intent = new Intent(context, MessageActivity.class);
+        intent.putExtra("profile", profile);
+        intent.putExtra("ID", trip.getRoomID());
+        intent.putExtra("users", trip.getTaggedUsers());
+        context.startActivity(intent);
+      }
+    });
 
-    @NonNull
-    @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_trip, parent, false);
-        ViewHolder viewHolder = new ViewHolder(view);
-        tripListTimmingLogger.addSplit("Method:onCreateViewHolder() - new view holder created");
-        return viewHolder;
-    }
+    holder.delete.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
 
-    @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Trip trip = tripList.get(position);
-        tripListTimmingLogger.addSplit("Starting to setup trip cards");
-        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
-        List<String> useralonglist;
+        String url = context.getString(R.string.deleteTrip);
+        HashMap<String, String> headers = new HashMap<String, String>();
+        headers.put("userID",profile.getUserID());
+        headers.put("tripID",trip.getTripID());
 
-        useralonglist = new ArrayList<>();
-        for (int i = 0; i < trip.getTaggedUsers().length; i++) {
-            useralonglist.add(trip.getTaggedUsers()[i]);
-        }
+        VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+        VolleyCallback callback = new VolleyCallback() {
+          @Override
+          public void onSuccess(JSONObject response){
+            Log.d(TAG, "Trip Deleted");
+            tripList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, tripList.size());
+          }
 
-        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
-        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
-        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
-        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
+          @Override
+          public void onError(String result){
+            Log.d(TAG, "Could not delete trips");
+            Log.d(TAG, "Error: " + result);
+            Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
 
-        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
-        holder.recyclerView.setAdapter(userAlongAdapter);
-        holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
+          }
+        };
+        tripListTimmingLogger.addSplit("Deleted a trip");
+        communicator.volleyDelete(url,callback,headers);
+      }
+    });
+    tripListTimmingLogger.addSplit("Done setting all trip cards");
+    tripListTimmingLogger.dumpToLog();
+    tripListTimmingLogger.reset();
+  }
 
-        holder.map.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, TripDisplayActivity.class);
-                intent.putExtra("tripRoute", trip.getTripRoute().toString());
-                context.startActivity(intent);
-            }
-        });
-
-        holder.chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, MessageActivity.class);
-                intent.putExtra("profile", profile);
-                intent.putExtra("ID", trip.getRoomID());
-                intent.putExtra("users", trip.getTaggedUsers());
-                context.startActivity(intent);
-            }
-        });
-
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                String url = context.getString(R.string.deleteTrip);
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("userID",profile.getUserID());
-                headers.put("tripID",trip.getTripID());
-
-                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
-                VolleyCallback callback = new VolleyCallback() {
-                    @Override
-                    public void onSuccess(JSONObject response){
-                        Log.d(TAG, "Trip Deleted");
-                        tripList.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, tripList.size());
-                    }
-
-                    @Override
-                    public void onError(String result){
-                        Log.d(TAG, "Could not delete trips");
-                        Log.d(TAG, "Error: " + result);
-                        Toast.makeText(context, "We encountered some error,\nPlease try to delete again page", Toast.LENGTH_LONG).show();
-
-                    }
-                };
-                tripListTimmingLogger.addSplit("Deleted a trip");
-                communicator.volleyDelete(url,callback,headers);
-            }
-        });
-        tripListTimmingLogger.addSplit("Done setting all trip cards");
-        tripListTimmingLogger.dumpToLog();
-        tripListTimmingLogger.reset();
-    }
-
-    @Override
-    public int getItemCount() {
-        return tripList.size();
-    }
+  @Override
+  public int getItemCount() {
+    return tripList.size();
+  }
 }

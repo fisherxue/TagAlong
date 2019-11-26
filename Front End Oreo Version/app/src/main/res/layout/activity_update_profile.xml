@@ -185,6 +185,29 @@
                 android:progress="2" />
 
             <TextView
+                android:id="@+id/chatting"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="   To what extent do you enjoy talking?" />
+
+            <SeekBar
+                android:id="@+id/seekChatting"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:max="4"
+                android:progress="2" />
+
+            <TextView
                 android:id="@+id/speed"
                 style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
                 android:layout_width="match_parent"
@@ -207,28 +230,6 @@
                 android:max="4"
                 android:progress="2" />
 
-            <TextView
-                android:id="@+id/chatting"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="   To what extent do you enjoy talking?" />
-
-            <SeekBar
-                android:id="@+id/seekChatting"
-                style="@style/Widget.AppCompat.SeekBar.Discrete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:max="4"
-                android:progress="2" />
 
             <TextView
                 android:id="@+id/Fragrance"
