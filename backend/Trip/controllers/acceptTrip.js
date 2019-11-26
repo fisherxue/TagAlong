@@ -8,20 +8,15 @@ const firebase = require("firebase-admin");
 
 
 const addUsertoChatRoom = (username, roomID) => {
-	if(mongoose.Types.ObjectId.isValid(roomID)) {
-		Chat.findById(roomID, (err, chat) => {
-			if (chat) {
-				chat.users.push(username);
-				chat.save();
-			}
-			else {
-				debug("chat not found");
-			}
-		});
-	}
-	else {
-		debug("invalid roomID");
-	}
+	Chat.findById(roomID, (err, chat) => {
+		if (chat) {
+			chat.users.push(username);
+			chat.save();
+		}
+		else {
+			debug("chat not found");
+		}
+	});
 };
 
 const sendNotif = async (user) => {
@@ -42,9 +37,7 @@ const sendNotif = async (user) => {
 			timeToLive: 60 * 60 * 24, // 1 day
 		};
 
-		firebase.messaging().sendToDevice(firebaseToken, payload, options)
-		.catch((err) => {
-		});
+		firebase.messaging().sendToDevice(firebaseToken, payload, options);
 	}
 	else {
 		debug("invalid firebaseToken");
@@ -64,8 +57,8 @@ const handleAcceptTrip = async (req, res) => {
 	debug("usertripID", usertripID);
 
 	if (!mongoose.Types.ObjectId.isValid(userID) | !mongoose.Types.ObjectId.isValid(drivertripID) | !mongoose.Types.ObjectId.isValid(usertripID)) {
-		debug("Invalid user ID or roomID");
-		return res.status(400).send("Invalid userID or roomID");
+		debug("Invalid user ID or drivertripID or usertripID");
+		return res.status(400).send("Invalid user ID or drivertripID or usertripID");
 	}
 
 	const user = await User.findById(userID);

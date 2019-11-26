@@ -60,13 +60,13 @@ const handleDelTrip = async (req, res) => {
 	}
 
 	if (trip.isDriverTrip) {
-		if (trip.taggedTrips.length != 0) {
+		if (trip.taggedTrips.length !== 0) {
 			for (const ridertrip of trip.taggedTrips) {
 				const foundridertrip = await TripStore.findByIdAndUpdate(ridertrip._id, {
 					isFulfilled: false,
 					taggedUsers: [],
-					driverTripID: undefined,
-					chatroomID: undefined
+					driverTripID: null,
+					chatroomID: null
 				}, {new: true});
 				const rideruser = await User.findById(foundridertrip.userID);
 				sendChatNotif(rideruser, `Driver ${user.username} has deleted his trip`);
