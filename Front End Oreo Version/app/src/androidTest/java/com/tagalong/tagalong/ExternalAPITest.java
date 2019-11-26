@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.tagalong.tagalong.Activity.MainActivity;
+import com.tagalong.tagalong.activity.MainActivity;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;

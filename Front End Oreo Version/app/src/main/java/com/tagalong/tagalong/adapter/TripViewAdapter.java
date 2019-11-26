@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Adapter;
+package com.tagalong.tagalong.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,13 +12,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.tagalong.tagalong.Activity.MessageActivity;
-import com.tagalong.tagalong.Activity.TripDisplayActivity;
-import com.tagalong.tagalong.Models.Profile;
-import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.activity.MessageActivity;
+import com.tagalong.tagalong.activity.TripDisplayActivity;
+import com.tagalong.tagalong.models.Profile;
+import com.tagalong.tagalong.models.Trip;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
 
 import org.json.JSONObject;
 
@@ -37,7 +37,6 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
-    private List<String> useralonglist;
 
     private TimingLogger timingLogger;
 
@@ -86,6 +85,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         final Trip trip = tripList.get(position);
         timingLogger.addSplit("Starting to setup trip cards");
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
+        List<String> useralonglist;
 
         useralonglist = new ArrayList<>();
         for (int i = 0; i < trip.getTaggedUsers().length; i++) {
@@ -97,7 +97,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
         holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
-        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist, profile);
+        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
         holder.recyclerView.setAdapter(userAlongAdapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 
@@ -149,7 +149,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
                     }
                 };
                 timingLogger.addSplit("Deleted a trip");
-                communicator.VolleyDelete(url,callback,headers);
+                communicator.volleyDelete(url,callback,headers);
             }
         });
         timingLogger.addSplit("Done setting all trip cards");

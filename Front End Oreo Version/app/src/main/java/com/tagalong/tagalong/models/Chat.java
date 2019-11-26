@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Models;
+package com.tagalong.tagalong.models;
 
 import java.util.ArrayList;
 import java.util.List;
