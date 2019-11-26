@@ -141,7 +141,7 @@ function cutTripsByDistance(driverTrip, riderTrips) {
  * @param Trip riderTrips: array of riderTrips we add to driver Trip
  * @callback JSON triproute: Google Maps result for the trip
  */
-function modifyTrip(driverTrip, riderTrips, callback) {
+async function modifyTrip(driverTrip, riderTrips, callback) {
 	if (riderTrips.length < 1 || typeof riderTrips === "undefined") {
 		callback(driverTrip.tripRoute);
 		return;
@@ -149,6 +149,12 @@ function modifyTrip(driverTrip, riderTrips, callback) {
 	let waypoints = [];
 	debug("modify trip drivers", driverTrip);
 	debug("modify trip riders", riderTrips);
+
+	for (const trip in driverTrip.taggedTrips) {
+		let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
+		riderTrips.push(riderTrip);
+	}
+
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
