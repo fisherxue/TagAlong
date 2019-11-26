@@ -24,9 +24,9 @@ import org.json.JSONObject;
 public class TripDisplayActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    String trip;
-    LatLng origin;
-    LatLng destination;
+    private String trip;
+    private LatLng origin;
+    private LatLng destination;
     private final String TAG = "TripDisplayActivity";
 
     @Override

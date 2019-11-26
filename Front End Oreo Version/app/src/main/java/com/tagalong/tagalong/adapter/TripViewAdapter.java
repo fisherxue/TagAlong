@@ -97,7 +97,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
         holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
-        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist, profile);
+        UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
         holder.recyclerView.setAdapter(userAlongAdapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
 

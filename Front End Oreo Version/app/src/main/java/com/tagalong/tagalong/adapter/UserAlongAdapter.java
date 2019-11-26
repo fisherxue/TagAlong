@@ -32,12 +32,10 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
     private final String TAG = "UserAlong Adapter";
     private Context context;
     private List<String> usernames;
-    private Profile profile;
 
-    public UserAlongAdapter(Context context, List<String> usernames, Profile profile) {
+    public UserAlongAdapter(Context context, List<String> usernames) {
         this.context = context;
         this.usernames = usernames;
-        this.profile = profile;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
