@@ -25,11 +25,9 @@ import android.os.Build;
 import android.util.Log;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.tagalong.tagalong.Activity.HomeActivity;
-import com.tagalong.tagalong.Activity.MainActivity;
-import com.tagalong.tagalong.Activity.MessageActivity;
+import com.tagalong.tagalong.activity.HomeActivity;
+import com.tagalong.tagalong.activity.MessageActivity;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 

@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Communication;
+package com.tagalong.tagalong.communication;
 
 import org.json.JSONObject;
 

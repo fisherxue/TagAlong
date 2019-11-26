@@ -4,39 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-//import java.util.HashMap;
 
 public class DataParser {
-
-    /*
-    private HashMap<String,String> getPlace(JSONObject googlePlaceJson){
-        HashMap<String,String> googlePlaceMap = new HashMap<>();
-        String placeName = "-NA-";
-        String latitude = "";
-        String logitude = "";
-        String reference = "";
-        try {
-            if (!googlePlaceJson.isNull("name")) {
-                placeName = googlePlaceJson.getString("name");
-            }
-            latitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lat");
-            logitude = googlePlaceJson.getJSONObject("geometry").getJSONObject("location").getString("lng");
-            reference = googlePlaceJson.getString("reference");
-
-            googlePlaceMap.put("place_name", placeName);
-            googlePlaceMap.put("lat", latitude);
-            googlePlaceMap.put("lng", logitude);
-            googlePlaceMap.put("reference", reference );
-        }
-        catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return googlePlaceMap;
-    }
-
-     */
-
 
     public String[] parseDirections(String jsonData){
         JSONArray jsonArray = null;

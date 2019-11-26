@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,14 +26,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.facebook.login.LoginManager;
-import com.tagalong.tagalong.Communication.FirebaseCallback;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
-import com.tagalong.tagalong.Fragment.MyTripFragment;
-import com.tagalong.tagalong.Models.Profile;
-import com.tagalong.tagalong.Fragment.ProposedTripFragment;
+import com.google.gson.JsonObject;
+import com.tagalong.tagalong.communication.FirebaseCallback;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
+import com.tagalong.tagalong.fragment.MyTripFragment;
+import com.tagalong.tagalong.models.Conversation;
+import com.tagalong.tagalong.models.Profile;
+import com.tagalong.tagalong.fragment.ProposedTripFragment;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Fragment.SetTripFragment;
+import com.tagalong.tagalong.fragment.SetTripFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,11 +94,45 @@ public class HomeActivity extends AppCompatActivity {
             case R.id.logout :
                 Log.d(TAG,"Logging out of account.");
                 LoginManager.getInstance().logOut();
-                removeSavedFiles();
-                Intent intent2 = new Intent(context, MainActivity.class);
-                startActivity(intent2);
-                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                HomeActivity.this.finish();
+
+                String url = getString(R.string.logout);
+
+                JsonObject logout = new JsonObject();
+                logout.addProperty("userID",userProfile.getUserID());
+                final String logoutJson = logout.toString();
+                JSONObject logoutJsonObject;
+
+                VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
+                VolleyCallback callback = new VolleyCallback() {
+                    @Override
+                    public void onSuccess(JSONObject response){
+                        Log.d(TAG, "Logout Successful");
+                        removeSavedFiles();
+                        Intent intent2 = new Intent(context, MainActivity.class);
+                        startActivity(intent2);
+                        intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        HomeActivity.this.finish();
+                    }
+
+                    @Override
+                    public void onError(String result){
+                        Log.d(TAG, "Could not logout");
+                        Log.d(TAG, "Error: " + result);
+                        Toast.makeText(context, "We encountered some error,\nPlease logout again", Toast.LENGTH_LONG).show();
+                    }
+
+                };
+                try {
+                    logoutJsonObject = new JSONObject(logoutJson);
+                    communicator.volleyPost(url,logoutJsonObject,callback);
+                } catch (JSONException e) {
+                    Log.d(TAG, "Error making logout JSONObject");
+                    Log.d(TAG, "JSONException: " + e.toString());
+                    e.printStackTrace();
+                }
+
+
+
                 break;
             default :
                 break;
@@ -272,7 +308,7 @@ public class HomeActivity extends AppCompatActivity {
 
         try {
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPut(url,profileJsonObject,callback);
+            communicator.volleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making login JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());

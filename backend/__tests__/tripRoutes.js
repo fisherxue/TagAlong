@@ -663,9 +663,78 @@ describe('testing trips', () => {
       done();
     })
 
+    it('driver gets recommended trips', async (done) => {
+      const driver = new User(taggeddriver);
+      await driver.save();
 
+      const drivertrip = new TripStore(taggeddrivertrip1);
+      await drivertrip.save();
 
+      const res = await request.get("/trips/getRecommendedTrips")
+        .set({
+          userid: driver._id
+        })
+        .expect(200);
 
+      expect(res.body.trips[0].riderTrips).toHaveLength(3);
+      expect(res.body.trips[0].drivertrip.tripRoute).toEqual(drivertrip.tripRoute);
+      expect(res.body.trips).toHaveLength(1);
+      done();
+    })
+
+    it('attempt to get recommended trip with invalid userID', async (done) => {
+      const res = await request.get("/trips/getRecommendedTrips")
+        .set({
+          userid: "12341234123"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("Invalid userID");
+
+      done();
+    })
+
+    it('attempt to get recommended trip with non existent user', async (done) => {
+      const res = await request.get("/trips/getRecommendedTrips")
+        .set({
+          userid: "5dd36a75b458db53e031818e"
+        })
+        .expect(400);
+
+      expect(res.text).toBe("User not found with corresponding userID");
+
+      done();
+    })
+
+    it('attempt to get recommended trip for a driver that has no trips', async (done) => {
+      const driver = new User(taggeddriver);
+      await driver.save();
+
+      const res = await request.get("/trips/getRecommendedTrips")
+        .set({
+          userid: driver._id
+        })
+        .expect(400);
+
+      expect(res.text).toBe("Driver has no trips");
+
+      done();
+    })
+
+    it('attempt to get recommended trip with a rider not a driver', async (done) => {
+      const rider = new User(taggedrider);
+      await rider.save();
+
+      const res = await request.get("/trips/getRecommendedTrips")
+        .set({
+          userid: rider._id
+        })
+        .expect(400);
+
+      expect(res.text).toBe("User is not a driver");
+
+      done();
+    })
 
 
 

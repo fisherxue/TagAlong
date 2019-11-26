@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,10 +14,10 @@ import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
-import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -217,13 +217,14 @@ public class UpdateProfileActivity extends AppCompatActivity {
                             Integer.parseInt(carCapacityEditText.getText().toString()) <= Profile.maxCarCapacity &&
                             Integer.parseInt(carCapacityEditText.getText().toString()) >= Profile.minCarCapacity ){
                         newUserProfile.setCarCapacity(Integer.parseInt(carCapacityEditText.getText().toString()));
+                        Log.d(TAG, carCapacityEditText.getText().toString());
                         Log.d(TAG,"Car capacity and driver set");
                     } else if (carCapacityEditText.getText().toString().isEmpty()){
                         Toast.makeText(context, "Please enter car capacity", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not set");
                         allSet = false;
                     } else {
-                        Toast.makeText(context, "Please enter car capacity between 0 and 10", Toast.LENGTH_LONG).show();
+                        Toast.makeText(context, "Please enter car capacity between 1 and 10, inclusive", Toast.LENGTH_LONG).show();
                         Log.d(TAG,"Car capacity not in valid range");
                         allSet = false;
                     }
@@ -291,7 +292,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
         try {
             Log.d(TAG,"Sending user profile information");
             profileJsonObject = new JSONObject((profileJson));
-            communicator.VolleyPut(url,profileJsonObject,callback);
+            communicator.volleyPut(url,profileJsonObject,callback);
         } catch (JSONException e) {
             Log.d(TAG, "Error making update profile JSONObject");
             Log.d(TAG, "JSONException: " + e.toString());
@@ -321,6 +322,9 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 interests[i] = jsonArray.getInt(i);
             }
             received_profile.setInterests(interests);
+            if (received_profile.getDriver()) {
+                received_profile.setCarCapacity(response.getInt("carCapacity"));
+            }
         } catch (JSONException e) {
             Log.d(TAG,"Error while retrieving profile");
             Log.d(TAG,"Error: " + e.toString());

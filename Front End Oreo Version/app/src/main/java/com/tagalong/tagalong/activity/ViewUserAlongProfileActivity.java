@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.tagalong.tagalong.Models.Profile;
+import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
 
 public class ViewUserAlongProfileActivity extends AppCompatActivity {
@@ -20,7 +20,6 @@ public class ViewUserAlongProfileActivity extends AppCompatActivity {
     private TextView carCap;
     private TextView registeredAs;
     private TextView gender;
-    private Context context;
 
     private Profile userProfile;
 
@@ -28,7 +27,6 @@ public class ViewUserAlongProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_useralong_profile);
-        context = getApplicationContext();
         userProfile = (Profile) getIntent().getSerializableExtra("userAlongProfile");
 
         name = (TextView) findViewById(R.id.userAlongName);

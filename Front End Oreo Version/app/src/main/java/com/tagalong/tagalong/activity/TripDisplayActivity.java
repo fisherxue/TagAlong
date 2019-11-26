@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Activity;
+package com.tagalong.tagalong.activity;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -24,9 +24,9 @@ import org.json.JSONObject;
 public class TripDisplayActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    String trip;
-    LatLng origin;
-    LatLng destination;
+    private String trip;
+    private LatLng origin;
+    private LatLng destination;
     private final String TAG = "TripDisplayActivity";
 
     @Override
@@ -107,7 +107,6 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
                     destination = new LatLng(destLat, destLng);
                 }
                 System.out.println(i);
-                //Log.d(TAG, destination.toString());
             }
 
         } catch (JSONException e) {
