@@ -16,6 +16,7 @@
     <string name="acceptTrip">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/acceptTrip</string>
     <string name="getUserAlongProfile">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/getProfile</string>
     <string name="getRecommendedTrips">http://ec2-54-91-105-39.compute-1.amazonaws.com/trips/getRecommendedTrips</string>
+    <string name="logout">http://ec2-54-91-105-39.compute-1.amazonaws.com/users/logout</string>
     <string name="google_directions_key">AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ</string>
     <string name="title_activity_trip_display">Map</string>
 </resources>

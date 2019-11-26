@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 
-import com.tagalong.tagalong.Activity.MainActivity;
+import com.tagalong.tagalong.activity.MainActivity;
 
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.filters.LargeTest;

@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Communication;
+package com.tagalong.tagalong.communication;
 
 import android.content.Context;
 
@@ -32,7 +32,7 @@ public class VolleyCommunicator {
         return volleyCommunicator;
     }
 
-    public void VolleyGet(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
+    public void volleyGet(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -55,7 +55,7 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void VolleyPost(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
+    public void volleyPost(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -72,7 +72,7 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void VolleyPut(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
+    public void volleyPut(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -89,7 +89,7 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
-    public void VolleyDelete(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
+    public void volleyDelete(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

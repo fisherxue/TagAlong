@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Fragment;
+package com.tagalong.tagalong.fragment;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -11,14 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import com.tagalong.tagalong.Adapter.ListProposedTripAdapter;
-import com.tagalong.tagalong.Adapter.TripProposedRiderAdapter;
+import com.tagalong.tagalong.adapter.ListProposedTripAdapter;
+import com.tagalong.tagalong.adapter.TripProposedRiderAdapter;
 import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
-import com.tagalong.tagalong.Models.Profile;
-import com.tagalong.tagalong.Models.Trip;
+import com.tagalong.tagalong.models.Profile;
+import com.tagalong.tagalong.models.Trip;
 import com.tagalong.tagalong.R;
-import com.tagalong.tagalong.Communication.VolleyCallback;
-import com.tagalong.tagalong.Communication.VolleyCommunicator;
+import com.tagalong.tagalong.communication.VolleyCallback;
+import com.tagalong.tagalong.communication.VolleyCommunicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,8 +59,6 @@ public class ProposedTripFragment extends Fragment {
             initTripList(getString(R.string.getTripList), false);
         }
 
-        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
-                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -72,6 +70,9 @@ public class ProposedTripFragment extends Fragment {
                 }
             }
         };
+
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         return view;
     }
 
@@ -97,7 +98,7 @@ public class ProposedTripFragment extends Fragment {
 
             }
         };
-        communicator.VolleyGet(url,callback,headers);
+        communicator.volleyGet(url,callback,headers);
 
     }
     private void initTripView(Boolean isDriver){
@@ -141,5 +142,24 @@ public class ProposedTripFragment extends Fragment {
                 e.printStackTrace();
             }
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
+                new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
     }
 }

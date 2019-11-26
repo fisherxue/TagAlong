@@ -1,6 +1,6 @@
 package com.tagalong.tagalong;
 
-import com.tagalong.tagalong.Activity.MainActivity;
+import com.tagalong.tagalong.activity.MainActivity;
 
 import androidx.test.espresso.contrib.RecyclerViewActions;
 import androidx.test.espresso.matcher.ViewMatchers;

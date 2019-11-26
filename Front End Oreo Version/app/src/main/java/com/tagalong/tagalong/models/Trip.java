@@ -1,4 +1,4 @@
-package com.tagalong.tagalong.Models;
+package com.tagalong.tagalong.models;
 
 import com.google.android.gms.maps.model.LatLng;
 
@@ -50,9 +50,15 @@ public class Trip implements Serializable {
             this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
                     .parse(trip.getString("arrivalTime"));
 
-            Long duration = this.tripRoute.getJSONArray("routes").getJSONObject(0)
-                    .getJSONArray("legs").getJSONObject(0).getJSONObject("duration")
-                    .getLong("value");
+            Long duration = (long) 0;
+
+            for (int i = 0; i < this.tripRoute.getJSONArray("routes").getJSONObject(0)
+                    .getJSONArray("legs").length(); i++) {
+
+                duration += this.tripRoute.getJSONArray("routes").getJSONObject(0)
+                        .getJSONArray("legs").getJSONObject(i).getJSONObject("duration")
+                        .getLong("value");
+            }
 
             this.departureTime = (Date) arrivalTime.clone();
 
