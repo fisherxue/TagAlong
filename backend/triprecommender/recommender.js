@@ -272,7 +272,15 @@ async function getRiderTrips(driverTrip) {
 	riderTrips = cutTripsByTime(driverTrip, riderTrips);
 	riderTrips = cutTripsByBearing(driverTrip, riderTrips);
 	riderTrips = cutTripsByDistance(driverTrip, riderTrips);
-	return riderTrips;
+
+	let newRiderTrips = [];
+	driverRiders = driverTrip.taggedUsers;
+	for (const trip in riderTrips) {
+		if (!driverRiders.includes(riderTrips[trip].username)) {
+			newRiderTrips.push(riderTrips[trip]);
+		}
+	}
+	return newRiderTrips;
 }
 
 /*
