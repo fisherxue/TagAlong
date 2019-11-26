@@ -36,13 +36,13 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
-    private String tripID;
+    private Trip trip;
 
-    public TripProposedDriverAdapter(Context context, List<Trip> tripList, String tripID, Profile profile) {
+    public TripProposedDriverAdapter(Context context, List<Trip> tripList, Trip trip, Profile profile) {
         this.context = context;
         this.tripList = tripList;
         this.profile = profile;
-        this.tripID = tripID;
+        this.trip = trip;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder{
@@ -78,16 +78,16 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        final Trip trip = tripList.get(position);
+        final Trip riderTrip = tripList.get(position);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
         List<String> useralonglist;
         useralonglist = new ArrayList<>();
-        useralonglist.add(trip.getUsername());
+        useralonglist.add(riderTrip.getUsername());
 
-        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
-        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
-        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
-        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
+        holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + riderTrip.getDeparturePlace()));
+        holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(riderTrip.getDepartureTime())));
+        holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(riderTrip.getArrivalTime())));
+        holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + riderTrip.getArrivalPlace()));
 
         UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
         holder.recyclerView.setAdapter(userAlongAdapter);
@@ -97,7 +97,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, TripDisplayActivity.class);
-                intent.putExtra("tripRoute", trip.getTripRoute().toString());
+                intent.putExtra("tripRoute", riderTrip.getTripRoute().toString());
                 context.startActivity(intent);
             }
         });
@@ -107,11 +107,18 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
             public void onClick(View view) {
                 Log.d(TAG, "Accepting Trip");
                 String url = context.getString(R.string.acceptTrip);
+                for (int i = 0; i < trip.getTaggedUsers().length; i++) {
+                    System.out.println(trip.getTaggedUsers()[i]);
+                }
 
                 if (trip.getTaggedUsers().length < profile.getCarCapacity()) {
+                    System.out.println(profile.getCarCapacity());
+                    for (int i = 0; i < trip.getTaggedUsers().length; i++) {
+                        System.out.println(trip.getTaggedUsers()[i]);
+                    }
                     JsonObject acceptTrip = new JsonObject();
-                    acceptTrip.addProperty("usertripID", trip.getTripID());
-                    acceptTrip.addProperty("tripID", tripID);
+                    acceptTrip.addProperty("usertripID", riderTrip.getTripID());
+                    acceptTrip.addProperty("tripID", trip.getTripID());
                     acceptTrip.addProperty("userID", profile.getUserID());
                     JSONObject acceptTripJson;
 
@@ -149,6 +156,8 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         });
 
     }
+
+
 
     @Override
     public int getItemCount() {

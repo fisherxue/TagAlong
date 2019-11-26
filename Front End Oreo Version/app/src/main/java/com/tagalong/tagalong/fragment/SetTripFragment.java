@@ -301,6 +301,7 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
         String url = getString(R.string.createTrip);
         Gson gson = new Gson();
         String tripJson = gson.toJson(trip);
+        Log.d(TAG, tripJson);
         JSONObject tripJSONObject;
         VolleyCommunicator communicator = VolleyCommunicator.getInstance(context);
         VolleyCallback callback = new VolleyCallback() {
@@ -403,18 +404,6 @@ public class SetTripFragment extends FragmentActivity implements OnMapReadyCallb
 
         return googleDirectionsURL.toString();
     }
-
-/*
-    private String getDirectionsURL(double OriginLat, double originLng, double destLat, double destLng){
-        StringBuilder googleDirectionsURL = new StringBuilder("https://maps.googleapis.com/maps/api/directions/json?");
-        googleDirectionsURL.append("origin="+OriginLat+","+originLng);
-        googleDirectionsURL.append("&destination="+destLat+","+destLat);
-        googleDirectionsURL.append("&key="+"AIzaSyDkjse1zwmX7lw71D5wpKIP0xrbKLG1YIQ");
-
-        return googleDirectionsURL.toString();
-    }
-
- */
 
     @Override
     public void onLocationChanged(Location location) {

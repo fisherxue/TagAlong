@@ -315,6 +315,7 @@ public class UpdateProfileActivity extends AppCompatActivity {
             received_profile.setEmail(response.getString("email"));
             received_profile.setPassword(response.getString("password"));
             received_profile.setDriver(response.getBoolean("isDriver"));
+            received_profile.setCarCapacity(response.getInt("carCapacity"));
             received_profile.setJoinedDate(response.getString("joinedDate"));
             JSONArray jsonArray = response.getJSONArray("interests");
             int [] interests = new int[jsonArray.length()];
@@ -322,9 +323,6 @@ public class UpdateProfileActivity extends AppCompatActivity {
                 interests[i] = jsonArray.getInt(i);
             }
             received_profile.setInterests(interests);
-            if (received_profile.getDriver()) {
-                received_profile.setCarCapacity(response.getInt("carCapacity"));
-            }
         } catch (JSONException e) {
             Log.d(TAG,"Error while retrieving profile");
             Log.d(TAG,"Error: " + e.toString());

@@ -87,9 +87,7 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
 
         try {
             jsonTrip = new JSONObject(trip);
-            Log.d(TAG, trip);
             for(int i = 0; i < jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").length(); i++) {
-                System.out.println(jsonTrip.getJSONArray("routes").length());
                 if (i == 0) {
                     originLat = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lat");
                     originLng = jsonTrip.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(i).getJSONObject("start_location").getDouble("lng");

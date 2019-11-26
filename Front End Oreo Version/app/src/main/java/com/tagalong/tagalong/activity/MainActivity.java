@@ -122,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             profileJSON = new JSONObject(contents);
             final Profile profile = new Profile();
+            profile.setCarCapacity(profileJSON.getInt("carCapacity"));
             profile.setUserID(profileJSON.getString("userID"));
             profile.setUsername(profileJSON.getString("username"));
             profile.setFirstName(profileJSON.getString("firstName"));

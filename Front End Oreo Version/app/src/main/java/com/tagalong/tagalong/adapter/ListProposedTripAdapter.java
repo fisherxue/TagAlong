@@ -95,7 +95,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
                 holder.recyclerView.getContext(),LinearLayoutManager.VERTICAL,false
         );
         linearLayoutManager.setInitialPrefetchItemCount(tripList.size());
-        TripProposedDriverAdapter tripProposedDriverAdapter = new TripProposedDriverAdapter(context, tripList, trip.getTripID(), profile);
+        TripProposedDriverAdapter tripProposedDriverAdapter = new TripProposedDriverAdapter(context, tripList, trip, profile);
         holder.recyclerView.setLayoutManager(linearLayoutManager);
         holder.recyclerView.setAdapter(tripProposedDriverAdapter);
         holder.recyclerView.setRecycledViewPool(viewPool);
