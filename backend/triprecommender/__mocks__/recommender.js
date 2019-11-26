@@ -19,9 +19,6 @@ async function addMockTrips() {
     trip = await fsp.readFile("./__test__/trips/riderTrip3.json", "utf8");
     trip = JSON.parse(trip);
     riderTrips.push(trip);
-    trip = await fsp.readFile("./__test__/trips/riderTrip4.json", "utf8");
-    trip = JSON.parse(trip);
-    riderTrips.push(trip);
     return riderTrips;
 }
 

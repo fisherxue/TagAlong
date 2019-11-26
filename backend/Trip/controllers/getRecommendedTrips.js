@@ -17,42 +17,37 @@ const handleGetRecommendedTrips = async (req, res) => {
 		
 	}
 
-	try {
-		const user = await User.findById(userID);
-		if (!user) {
-			return res.status(400).send("User not found with corresponding userID");
-		}
-		if (user.isDriver === false) {
-			return res.status(400).send("User is not a driver");
-		}
-
-		const trips = await TripStore.find({ userID });
-		if (!trips) {
-			return res.status(400).send("Driver has no trips");
-		}
-		let recommendedTrips = [];
-
-		for (const trip of trips) {
-			let appendingobj = {
-				drivertrip: {},
-				riderTrips: []
-			};
-
-			appendingobj.drivertrip = trip;
-
-			const ridertrips = await tripRecommender.driverTripHandler(trip);
-			
-			appendingobj.riderTrips = ridertrips; 
-			debug("current appendending object", appendingobj);
-			recommendedTrips.push(appendingobj);
-		}
-		
-		debug("responing recommended trips", recommendedTrips);
-		res.json({trips: recommendedTrips});
-
-	} catch (err) {
-		debug(err);
+	const user = await User.findById(userID);
+	if (!user) {
+		return res.status(400).send("User not found with corresponding userID");
 	}
+	if (user.isDriver === false) {
+		return res.status(400).send("User is not a driver");
+	}
+
+	const trips = await TripStore.find({ userID });
+	if (trips.length === 0) {
+		return res.status(400).send("Driver has no trips");
+	}
+	let recommendedTrips = [];
+
+	for (const trip of trips) {
+		let appendingobj = {
+			drivertrip: {},
+			riderTrips: []
+		};
+
+		appendingobj.drivertrip = trip;
+
+		const ridertrips = await tripRecommender.driverTripHandler(trip);
+		
+		appendingobj.riderTrips = ridertrips; 
+		debug("current appendending object", appendingobj);
+		recommendedTrips.push(appendingobj);
+	}
+	
+	debug("responing recommended trips", recommendedTrips);
+	res.json({trips: recommendedTrips});
 
 };
 
