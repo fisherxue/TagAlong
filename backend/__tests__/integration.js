@@ -55,7 +55,6 @@ async function dropAllCollections() {
 afterAll(async () => {
     await dropAllCollections();
     await mongoose.connection.close();
-    setTimeout(() => process.exit(), 1000); // firebase has an issue where it does not exit
 })
 
 describe('integration tests', () => {
