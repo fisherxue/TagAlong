@@ -318,7 +318,7 @@ function tripHandler(trip, callback) {
 		destination: endPoint
 	};
 	getDirections(req, function(err, res) {
-		callback(res.json);
+		callback(res.json, err);
 	});
 }
 

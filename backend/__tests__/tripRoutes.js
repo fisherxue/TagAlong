@@ -15,7 +15,6 @@ const taggeddriver = require("./sampletrips/driver_tagged_user");
 
 jest.mock("../triprecommender/recommender.js");
 
-
 const databaseName = 'triproutestest';
 
 beforeAll(async () => {
@@ -736,6 +735,45 @@ describe('testing trips', () => {
       done();
     })
 
+    it('should fail on invalid trip', async (done) => {
+      const user1 = new User({
+          username: "chatdemouser13",
+          email: "chatdemouser13@demo.com",
+          password: "demodemodemo",
+          fbToken: "examplefbToken"
+      });
 
+      let newuser;
+
+      await user1.save()
+          .then((user) => {
+              newuser = user;
+          });
+
+      const res = await request.post("/trips/newTrip")
+          .send({ 
+             "arrivalPlace":"not assigned",
+             "arrivalTime":"Nov 29, 2019 08:00:00",
+             "departurePlace":"not assigned",
+             "departureTime":"Nov 18, 2019 23:46:11",
+             "isDriverTrip":false,
+             "roomID":"not assigned",
+             "taggedUsers":[ 
+                "not assigned"
+             ],
+             "tripID":"not assigned",
+             "tripRoute":{ 
+                "nameValuePairs":{ 
+                   "origin":"THROWERROR",
+                   "destination":"49.21278372465756,-123.15078578889369"
+                }
+             },
+             "userID": user1._id,
+             "username": user1.username
+          })
+          .expect(400);
+
+      done();
+  })
 
 })

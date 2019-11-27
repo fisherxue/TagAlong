@@ -29,8 +29,12 @@ async function driverTripHandler(driverTrip) {
 }
 
 function tripHandler(trip, callback) {
+	if (trip.origin === "THROWERROR") {
+		return callback("ERROR", "ERROR");
+    }
+    
     fs.readFile("./triprecommender/__mocks__/getDirections.json", "utf8", (err, data) => {
-        callback(JSON.parse(data).json);
+        callback(JSON.parse(data).json, undefined);
     });
 }
 
