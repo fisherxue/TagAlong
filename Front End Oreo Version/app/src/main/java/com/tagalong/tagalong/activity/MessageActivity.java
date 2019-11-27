@@ -247,6 +247,7 @@ public class MessageActivity extends AppCompatActivity {
       profile.setEmail(profileJSON.getString("email"));
       profile.setDriver(profileJSON.getBoolean("isDriver"));
       profile.setJoinedDate(profileJSON.getString("joinedDate"));
+      profile.setCarCapacity(profileJSON.getInt("carCapacity"));
       JSONArray jsonArray = profileJSON.getJSONArray("interests");
       int [] interests = new int[jsonArray.length()];
       for (int i = 0; i < jsonArray.length(); i++){
