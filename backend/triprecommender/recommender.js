@@ -153,12 +153,12 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("modify trip riders", riderTrips);
 
 	for (const trip in driverTrip.taggedTrips) {
-		if (typeof driverTrip.taggedTrips[parseInt(trip)] !== "undefined") {
+		console.log(typeof driverTrip.taggedTrips[trip])
+		if (mongoose.Types.ObjectId.isValid(driverTrip.taggedTrips[parseInt(trip, 10)])) {
 			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
 			riderTrips.push(riderTrip);
 		}
 	}
-
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
