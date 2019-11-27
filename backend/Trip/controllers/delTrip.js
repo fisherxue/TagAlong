@@ -4,6 +4,9 @@ const mongoose = require("mongoose");
 const debug = require("debug")("http /delTrip");
 const firebase = require("firebase-admin");
 
+/**
+ * sendChatNotif: sends a notifcation with the given message to the given user
+ */
 
 const sendChatNotif = async (user, message) => {
 	const firebaseToken = user.fbToken;
@@ -31,6 +34,13 @@ const sendChatNotif = async (user, message) => {
 	}
 };
 
+/**
+ * handleDelTrip: checks if the given userID, tripID is valid. It they are valid, the trip is 
+ *				  checked to see if its a driver trip. If its a driver trip, the associated riders
+ * 				  will be alerted via a push notification and their trips would be set to unfulfilled
+ *				  if the trip is a rider trip, the driver will be alerted via a push notification
+ * 			      and the trip will be removed from driver's trip. The trip is then deleted.
+ */
 
 const handleDelTrip = async (req, res) => {
 	

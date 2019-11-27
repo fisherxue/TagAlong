@@ -7,6 +7,10 @@ const debug = require("debug")("http /acceptTrip");
 const firebase = require("firebase-admin");
 
 
+/**
+ * addUsertoCharRoom: adds the given username to the given chatroom
+ */
+
 const addUsertoChatRoom = (username, roomID) => {
 	Chat.findById(roomID, (err, chat) => {
 		if (chat) {
@@ -18,6 +22,10 @@ const addUsertoChatRoom = (username, roomID) => {
 		}
 	});
 };
+
+/**
+ * sendNotif: sends a notification to the given user
+ */
 
 const sendNotif = async (user) => {
 	const firebaseToken = user.fbToken;
@@ -43,6 +51,14 @@ const sendNotif = async (user) => {
 		debug("invalid firebaseToken");
 	}
 };
+
+/**
+ * handleAcceptTrip: checks if the given userID, drivertripID and usertripID if its valid,
+ *					 if the ids are valid, the user and the trips are then looked up in the
+ *					 database, if any are not found, the function responds with an error.
+ *					 The function then modifies the trip to fit in the new user trip and adds
+ * 					 the new user to the taggedtrips and to the chatroom of the trip
+ */
 
 const handleAcceptTrip = async (req, res) => {
 	
