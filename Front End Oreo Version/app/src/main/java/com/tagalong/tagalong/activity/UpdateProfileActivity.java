@@ -24,7 +24,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class UpdateProfileActivity extends AppCompatActivity {
-
     private String TAG = "Update Profile Activity";
     private TextInputEditText ageEditText;
     private TextInputEditText firstNameEditText;

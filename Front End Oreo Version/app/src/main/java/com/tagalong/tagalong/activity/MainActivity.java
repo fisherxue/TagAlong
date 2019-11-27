@@ -39,11 +39,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * View for the Main (login) Screen
+ */
 public class MainActivity extends AppCompatActivity {
     private final String TAG = "MainActivity";
 
@@ -93,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
         Boolean needAuthentication;
 
+        // Attempt to load a profile from internal memory (app closed without logout)
+        // If successfully loaded, no need the ask user for authentication
+        // Else authentication required
         String profileFilename = "Saved_Profile.txt";
         StringBuffer stringBuffer = new StringBuffer();
         try (BufferedReader reader =
@@ -109,13 +114,17 @@ public class MainActivity extends AppCompatActivity {
             String contents = stringBuffer.toString();
             needAuthentication = loadProfile(contents);
         }
-
         if (needAuthentication){
             Log.d(TAG,"No saved profile, need authentication");
             startAuthentication();
         }
     }
 
+    /**
+     * Build user profile from the contents read from internal memory
+     * @param contents contents read from memory
+     * @return
+     */
     private boolean loadProfile(String contents){
         boolean failedToLoad = false;
         JSONObject profileJSON;
@@ -157,6 +166,10 @@ public class MainActivity extends AppCompatActivity {
         return failedToLoad;
     }
 
+    /**
+     * Get the FCM token from FireBase micro service
+     * @param firebaseCallback the call back functionality module for FireBase calls.
+     */
     private void getFCMToken(final FirebaseCallback firebaseCallback){
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -173,17 +186,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Make a put request to update the user profile (with new FCM token).
+     * Used to update profile loaded from internal memory
+     */
     private void loginSavedProfile(final Profile profile){
         String url = getString(R.string.updateProfile);
 
         Gson gson = new Gson();
         String profileJson = gson.toJson(profile);
         JSONObject profileJsonObject;
+
         VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
         VolleyCallback callback = new VolleyCallback() {
             @Override
             public void onSuccess(JSONObject response){
                 Log.d(TAG, "Saved login verification successful");
+                // Skip authentication and load the home screen
                 Intent intent = new Intent(context, HomeActivity.class);
                 intent.putExtra("profile", profile);
                 startActivity(intent);
@@ -207,13 +226,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Logic for authentication
+     */
     private void startAuthentication () {
         //FaceBook login Fields Initiations
         Log.d(TAG,"Starting authentication");
         startFBAuthentication();
-
         final Login login = new Login();
 
+        // Fire base call back response handler for sign up
         final FirebaseCallback firebaseCallbackSignup = new FirebaseCallback() {
             @Override
             public void onSuccess(@NonNull Task<InstanceIdResult> task) {
@@ -228,6 +250,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        // Fire base call back response handler for login
         final FirebaseCallback firebaseCallbackLogin = new FirebaseCallback() {
             @Override
             public void onSuccess(@NonNull Task<InstanceIdResult> task) {
@@ -249,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 boolean allSet = true;
-
+                // Primary level varification for user login.
                 if (!loginPassword.getText().toString().isEmpty()){
                     login.setPassword(loginPassword.getText().toString());
                     Log.d(TAG,"password entered");
@@ -277,6 +300,9 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Set up logic for facebook login
+     */
     private void startFBAuthentication(){
         final FirebaseCallback firebaseCallbackFB = new FirebaseCallback() {
             @Override
@@ -310,6 +336,10 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Build a login profile from data received from facebook.
+     * @param fcmToken fcm token received for the user device from FireBase
+     */
     private void handleFacebookLogin(final String fcmToken){
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
         if (accessToken == null) {
@@ -334,6 +364,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "Failed to retrieve profile while facebook login");
                         Log.d(TAG, "JSONException: " + e.toString());
                     }
+                    //Verify the existence of user profile
                     verifyUser(fbLoginProfile, true);
                 }
             });
@@ -345,6 +376,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Verify the existence user profile.
+     * @param login profile built for login
+     * @param isExternal boolean: true - if the profile is based on external authentication
+     */
     private void verifyUser(final Login login, final boolean isExternal){
         Log.d(TAG,"verifying user login details");
         String url = getString(R.string.login);
@@ -379,6 +416,10 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Post authentication success process.
+     * @param response response (user profile data) received on successful put call
+     */
     private void verifyUserSuccess(JSONObject response){
         Profile profile = new Profile();
         try {
@@ -412,7 +453,13 @@ public class MainActivity extends AppCompatActivity {
         MainActivity.this.finish();
     }
 
+    /**
+     * Post authentication error process.
+     * @param login login data used for authentication
+     * @param isExternal Boolean: true if verification was based on profile build on external authentication
+     */
     private void verifyUserError(Login login, boolean isExternal) {
+        // if verification failed on external authentication, proceed to register new user.
         if (isExternal) {
             Log.d(TAG, "Login verification not successful, new external user discovered");
             Login newLogin = new Login();
@@ -430,6 +477,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Build partial user profile for new external user and proceed to update profile.
+     * @param newLogin login information based on external authentication
+     */
     private void newUserLogin(Login newLogin){
         Log.d(TAG,"Sending new external login details");
         String url = getString(R.string.register);

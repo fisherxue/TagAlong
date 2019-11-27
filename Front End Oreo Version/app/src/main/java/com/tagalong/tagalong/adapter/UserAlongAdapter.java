@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tagalong.tagalong.activity.ViewProfileActivity;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
 import com.tagalong.tagalong.communication.VolleyCallback;
@@ -119,8 +120,9 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
             Log.d(TAG, "JSONException: " + e.toString());
         }
 
-        Intent intent = new Intent(context, ViewUserAlongProfileActivity.class);
-        intent.putExtra("userAlongProfile", profile);
+        Intent intent = new Intent(context, ViewProfileActivity.class);
+        intent.putExtra("profile", profile);
+        intent.putExtra("isUserAlongProfile", true);
         context.startActivity(intent);
     }
 }

@@ -21,6 +21,9 @@ import com.tagalong.tagalong.communication.VolleyCommunicator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * View for the sign up screen
+ */
 public class SignupActivity extends AppCompatActivity {
 
     private String TAG = "Signup Activity";
@@ -60,6 +63,7 @@ public class SignupActivity extends AppCompatActivity {
                        boolean allSet;
                        allSet = true;
 
+                        //Checks all fields are set
                        if (!usernameEditText.getText().toString().isEmpty()) {
                            newUserLogin.setUsername(usernameEditText.getText().toString());
                            Log.d(TAG,"Username set");
@@ -113,6 +117,10 @@ public class SignupActivity extends AppCompatActivity {
             );
     }
 
+    /**
+     * Post the login profile built from user input
+     * @param loginProfile new login profile to post
+     */
     private void sendLogin(Login loginProfile){
         String url = getString(R.string.register);
 
@@ -133,7 +141,6 @@ public class SignupActivity extends AppCompatActivity {
                 Log.d(TAG, "Volley Error: " + result);
                 Toast.makeText(context, "Encountered Issue \nPlease Try Again", Toast.LENGTH_LONG).show();
             }
-
         };
 
         try {
@@ -146,6 +153,10 @@ public class SignupActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Post success on sending login profile procedure
+     * @param response resposne from post request
+     */
     private void loginSuccess (JSONObject response) {
         Log.d(TAG, "Login Registration Successful");
         Profile receivedProfile = new Profile();
@@ -178,7 +189,6 @@ public class SignupActivity extends AppCompatActivity {
             e.printStackTrace();
             Log.d(TAG, "Error getting  user id from profile");
         }
-
         try {
             receivedProfile.setJoinedDate(response.getString("joinedDate"));
         } catch (JSONException e) {
@@ -186,6 +196,7 @@ public class SignupActivity extends AppCompatActivity {
             Log.d(TAG, "Error getting joinedDate from received profile");
         }
         Log.d(TAG,"Successfully retrieved login profile information");
+        // Guide the user to update the profile for more information
         Intent intent = new Intent(context, UpdateProfileActivity.class);
         intent.putExtra("profile", receivedProfile);
         intent.putExtra("New Sign Up", true);

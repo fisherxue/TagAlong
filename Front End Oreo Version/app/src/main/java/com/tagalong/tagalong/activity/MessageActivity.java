@@ -43,6 +43,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * View for the Messaging (Chat) Screen
+ * Uses MessageAdapter
+ */
 public class MessageActivity extends AppCompatActivity {
 
   private Context context;
@@ -64,14 +68,17 @@ public class MessageActivity extends AppCompatActivity {
     sendMessageButton = (ImageButton) findViewById(R.id.sendButton);
     messageToSend = (EditText) findViewById(R.id.sendMessage);
     profile = (Profile) getIntent().getSerializableExtra("profile");
+    // If null profile, load it from internal memory.
     if (profile == null) {
       loadProfile();
     } else {
       setup();
     }
-
   }
 
+  /**
+   * Set up the basic global modules for activity
+   */
   private void setup (){
     ID =  getIntent().getStringExtra("ID");
     chat = new Chat(ID);
@@ -94,17 +101,24 @@ public class MessageActivity extends AppCompatActivity {
         messageToSend.setText("");
       }
     });
+
+    // Re-initiate the the list of messages based on broadcast received on chat notification
     receiver = new BroadcastReceiver() {
       @Override
       public void onReceive(Context context, Intent intent) {
         initChat();
       }
     };
+
     LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
             new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
     );
   }
 
+  /**
+   * Post a new message to
+   * @param message message to send
+   */
   private void sendMSG(String message){
     Log.d(TAG, "Sending Message");
     Conversation newConversation = new Conversation(message);
@@ -145,6 +159,9 @@ public class MessageActivity extends AppCompatActivity {
     }
   }
 
+  /**
+   * Start the message adapter load the chat view.
+   */
   private void initChatView(){
     Log.d(TAG,"initializing TripView");
     RecyclerView recyclerView = findViewById(R.id.message_recycler_view);
@@ -156,6 +173,10 @@ public class MessageActivity extends AppCompatActivity {
     recyclerView.setLayoutManager(linearLayoutManager);
   }
 
+  /**
+   * Set list of conversations received from Get call
+   * @param response response from get call
+   */
   private void setConversationList (JSONObject response){
     Log.d(TAG,"Setting chat list");
     chat = new Chat(ID);
@@ -180,11 +201,13 @@ public class MessageActivity extends AppCompatActivity {
     } catch (JSONException e) {
       Log.d(TAG, "JsonException building conversation " + e.getMessage());
     }
-
     chat.setConversationList(conversationList);
     chat.setUsernames(usernames);
   }
 
+  /**
+   * Call Get to get a list of messages from chat database.
+   */
   private void initChat(){
     Log.d(TAG, "Initializing Chat");
     String url = getString(R.string.getChatList);
@@ -217,6 +240,9 @@ public class MessageActivity extends AppCompatActivity {
     LocalBroadcastManager.getInstance(context).unregisterReceiver(receiver);
   }
 
+  /**
+   * Loads up the profile from internal memory of app.
+   */
   private void loadProfile(){
     String profileFilename = "Saved_Profile.txt";
     StringBuffer stringBuffer = new StringBuffer();
@@ -273,6 +299,10 @@ public class MessageActivity extends AppCompatActivity {
     }
   }
 
+  /**
+   * Get the FCM token from FireBase micro service
+   * @param firebaseCallback the call back functionality module for FireBase calls.
+   */
   private void getFCMToken(final FirebaseCallback firebaseCallback){
     FirebaseInstanceId.getInstance().getInstanceId()
             .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -288,6 +318,9 @@ public class MessageActivity extends AppCompatActivity {
             });
   }
 
+  /**
+   * Make a put request to update the user profile (with new FCM token).
+   */
   private void loginSavedProfile(){
     String url = getString(R.string.updateProfile);
     Gson gson = new Gson();
@@ -306,7 +339,6 @@ public class MessageActivity extends AppCompatActivity {
         Log.d(TAG, "Saved login verification not successful");
         Toast.makeText(context, "Please try again", Toast.LENGTH_LONG).show();
       }
-
     };
 
     try {
