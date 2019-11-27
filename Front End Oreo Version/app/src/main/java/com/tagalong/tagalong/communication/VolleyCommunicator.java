@@ -16,10 +16,8 @@ import java.util.Map;
 public class VolleyCommunicator {
     private static VolleyCommunicator volleyCommunicator;
     private RequestQueue requestQueue;
-    private static Context context;
 
     private VolleyCommunicator(Context context){
-        this.context = context;
         if (requestQueue == null){
             requestQueue = Volley.newRequestQueue(context.getApplicationContext());
         }

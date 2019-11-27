@@ -511,6 +511,7 @@ public class MainActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(context, UpdateProfileActivity.class);
                 intent.putExtra("profile", profile);
+                intent.putExtra("New Sign Up", true);
                 startActivity(intent);
             }
 
