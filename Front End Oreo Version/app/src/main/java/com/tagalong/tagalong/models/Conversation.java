@@ -1,5 +1,8 @@
 package com.tagalong.tagalong.models;
 
+/**
+ * Data structure conversation - a single monologue / one way conversation.
+ */
 public class Conversation {
     private String userID;
     private String message;

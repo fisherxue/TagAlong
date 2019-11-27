@@ -146,7 +146,6 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
                             Log.d(TAG, "Error: " + result);
                             Toast.makeText(context, "We encountered some error,\nPlease try again", Toast.LENGTH_LONG).show();
                         }
-
                     };
                     try {
                         acceptTripJson = new JSONObject(acceptTrip.toString());

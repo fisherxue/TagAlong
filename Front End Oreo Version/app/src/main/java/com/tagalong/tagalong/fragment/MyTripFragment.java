@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,12 +61,17 @@ public class MyTripFragment extends Fragment {
                 initTripList();
             }
         };
+
+        // Re-initiate the the list of trips based on broadcast received on notification
         LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
                 new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
         );
         return view;
     }
 
+    /**
+     * Get request to get list of trips to show
+     */
     private void initTripList(){
         String url = getString(R.string.getTripList);
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -96,6 +100,9 @@ public class MyTripFragment extends Fragment {
         communicator.volleyGet(url,callback,headers);
     }
 
+    /**
+     * Start the tripViewAdapter to load the my trip view.
+     */
     private void initTripView(){
         Log.d(TAG,"start loading TripView");
         tripListTimmingLogger.addSplit("Method: initTripView() - Initiating recycler view to load of trip view");
@@ -107,6 +114,10 @@ public class MyTripFragment extends Fragment {
 
     }
 
+    /**
+     * Set list of trips received from Get call
+     * @param response response from get call
+     */
     private void setTripList (JSONObject response){
         JSONArray inputTripList;
         tripList = new ArrayList<>();

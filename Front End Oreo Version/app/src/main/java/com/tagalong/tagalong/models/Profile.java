@@ -6,8 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Data Structure Profile - user profile
+ */
 public class Profile implements Serializable {
-
+    // Restrictions
     public static final int minAgeDriver = 19;
     public static final int minAgeRider = 15;
     public static final int maxAge = 100;
@@ -28,7 +31,7 @@ public class Profile implements Serializable {
     private int carCapacity;
     private int[] interests;
 
-
+    // Default profile constructor
     public Profile() {
         this.userID = "Not Set";
         this.firstName = "Not Set";
@@ -103,10 +106,6 @@ public class Profile implements Serializable {
 
     public int getAge() {
         return age;
-    }
-
-    public String getFbToken() {
-        return fbToken;
     }
 
     //Setters

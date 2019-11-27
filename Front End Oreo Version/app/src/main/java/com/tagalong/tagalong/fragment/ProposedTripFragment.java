@@ -52,6 +52,7 @@ public class ProposedTripFragment extends Fragment {
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
+        // get list of relevant trips from data base based on user being rider or driver
         if (profile.getDriver()){
             initTripList(getString(R.string.getRecommendedTrips), true);
         }
@@ -59,6 +60,7 @@ public class ProposedTripFragment extends Fragment {
             initTripList(getString(R.string.getTripList), false);
         }
 
+        // Re-initiate the the list of trips based on broadcast received on notification
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -70,12 +72,14 @@ public class ProposedTripFragment extends Fragment {
                 }
             }
         };
-
         LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
                 new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT));
         return view;
     }
 
+    /**
+     * Get request to get list of proposed trips to show
+     */
     private void initTripList(String url, final Boolean isDriver){
 
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -101,6 +105,11 @@ public class ProposedTripFragment extends Fragment {
         communicator.volleyGet(url,callback,headers);
 
     }
+
+    /**
+     * Start the ListProposedTripAdapter to load the proposed trip view for rider
+     * Start the TripProposedRiderAdapter to load the proposed trip view for driver
+     */
     private void initTripView(Boolean isDriver){
         Log.d(TAG,"initializing TripView");
         RecyclerView recyclerView = view.findViewById(R.id.proposed_trip_recycler_view);
@@ -115,6 +124,10 @@ public class ProposedTripFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
     }
 
+    /**
+     * Set list of trips received from Get call
+     * @param response response from get call
+     */
     private void setTripList (JSONObject response, Boolean isDriver){
         JSONArray inputTripList;
         if (isDriver) {

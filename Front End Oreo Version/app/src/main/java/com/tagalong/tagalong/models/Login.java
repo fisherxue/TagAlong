@@ -2,6 +2,9 @@ package com.tagalong.tagalong.models;
 
 import java.io.Serializable;
 
+/**
+ * Data Structure Login - a login profile class (essential elements of profile)
+ */
 public class Login implements Serializable {
     private String username;
     private String password;

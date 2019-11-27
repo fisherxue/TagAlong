@@ -11,6 +11,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Data Structure Trip - user trip
+ */
 public class Trip implements Serializable {
     private static final int MILLY_SECOND_in_SECOND = 1000;
     private String tripID;
@@ -25,6 +28,7 @@ public class Trip implements Serializable {
     private Date departureTime;
     private String[] taggedUsers;
 
+    // Default constructor
     public Trip(){
        tripID = "not assigned";
        username = "not assigned";
@@ -39,6 +43,7 @@ public class Trip implements Serializable {
        taggedUsers = new String[]{"not assigned"};
     }
 
+    // Constructor that builds trip based on JSONObject passed in.
     public Trip(JSONObject trip) {
         try {
             this.username = trip.getString("username");
@@ -60,6 +65,7 @@ public class Trip implements Serializable {
                         .getLong("value");
             }
 
+            // Calculate departure time based on arrival time and duration
             this.departureTime = (Date) arrivalTime.clone();
 
             this.departureTime.setTime(this.arrivalTime.getTime()-(duration*MILLY_SECOND_in_SECOND));
@@ -90,12 +96,17 @@ public class Trip implements Serializable {
         }
     }
 
+    /**
+     * Set a trip route
+     * @param origin latitude and longitude of origin of trip
+     * @param destination latitude and longitude of destination of trip
+     */
     public void setTripRoute(LatLng origin, LatLng destination) {
         tripRoute = new JSONObject();
 
         try {
-            tripRoute.put("origin", origin.latitude+","+origin.longitude);
-            tripRoute.put("destination", destination.latitude+","+destination.longitude);
+            tripRoute.put("origin", origin.latitude + "," + origin.longitude);
+            tripRoute.put("destination", destination.latitude + "," + destination.longitude);
         } catch (JSONException e) {
             e.printStackTrace();
         }
