@@ -34,7 +34,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	let driverTime = 0;
 	for (const leg in driverTrip.tripRoute.routes[0].legs) {
 		if (typeof driverTrip.tripRoute.routes[0].legs[parseInt(leg, 10)] !== "undefined") {
-			driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
+			driverTime += driverTrip.tripRoute.routes[0].legs[parseInt(leg, 10)].duration.value;
 		}
 	}
 	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTime - MaxDriverTimeDiff);
@@ -153,9 +153,8 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("modify trip riders", riderTrips);
 
 	for (const trip in driverTrip.taggedTrips) {
-		console.log(typeof driverTrip.taggedTrips[trip])
 		if (mongoose.Types.ObjectId.isValid(driverTrip.taggedTrips[parseInt(trip, 10)])) {
-			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
+			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[parseInt(trip, 10)]);
 			riderTrips.push(riderTrip);
 		}
 	}
@@ -286,8 +285,8 @@ async function getRiderTrips(driverTrip) {
 	let newRiderTrips = [];
 	let driverRiders = driverTrip.taggedUsers;
 	for (const trip in riderTrips) {
-		if (!driverRiders.includes(riderTrips[trip].username)) {
-			newRiderTrips.push(riderTrips[trip]);
+		if (!driverRiders.includes(riderTrips[parseInt(trip, 10)].username)) {
+			newRiderTrips.push(riderTrips[parseInt(trip, 10)]);
 		}
 	}
 	return newRiderTrips;
