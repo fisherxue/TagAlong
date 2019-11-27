@@ -17,7 +17,7 @@ const handleLogout = async (req, res) => {
 
 	const update = {
 		fbToken: ""
-	}
+	};
 
 	if (!mongoose.Types.ObjectId.isValid(userID)) {
 		debug("Invalid userID");

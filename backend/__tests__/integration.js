@@ -55,6 +55,7 @@ async function dropAllCollections() {
 afterAll(async () => {
     await dropAllCollections();
     await mongoose.connection.close();
+    setTimeout(() => process.exit(), 1000); // firebase has an issue where it does not exit
 })
 
 describe('integration tests', () => {
@@ -111,6 +112,7 @@ describe('integration tests', () => {
         expect(res2.body.email).toBe("demo1@demo.com");
         done();
     });
+
 
     it('RIDER: registration + login + update profile', async (done) => {
         const demouser1 = {
@@ -256,7 +258,6 @@ describe('integration tests', () => {
         expect(res4.body.username).toBe("demo1");
         expect(res4.body.arrivalTime).toBe("2019-11-27T08:00:00.000Z");
         expect(res4.body.tripRoute.status).toBe("OK");
-
         done();
     });
 
@@ -2463,7 +2464,6 @@ describe('integration tests', () => {
 
     });
 
-
     it('RIDER AND DRIVER: registration + login + update profile + newTrip + DRIVER GET RECOMMENDEDTRIPS + DRIVER ACCEPTING TRIP + DRIVER CHAT + RIDER GET CHAT + RIDER GET TRIPS + RIDER DELETES TRIP + Driver get Users Profile + Driver DELETE TRIP + DRIVER LOG OUT', async (done) => {
         const demouser1 = {
             username: "demo1",
@@ -2750,9 +2750,5 @@ describe('integration tests', () => {
         done();
 
     });
-
-
 })
-
-
 

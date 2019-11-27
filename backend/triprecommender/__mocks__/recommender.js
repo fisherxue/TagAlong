@@ -34,7 +34,7 @@ function tripHandler(trip, callback) {
     });
 }
 
-function modifyTrip(driverTrip, riderTrips, callback) {
+async function modifyTrip(driverTrip, riderTrips, callback) {
     fs.readFile("./triprecommender/__mocks__/getDirections.json", "utf8", (err, data) => {
         callback(JSON.parse(data).json);
     });
