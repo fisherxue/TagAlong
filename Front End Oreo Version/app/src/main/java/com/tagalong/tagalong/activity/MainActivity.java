@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
         //FaceBook login Fields Initiations
         callbackManager = CallbackManager.Factory.create();
         fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
+        fbloginButton.setReadPermissions("email");
 
         signupButton = (Button) findViewById(R.id.signup_button);
         loginButton = (Button) findViewById(R.id.login_button);
