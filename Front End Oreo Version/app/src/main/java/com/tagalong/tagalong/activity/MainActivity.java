@@ -42,6 +42,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 /**
  * View for the Main (login) Screen
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         //FaceBook login Fields Initiations
         callbackManager = CallbackManager.Factory.create();
         fbloginButton = (LoginButton) findViewById(R.id.fblogin_button);
-        fbloginButton.setReadPermissions("email");
+        fbloginButton.setReadPermissions(Arrays.asList("email"));
 
         signupButton = (Button) findViewById(R.id.signup_button);
         loginButton = (Button) findViewById(R.id.login_button);
