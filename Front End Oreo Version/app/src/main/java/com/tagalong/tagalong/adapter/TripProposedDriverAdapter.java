@@ -30,6 +30,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter to control recycler view display of each trip proposed to driver
+ * Displays list of driver trips each with a list of proposed trips inside.
+ * Uses UserAlongAdapter (sub adapter) to display list of users along in the proposed trip.
+ */
 public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposedDriverAdapter.ViewHolder> {
 
     private final String TAG = "Trip Proposed View Adapter";
@@ -84,11 +89,13 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         useralonglist = new ArrayList<>();
         useralonglist.add(riderTrip.getUsername());
 
+        //Fill trip card fields to display with relevant details
         holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + riderTrip.getDeparturePlace()));
         holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(riderTrip.getDepartureTime())));
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(riderTrip.getArrivalTime())));
         holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + riderTrip.getArrivalPlace()));
 
+        //Use the userAlongAdapter to display list of users along.
         UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
         holder.recyclerView.setAdapter(userAlongAdapter);
         holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -102,6 +109,7 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
             }
         });
 
+        //Post request to the trip accepted by the driver.
         holder.accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,8 +164,6 @@ public class TripProposedDriverAdapter extends RecyclerView.Adapter<TripProposed
         });
 
     }
-
-
 
     @Override
     public int getItemCount() {

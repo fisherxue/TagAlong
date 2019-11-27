@@ -65,6 +65,7 @@ public class ViewProfileActivity extends AppCompatActivity {
             profileHeader.setText("USER ALONG PROFILE");
         }
         if (userProfile != null){
+            // Display user details
             name.setText(Html.fromHtml("<b>Name: </b>" + userProfile.getFirstName()+ " " + userProfile.getLastName()));
             username.setText(Html.fromHtml("<b>Username: </b>" + userProfile.getUsername()));
             email.setText(Html.fromHtml("<b>Email address: </b>" + userProfile.getEmail()));
@@ -85,7 +86,7 @@ public class ViewProfileActivity extends AppCompatActivity {
                     "&emsp&emsp&emsp&emsp&emsp<b>5) Smoking: </b>" + (userProfile.getInterests()[4]+1) +"/5"));
             joinedDate.setText(Html.fromHtml("<b>Joined Date: </b>" + userProfile.getJoinedDate()));
         }
-
+        //edit button disabled when showing UserAlong profile
         if (!isUserAlongProfile) {
             edit.setEnabled(true);
             edit.setOnClickListener(new View.OnClickListener() {

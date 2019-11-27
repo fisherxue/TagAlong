@@ -23,8 +23,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTripAdapter.ViewHolder> {
 
+/**
+ * Adapter to control recycler view display of a proposed Trip fragment for driver
+ * Uses TripProposedDriverAdapter (sub adapter) to display list of each trip that a driver can select from
+ */
+public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTripAdapter.ViewHolder> {
     private Context context;
     private List<Trip> tripList;
     private Profile profile;
@@ -74,6 +78,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
         final Trip trip = new Trip(tripObject);
         SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
 
+        //Fill trip card fields to display with relevant details
         holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
         holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
@@ -91,6 +96,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
             e.printStackTrace();
         }
 
+        // Use TripProposedDriverAdapter to show each display trip proposed to a driver trip
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
                 holder.recyclerView.getContext(),LinearLayoutManager.VERTICAL,false
         );

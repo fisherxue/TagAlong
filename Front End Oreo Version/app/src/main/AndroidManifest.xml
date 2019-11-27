@@ -31,7 +31,6 @@
             android:name=".activity.TripDisplayActivity"
             android:label="@string/title_activity_trip_display"></activity>
         <activity android:name=".activity.ViewProfileActivity"></activity>
-        <activity android:name=".activity.ViewUserAlongProfileActivity"></activity>
         <activity android:name=".activity.MessageActivity"></activity>
         <activity android:name=".activity.UpdateProfileActivity" />
         <activity android:name=".activity.SignupActivity" />

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.Html;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,13 +31,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter to control recycler view display of MyTripsFragment
+ * Uses UserAlongAdapter (sub adapter) to display list of users along in a trip.
+ */
 public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewHolder> {
 
   private final String TAG = "TripViewAdapter";
   private Context context;
   private List<Trip> tripList;
   private Profile profile;
-
+  // TimmingLogger to test non functional requirements
   private TripListTimmingLogger tripListTimmingLogger;
 
   public TripViewAdapter(Context context, List<Trip> tripList, Profile profile) {
@@ -87,18 +90,20 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
     final Trip trip = tripList.get(position);
     tripListTimmingLogger.addSplit("Starting to setup trip cards");
     SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss, dd MMMM yyyy");
+    //String of users along in the trip
     List<String> useralonglist;
 
     useralonglist = new ArrayList<>();
     for (int i = 0; i < trip.getTaggedUsers().length; i++) {
       useralonglist.add(trip.getTaggedUsers()[i]);
     }
-
+    //Fill trip card fields to display with relevant details
     holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
     holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
     holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
     holder.arrivalPlace.setText(Html.fromHtml("<b>" + "Arrival Place:" + "</b>" + "<br/>" + trip.getArrivalPlace()));
 
+    //Use the userAlongAdapter to display list of users along.
     UserAlongAdapter userAlongAdapter = new UserAlongAdapter(context, useralonglist);
     holder.recyclerView.setAdapter(userAlongAdapter);
     holder.recyclerView.setLayoutManager(new LinearLayoutManager(context));
@@ -123,6 +128,7 @@ public class TripViewAdapter  extends RecyclerView.Adapter<TripViewAdapter.ViewH
       }
     });
 
+    // Delete trip request to data base
     holder.delete.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {

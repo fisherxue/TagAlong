@@ -17,6 +17,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter to control recycler view display Chat
+ */
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
   private final String TAG = "MessageAdapter";
@@ -76,6 +79,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
   @Override
   public int getItemViewType(int position) {
+    // Changes the type of view for the user and user along messages (right and left displays)
     if (currentUser.getUsername().equals(conversationList.get(position).getUserName())){
       return MSG_RIGHT;
     }
