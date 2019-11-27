@@ -4,8 +4,8 @@ const debug = require("debug")("http /logout");
 
 
 /**
- * handleProfileUpdate: Checks the given userID and updates the user corresponding
- * 						to the userID with the new fields provided.
+ * handleLogout: Logs out the given user associated by the userID by
+ * 			     setting the associated fbToken to an empty string
  */ 
 
 const handleLogout = async (req, res) => {

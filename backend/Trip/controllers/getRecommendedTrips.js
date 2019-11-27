@@ -4,6 +4,13 @@ const tripRecommender = require("../../triprecommender/recommender");
 const debug = require("debug")("http /getRecommendedTrips");
 const User = require("../../User/models/user");
 
+/**
+ * handleGetRecommendedTrips: checks if the userid is valid and ensures the user exists,
+ * 							  the function then finds all trips made by the user and returns
+ * 							  all recommended trips that are similar to the user's trips.
+ * 							  *this function only works if its called by a driver*
+ *
+ */
 
 const handleGetRecommendedTrips = async (req, res) => {
 

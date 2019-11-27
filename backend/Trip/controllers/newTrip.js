@@ -6,7 +6,10 @@ const tripRecommender = require("../../triprecommender/recommender");
 const Chat = require("../../Chat/models/Chat");
 const firebase = require("firebase-admin");
 
-
+/**
+ * sendNotif: send a notifcation to the given user that the user has successfully
+ *			  created a trip.
+ */
 
 const sendNotif = async (user) => {
 	const firebaseToken = user.fbToken;
