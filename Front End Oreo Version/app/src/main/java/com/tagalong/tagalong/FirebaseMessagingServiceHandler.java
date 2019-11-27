@@ -76,13 +76,15 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             String channelId = "Default";
+            Random random = new Random();
+            int randomValue = random.nextInt();
             NotificationTimmingLogger notificationTimmingLogger = NotificationTimmingLogger.getInstance();
             notificationTimmingLogger.addSplit("handleChatNotification(): notification received");
             notificationTimmingLogger.dumpToLog();
             notificationTimmingLogger.reset();
             Intent intent = new Intent(this, HomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, randomValue, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
                     .setSmallIcon(R.mipmap.ic_launcher_round)
                     .setContentTitle(remoteMessage.getNotification().getTitle())
@@ -95,8 +97,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
                 NotificationChannel channel = new NotificationChannel(channelId, "Default channel", NotificationManager.IMPORTANCE_DEFAULT);
                 manager.createNotificationChannel(channel);
             }
-            Random random = new Random();
-            manager.notify(random.nextInt(), builder.build());
+            manager.notify(randomValue, builder.build());
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getBaseContext());
             Intent intent2 = new Intent(REQUEST_ACCEPT);
             broadcastManager.sendBroadcast(intent2);
@@ -107,13 +108,15 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
         if (remoteMessage.getNotification() != null) {
             Log.d(TAG, "Message Notification Body: " + remoteMessage.getNotification().getBody());
             String channelId = "Default";
+            Random random = new Random();
+            int randomValue = random.nextInt();
             NotificationTimmingLogger notificationTimmingLogger = NotificationTimmingLogger.getInstance();
             notificationTimmingLogger.addSplit("handleChatNotification(): chat notification received");
             Intent intent = new Intent(this, MessageActivity.class);
             intent.putExtra("ID",data.get("roomID") );
             System.out.println("ID" + data.get("roomID"));
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, randomValue, intent, PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder builder = new  NotificationCompat.Builder(this, channelId)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(remoteMessage.getNotification().getTitle())
@@ -126,8 +129,7 @@ public class FirebaseMessagingServiceHandler extends FirebaseMessagingService {
                 NotificationChannel channel = new NotificationChannel(channelId, "Default channel", NotificationManager.IMPORTANCE_DEFAULT);
                 manager.createNotificationChannel(channel);
             }
-            Random random = new Random();
-            manager.notify(random.nextInt(), builder.build());
+            manager.notify(randomValue, builder.build());
             LocalBroadcastManager broadcastManager = LocalBroadcastManager.getInstance(getBaseContext());
             Intent intent2 = new Intent(REQUEST_ACCEPT);
             broadcastManager.sendBroadcast(intent2);
