@@ -34,7 +34,7 @@ function cutTripsByTime(driverTrip, riderTrips) {
 	let driverTime = 0;
 	for (const leg in driverTrip.tripRoute.routes[0].legs) {
 		if (typeof driverTrip.tripRoute.routes[0].legs[parseInt(leg, 10)] !== "undefined") {
-			driverTime += driverTrip.tripRoute.routes[0].legs[leg].duration.value;
+			driverTime += driverTrip.tripRoute.routes[0].legs[parseInt(leg, 10)].duration.value;
 		}
 	}
 	driverDepartureDate.setSeconds(driverDepartureDate.getSeconds() - driverTime - MaxDriverTimeDiff);
@@ -153,12 +153,11 @@ async function modifyTrip(driverTrip, riderTrips, callback) {
 	debug("modify trip riders", riderTrips);
 
 	for (const trip in driverTrip.taggedTrips) {
-		if (typeof driverTrip.taggedTrips[parseInt(trip)] !== "undefined") {
-			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[trip]);
+		if (mongoose.Types.ObjectId.isValid(driverTrip.taggedTrips[parseInt(trip, 10)])) {
+			let riderTrip = await TripStore.findById(driverTrip.taggedTrips[parseInt(trip, 10)]);
 			riderTrips.push(riderTrip);
 		}
 	}
-
 	riderTrips.forEach(function(riderTrip) {
 		let startPoint = riderTrip.tripRoute.routes[0].legs[0].start_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].start_location.lng;
 		let endPoint = riderTrip.tripRoute.routes[0].legs[0].end_location.lat + "," + riderTrip.tripRoute.routes[0].legs[0].end_location.lng;
@@ -286,8 +285,8 @@ async function getRiderTrips(driverTrip) {
 	let newRiderTrips = [];
 	let driverRiders = driverTrip.taggedUsers;
 	for (const trip in riderTrips) {
-		if (!driverRiders.includes(riderTrips[trip].username)) {
-			newRiderTrips.push(riderTrips[trip]);
+		if (!driverRiders.includes(riderTrips[parseInt(trip, 10)].username)) {
+			newRiderTrips.push(riderTrips[parseInt(trip, 10)]);
 		}
 	}
 	return newRiderTrips;
@@ -319,7 +318,7 @@ function tripHandler(trip, callback) {
 		destination: endPoint
 	};
 	getDirections(req, function(err, res) {
-		callback(res.json);
+		callback(res.json, err);
 	});
 }
 

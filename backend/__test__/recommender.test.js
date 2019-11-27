@@ -58,10 +58,12 @@ function addMockTrips(callback) {
                         riderTrips.push(trip);
                         trip = TripStore(trip);
                         trip.save((err, res) => {
+
                             fs.readFile("./__test__/trips/riderTrip3.json", "utf8", (err, data3) => {
                                 trip = JSON.parse(data3);
                                 riderTrips.push(trip);
                                 trip = TripStore(trip);
+
                                 trip.save((err, res) => {
                                     callback(driverTrip, riderTrips);
                                 });
@@ -181,6 +183,25 @@ describe("cutTripsByTime", () => {
             });
         });
     });
+    it('should ignore on incorrect value value', async done => {
+        let driverTrip;
+        let riderTrips = [];
+        fs.readFile("./__test__/driverTrip1.json", "utf8", (err, data) => {
+            driverTrip = JSON.parse(data);
+            driverTrip.tripRoute.routes[0].legs[1] = undefined;
+            fs.readFile("./__test__/riderTrip1.json", "utf8", (err, data1) => {
+                riderTrips.push(JSON.parse(data1));
+                fs.readFile("./__test__/riderTrip2.json", "utf8", (err, data2) => {
+                    riderTrips.push(JSON.parse(data2));
+                    fs.readFile("./__test__/riderTrip3.json", "utf8", (err, data3) => {
+                        riderTrips.push(JSON.parse(data3));
+                        expect(recommender.cutTripsByTime(driverTrip, riderTrips)).toHaveLength(2);
+                        done();
+                    });
+                });
+            });
+        });
+    });
 });
 
 describe("cutTripsByDistance", () => {
@@ -241,6 +262,49 @@ describe("cutTripsByDistance", () => {
 });
 
 describe("modifyTrip", () => {
+    beforeAll(async () => {
+        const url = `mongodb://127.0.0.1/${databaseName}`;
+        await mongoose.connect(url, { useNewUrlParser: true });
+    });
+
+    async function removeAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            await collection.deleteMany();
+        }
+    }
+    
+    afterEach(async () => {
+        await removeAllCollections();
+    });
+
+    async function dropAllCollections () {
+        const collections = Object.keys(mongoose.connection.collections);
+        for (const collectionName of collections) {
+            const collection = mongoose.connection.collections[collectionName];
+            try {
+            await collection.drop();
+            } catch (error) {
+            // This error happens when you try to drop a collection that's already dropped. Happens infrequently. 
+            // Safe to ignore. 
+            if (error.message === 'ns not found') return;
+        
+            // This error happens when you use it.todo.
+            // Safe to ignore. 
+            if (error.message.includes('a background operation is currently running')) return;
+        
+            console.log(error.message);
+            }
+        }
+    }
+    
+    // Disconnect Mongoose
+    afterAll(async () => {
+        await dropAllCollections();
+        // Closes the Mongoose connection
+        await mongoose.connection.close();
+    });
 
     it('should return json with one riderTrip', async done => {
         let driverTrip;
@@ -324,6 +388,36 @@ describe("modifyTrip", () => {
                 });
             });
         });
+    });
+    it('should return proper json with routes with 3 riderTrips, edge case where trip tagged', async done => {
+        
+        addMockTrips(async (driverTrip, riderTrips) => {
+            driverTrip.taggedTrips = [];
+            driverTrip.taggedTrips.push(mongoose.Types.ObjectId(riderTrips[2]._id));
+            recommender.modifyTrip(driverTrip, riderTrips, (res) => {
+                fs.readFile("./__test__/outputTrip1.json", "utf8", async (err, out) => {
+                    recommender.modifyTrip(driverTrip, riderTrips, res => {
+                        expect(res).toStrictEqual(JSON.parse(out));
+                        done();
+                    });
+                });
+            });
+        })
+    });
+    it('should return proper json with routes with 3 riderTrips, edge case where trip null', async done => {
+        
+        addMockTrips(async (driverTrip, riderTrips) => {
+            driverTrip.taggedTrips = [];
+            driverTrip.taggedTrips.push(undefined);
+            recommender.modifyTrip(driverTrip, riderTrips, (res) => {
+                fs.readFile("./__test__/outputTrip1.json", "utf8", async (err, out) => {
+                    recommender.modifyTrip(driverTrip, riderTrips, res => {
+                        expect(res).toStrictEqual(JSON.parse(out));
+                        done();
+                    });
+                });
+            });
+        })
     });
 });
 
