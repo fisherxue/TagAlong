@@ -70,9 +70,11 @@ public class TripDisplayActivity extends FragmentActivity implements OnMapReadyC
             displayDirections(directionsList);
         }
 
+        mMap.animateCamera(CameraUpdateFactory.newLatLng(origin));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(origin));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 12));
         mMap.addMarker(originMarker);
         mMap.addMarker(destinationMarker);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(origin, 12));
     }
 
     private void setOriginAndDest() {
