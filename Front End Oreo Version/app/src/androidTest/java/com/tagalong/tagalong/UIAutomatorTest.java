@@ -14,6 +14,8 @@ import androidx.test.filters.SdkSuppress;
 import androidx.test.uiautomator.By;
 import androidx.test.uiautomator.UiDevice;
 import androidx.test.uiautomator.UiObject;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.UiObjectNotFoundException;
 import androidx.test.uiautomator.UiSelector;
 import androidx.test.uiautomator.Until;
 
@@ -36,9 +38,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
-import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -51,9 +53,9 @@ public class UIAutomatorTest {
 
     private static final int LAUNCH_TIMEOUT = 5000;
 
-    private static final String USERNAME = "bwong";
+    private static final String USERNAME = "bwong1";
 
-    private static final String DRIVER = "bwong1";
+    private static final String DRIVER = "bwong";
 
     private static final String PASSWORD = "xd";
 
@@ -82,10 +84,10 @@ public class UIAutomatorTest {
         // Wait for the app to appear
         mDevice.wait(Until.hasObject(By.pkg(BASIC_SAMPLE_PACKAGE).depth(0)), LAUNCH_TIMEOUT);
     }
-    
+
 
     @Test
-    public void testSetTrip() {
+    public void testASetTrip() {
         // Type text and then press the button.
         mDevice.findObject(By.res(BASIC_SAMPLE_PACKAGE, "userNameLogin"))
                 .setText(USERNAME);
@@ -134,6 +136,7 @@ public class UIAutomatorTest {
         mDevice.openNotification();
         mDevice.waitForWindowUpdate(BASIC_SAMPLE_PACKAGE, LAUNCH_TIMEOUT);
 
+        mDevice.openNotification();
         mDevice.pressBack();
         mDevice.wait(Until.findObject(By.res(BASIC_SAMPLE_PACKAGE, "logout")), 500);
         mDevice.findObject(By.res(BASIC_SAMPLE_PACKAGE, "logout")).click();
@@ -161,6 +164,20 @@ public class UIAutomatorTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        UiObject originMarker = mDevice.findObject(new UiSelector().descriptionContains("Origin"));
+        try {
+            originMarker.click();
+        } catch (UiObjectNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            TimeUnit.SECONDS.sleep(1);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         mDevice.pressBack();
         mDevice.wait(Until.findObject(By.res(BASIC_SAMPLE_PACKAGE, "logout")), 500);
@@ -229,6 +246,10 @@ public class UIAutomatorTest {
         mDevice.findObject(By.res(BASIC_SAMPLE_PACKAGE, "nav_home")).click();
 
 
+        mDevice.wait(Until.findObject(By.res(BASIC_SAMPLE_PACKAGE,"usersAlong")), 500);
+        UiObject2 users = mDevice.findObject(By.res(BASIC_SAMPLE_PACKAGE,"usersAlong"));
+        assertThat(users.getText(), is(containsString("bwong1")));
+
         mDevice.wait(Until.findObject(By.res(BASIC_SAMPLE_PACKAGE, "logout")), 500);
         mDevice.findObject(By.res(BASIC_SAMPLE_PACKAGE, "logout")).click();
     }
@@ -269,20 +290,4 @@ public class UIAutomatorTest {
         };
     }
 
-    private UiObject getNotificationStackScroller()
-    {
-        /*
-         * access Notification Center through resource id, package name, class name.
-         * if you want to check resource id, package name or class name of the specific view in the screen,
-         * run 'uiautomatorviewer' from command.
-         */
-        UiSelector notificationStackScroller = new UiSelector().packageName("com.android.systemui")
-                .className("android.view.ViewGroup")
-                .resourceId(
-                        "com.android.systemui:id/notification_stack_scroller");
-        UiObject notificationStackScrollerUiObject = mDevice.findObject(notificationStackScroller);
-        assertTrue(notificationStackScrollerUiObject.exists());
-
-        return notificationStackScrollerUiObject;
-    }
 }

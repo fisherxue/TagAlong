@@ -52,7 +52,7 @@ public class Trip implements Serializable {
             this.userID = trip.getString("userID");
             this.isDriverTrip = trip.getBoolean("isDriverTrip");
 
-            this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+            this.arrivalTime = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
                     .parse(trip.getString("arrivalTime"));
 
             Long duration = (long) 0;

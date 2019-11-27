@@ -30,7 +30,6 @@ import androidx.recyclerview.widget.RecyclerView;
  */
 public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTripAdapter.ViewHolder> {
     private Context context;
-    private List<Trip> tripList;
     private Profile profile;
     private List<JSONObject> objectList;
     private RecyclerView.RecycledViewPool viewPool = new RecyclerView.RecycledViewPool();
@@ -70,6 +69,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
         JSONObject tripObject = null;
+        List<Trip> tripList;
         try {
             tripObject = objectList.get(position).getJSONObject("drivertrip");
         } catch (JSONException e) {
@@ -90,7 +90,7 @@ public class ListProposedTripAdapter extends RecyclerView.Adapter<ListProposedTr
             inputTripList = objectList.get(position).getJSONArray("riderTrips");
             System.out.println(objectList.get(position));
             for (int i = 0; i < inputTripList.length(); i++){
-                this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
+                tripList.add(new Trip(inputTripList.getJSONObject(i)));
             }
         } catch (JSONException e) {
             e.printStackTrace();

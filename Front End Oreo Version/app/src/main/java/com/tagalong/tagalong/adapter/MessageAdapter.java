@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.tagalong.tagalong.NotificationTimmingLogger;
 import com.tagalong.tagalong.models.Conversation;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
