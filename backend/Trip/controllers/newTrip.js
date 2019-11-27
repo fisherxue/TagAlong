@@ -90,7 +90,12 @@ const handleCreateTrip = async (req, res) => {
 		isFulfilled: false
 	});
 
-	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp) => {
+	tripRecommender.tripHandler(tripRoute.nameValuePairs, async (resp, err) => {
+
+		if (err) {
+			return res.status(400).send("Invalid trip");
+		}
+
 		trip.tripRoute = resp;
 
 		if (isDriverTrip) {
@@ -102,10 +107,11 @@ const handleCreateTrip = async (req, res) => {
 
 		trip.save();
 		res.send(trip);
+		sendNotif(user);
 
 	});
 
-	sendNotif(user);
+	
 
 };
 
