@@ -25,6 +25,11 @@ public class VolleyCommunicator {
         }
     }
 
+    /**
+     * Get an instance of the module
+     * @param context context
+     * @return
+     */
     public static synchronized VolleyCommunicator getInstance(Context context){
         if (volleyCommunicator == null){
             volleyCommunicator = new VolleyCommunicator(context);
@@ -32,6 +37,12 @@ public class VolleyCommunicator {
         return volleyCommunicator;
     }
 
+    /**
+     * Volley Get Request
+     * @param url link to the request
+     * @param volleyCallback Call Back to report to on response from the request.
+     * @param headers data to send in header of the request.
+     */
     public void volleyGet(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
@@ -55,6 +66,12 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Volley Get Request
+     * @param url link to the request
+     * @param jsonObject JSONObject to send along with the request.
+     * @param volleyCallback Call Back to report to on response from the request.
+     */
     public void volleyPost(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -72,6 +89,12 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Volley Put Request
+     * @param url link to the request
+     * @param jsonObject JSONObject to send along with the request.
+     * @param volleyCallback Call Back to report to on response from the request.
+     */
     public void volleyPut(String url, JSONObject jsonObject, final VolleyCallback volleyCallback) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -89,6 +112,12 @@ public class VolleyCommunicator {
         requestQueue.add(jsonObjectRequest);
     }
 
+    /**
+     * Volley Get Request
+     * @param url link to the request
+     * @param volleyCallback Call Back to report to on response from the request.
+     * @param headers data to send in header of the request.
+     */
     public void volleyDelete(String url, final VolleyCallback volleyCallback, final Map<String, String> headers) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.DELETE, url, null, new Response.Listener<JSONObject>() {
             @Override

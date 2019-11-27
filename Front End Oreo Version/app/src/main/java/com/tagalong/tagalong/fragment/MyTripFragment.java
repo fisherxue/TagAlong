@@ -6,12 +6,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.TimingLogger;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.tagalong.tagalong.TripListTimmingLogger;
 import com.tagalong.tagalong.adapter.TripViewAdapter;
 import com.tagalong.tagalong.FirebaseMessagingServiceHandler;
 import com.tagalong.tagalong.models.Profile;
@@ -36,13 +36,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class MyTripFragment extends Fragment {
-    private final String TAG = "My Trips Fragment";
+    private final String TAG = "MyTripsFragment";
     private List<Trip> tripList;
     private View view;
     private Context context;
     private Profile profile;
 
-    private TimingLogger timingLogger;
+    private TripListTimmingLogger tripListTimmingLogger;
     private BroadcastReceiver receiver;
 
     @Nullable
@@ -52,7 +52,8 @@ public class MyTripFragment extends Fragment {
         context = getActivity();
         Bundle inputBundle = getArguments();
         profile = (Profile) inputBundle.getSerializable("profile");
-        timingLogger = new TimingLogger(TAG, "My Trips Activity");
+        tripListTimmingLogger = TripListTimmingLogger.getInstance();
+        tripListTimmingLogger.reset();
         initTripList();
         receiver = new BroadcastReceiver() {
             @Override
@@ -60,12 +61,17 @@ public class MyTripFragment extends Fragment {
                 initTripList();
             }
         };
+
+        // Re-initiate the the list of trips based on broadcast received on notification
         LocalBroadcastManager.getInstance(context).registerReceiver((receiver),
                 new IntentFilter(FirebaseMessagingServiceHandler.REQUEST_ACCEPT)
         );
         return view;
     }
 
+    /**
+     * Get request to get list of trips to show
+     */
     private void initTripList(){
         String url = getString(R.string.getTripList);
         HashMap<String, String> headers = new HashMap<String, String>();
@@ -76,39 +82,46 @@ public class MyTripFragment extends Fragment {
             @Override
             public void onSuccess(JSONObject response){
                 Log.d(TAG, "Received list of trips for the user");
-                timingLogger.addSplit("initTripList - Got list of trips");
+                tripListTimmingLogger.addSplit("Method: initTripList() - Successful get request for list of trips");
                 setTripList(response);
                 initTripView();
             }
 
             @Override
             public void onError(String result){
-                timingLogger.addSplit("initTripList - Received error");
+                tripListTimmingLogger.addSplit("Method: initTripList() - Failure get request for list of trips");
                 Log.d(TAG, "Error: Could not get list of trips");
                 Log.d(TAG, "Error: " + result);
                 Toast.makeText(context, "We encountered some error,\nPlease reload the page", Toast.LENGTH_LONG).show();
             }
         };
 
-        timingLogger.addSplit("initTripList - Send Request to get list of trips");
+        tripListTimmingLogger.addSplit("Method: initTripList() - get request for list of trips");
         communicator.volleyGet(url,callback,headers);
     }
 
+    /**
+     * Start the tripViewAdapter to load the my trip view.
+     */
     private void initTripView(){
-        Log.d(TAG,"initializing TripView");
-        timingLogger.addSplit("initTripView - Start Adapter");
-        timingLogger.dumpToLog();
-        timingLogger.reset();
+        Log.d(TAG,"start loading TripView");
+        tripListTimmingLogger.addSplit("Method: initTripView() - Initiating recycler view to load of trip view");
+        tripListTimmingLogger.dumpToLog();
         RecyclerView recyclerView = view.findViewById(R.id.my_trips_recycler_view);
         TripViewAdapter tripViewAdapter = new TripViewAdapter(context, this.tripList, profile);
         recyclerView.setAdapter(tripViewAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(context));
+
     }
 
+    /**
+     * Set list of trips received from Get call
+     * @param response response from get call
+     */
     private void setTripList (JSONObject response){
         JSONArray inputTripList;
         tripList = new ArrayList<>();
-        timingLogger.addSplit("setTripList - creating tripList");
+        tripListTimmingLogger.addSplit("Method: setTripList() - begin to set local list of trips");
         try {
             inputTripList = response.getJSONArray("trips");
             for (int i = 0; i < inputTripList.length(); i++){
@@ -116,7 +129,7 @@ public class MyTripFragment extends Fragment {
                     this.tripList.add(new Trip(inputTripList.getJSONObject(i)));
                 }
             }
-            timingLogger.addSplit("setTripList - created tripList");
+            tripListTimmingLogger.addSplit("Method: setTripList() - done setting local list of trips");
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -11,11 +11,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tagalong.tagalong.activity.ViewProfileActivity;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
 import com.tagalong.tagalong.communication.VolleyCallback;
 import com.tagalong.tagalong.communication.VolleyCommunicator;
-import com.tagalong.tagalong.activity.ViewUserAlongProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +27,9 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter to control recycler view display of UserAlong in a trip
+ */
 public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.ViewHolder> {
 
     private final String TAG = "UserAlong Adapter";
@@ -62,7 +65,7 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
         final String usersAlong = usernames.get(position);
 
         holder.userAlong.setText(Html.fromHtml("<b>" + "UserAlong:" + "</b>" + "<br/>" + usersAlong));
-
+        //Get profile of user along and pass it on to ViewProfileActivity to display it.
         holder.viewProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -95,6 +98,10 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
         return usernames.size();
     }
 
+    /**
+     * Processes successful response of Get request for user profile , making it read to display
+     * @param response response from GET Call
+     */
     private void viewUserAlongSuccess(JSONObject response){
         Profile profile = new Profile();
         try {
@@ -106,6 +113,7 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
             profile.setGender(response.getString("gender"));
             profile.setEmail(response.getString("email"));
             profile.setDriver(response.getBoolean("isDriver"));
+            profile.setCarCapacity(response.getInt("carCapacity"));
             profile.setJoinedDate(response.getString("joinedDate"));
 
             JSONArray jsonArray = response.getJSONArray("interests");
@@ -119,8 +127,9 @@ public class UserAlongAdapter  extends RecyclerView.Adapter<UserAlongAdapter.Vie
             Log.d(TAG, "JSONException: " + e.toString());
         }
 
-        Intent intent = new Intent(context, ViewUserAlongProfileActivity.class);
-        intent.putExtra("userAlongProfile", profile);
+        Intent intent = new Intent(context, ViewProfileActivity.class);
+        intent.putExtra("profile", profile);
+        intent.putExtra("isUserAlongProfile", true);
         context.startActivity(intent);
     }
 }

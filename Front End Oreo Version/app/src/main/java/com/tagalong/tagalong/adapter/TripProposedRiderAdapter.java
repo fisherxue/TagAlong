@@ -27,6 +27,10 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Adapter to control recycler view display ProposedTripFragment for Rider.
+ * Displays trip of rider yet waiting to be accepted.
+ */
 public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedRiderAdapter.ViewHolder> {
 
     private final String TAG = "Trip View Adapter";
@@ -79,6 +83,7 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
             userSB.append(trip.getTaggedUsers()[i]).append(",\t");
         }
 
+        //Fill trip card fields to display with relevant details
         holder.departurePlace.setText(Html.fromHtml("<b>" + "Departure Place:" + "</b>" + "<br/>" + trip.getDeparturePlace()));
         holder.departureTime.setText(Html.fromHtml("<b>" + "Departure Time:" + "</b>" + "<br/>" + format.format(trip.getDepartureTime())));
         holder.arrivalTime.setText(Html.fromHtml("<b>" + "Arrival Time:" + "</b>" + "<br/>" + format.format(trip.getArrivalTime())));
@@ -93,6 +98,7 @@ public class TripProposedRiderAdapter extends RecyclerView.Adapter<TripProposedR
             }
         });
 
+        // Delete request to delete proposed rider trip
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

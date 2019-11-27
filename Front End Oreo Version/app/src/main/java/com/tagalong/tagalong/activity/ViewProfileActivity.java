@@ -13,6 +13,9 @@ import android.widget.TextView;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.R;
 
+/**
+ * View for the displaying profile
+ */
 public class ViewProfileActivity extends AppCompatActivity {
 
     private TextView name;
@@ -24,10 +27,12 @@ public class ViewProfileActivity extends AppCompatActivity {
     private TextView registeredAs;
     private TextView gender;
     private TextView joinedDate;
+    private TextView profileHeader;
     private Button edit;
     private Context context;
 
     private Profile userProfile;
+    private boolean isUserAlongProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +40,7 @@ public class ViewProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_profile);
         context = getApplicationContext();
         userProfile = (Profile) getIntent().getSerializableExtra("profile") ;
+        isUserAlongProfile = (boolean) getIntent().getSerializableExtra("isUserAlongProfile");
 
         name = (TextView) findViewById(R.id.name);
         username = (TextView) findViewById(R.id.userName);
@@ -45,13 +51,21 @@ public class ViewProfileActivity extends AppCompatActivity {
         registeredAs = (TextView) findViewById(R.id.registeredAs);
         gender = (TextView) findViewById(R.id.gender);
         joinedDate = (TextView) findViewById(R.id.joinedDate);
+        profileHeader = (TextView) findViewById(R.id.profileHeader);
         edit = (Button) findViewById(R.id.edit);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
+        if(!isUserAlongProfile){
+            profileHeader.setText("YOUR PROFILE");
+        }
+        else {
+            profileHeader.setText("USER ALONG PROFILE");
+        }
         if (userProfile != null){
+            // Display user details
             name.setText(Html.fromHtml("<b>Name: </b>" + userProfile.getFirstName()+ " " + userProfile.getLastName()));
             username.setText(Html.fromHtml("<b>Username: </b>" + userProfile.getUsername()));
             email.setText(Html.fromHtml("<b>Email address: </b>" + userProfile.getEmail()));
@@ -72,14 +86,21 @@ public class ViewProfileActivity extends AppCompatActivity {
                     "&emsp&emsp&emsp&emsp&emsp<b>5) Smoking: </b>" + (userProfile.getInterests()[4]+1) +"/5"));
             joinedDate.setText(Html.fromHtml("<b>Joined Date: </b>" + userProfile.getJoinedDate()));
         }
-
-        edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, UpdateProfileActivity.class);
-                intent.putExtra("profile", userProfile);
-                startActivity(intent);
-            }
-        });
+        //edit button disabled when showing UserAlong profile
+        if (!isUserAlongProfile) {
+            edit.setEnabled(true);
+            edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, UpdateProfileActivity.class);
+                    intent.putExtra("profile", userProfile);
+                    intent.putExtra("New Sign Up", false);
+                    startActivity(intent);
+                }
+            });
+        }
+        else {
+            edit.setEnabled(false);
+        }
     }
 }

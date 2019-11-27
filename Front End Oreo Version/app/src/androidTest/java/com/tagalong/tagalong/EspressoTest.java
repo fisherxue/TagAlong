@@ -45,7 +45,7 @@ public class EspressoTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        onView(ViewMatchers.withId(R.id.home_frag_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
+        onView(ViewMatchers.withId(R.id.my_trips_recycler_view)).perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
         onView(ViewMatchers.withId(R.id.chat)).perform(click());
     }
 }

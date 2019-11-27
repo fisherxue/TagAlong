@@ -3,6 +3,9 @@ package com.tagalong.tagalong.models;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Structure Chat - A group chat
+ */
 public class Chat {
     private List<Conversation> conversationList;
     private List<String> usernames;

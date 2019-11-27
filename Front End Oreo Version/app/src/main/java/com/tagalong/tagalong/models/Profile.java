@@ -6,8 +6,11 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Data Structure Profile - user profile
+ */
 public class Profile implements Serializable {
-
+    // Restrictions
     public static final int minAgeDriver = 19;
     public static final int minAgeRider = 15;
     public static final int maxAge = 100;
@@ -24,11 +27,11 @@ public class Profile implements Serializable {
     private String fbToken;
     private Boolean isDriver;
     private int age;
-    private Date joinedDate;
+    private String joinedDate;
     private int carCapacity;
     private int[] interests;
 
-
+    // Default profile constructor
     public Profile() {
         this.userID = "Not Set";
         this.firstName = "Not Set";
@@ -36,7 +39,6 @@ public class Profile implements Serializable {
         this.username = "Not Set";
         this.password = "Not Set";
         this.email = "Not Set";
-        this.joinedDate = new Date();
         this.gender = "Not Set";
         this.isDriver = true;
         this.age = 0;
@@ -45,6 +47,7 @@ public class Profile implements Serializable {
         for (int i = 0; i < interests.length; i++){
             interests[i] = 2;
         }
+        this.joinedDate = "Not Set";
     }
 
 
@@ -54,8 +57,15 @@ public class Profile implements Serializable {
     }
 
     public String getJoinedDate() {
+        Date date = new Date();
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
+                    .parse(this.joinedDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         DateFormat dateFormat = new SimpleDateFormat("dd MMMM YYYY, hh:mm:ss");
-        return dateFormat.format(joinedDate);
+        return dateFormat.format(date);
     }
 
     public String getFirstName() {
@@ -96,10 +106,6 @@ public class Profile implements Serializable {
 
     public int getAge() {
         return age;
-    }
-
-    public String getFbToken() {
-        return fbToken;
     }
 
     //Setters
@@ -148,12 +154,7 @@ public class Profile implements Serializable {
     }
 
     public void setJoinedDate(String joinedDate) {
-        try {
-            this.joinedDate = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.SSS'Z'")
-                    .parse(joinedDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        this.joinedDate = joinedDate;
     }
 
     public void setFbToken(String fbToken) {

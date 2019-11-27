@@ -31,7 +31,6 @@ import com.tagalong.tagalong.communication.FirebaseCallback;
 import com.tagalong.tagalong.communication.VolleyCallback;
 import com.tagalong.tagalong.communication.VolleyCommunicator;
 import com.tagalong.tagalong.fragment.MyTripFragment;
-import com.tagalong.tagalong.models.Conversation;
 import com.tagalong.tagalong.models.Profile;
 import com.tagalong.tagalong.fragment.ProposedTripFragment;
 import com.tagalong.tagalong.R;
@@ -41,6 +40,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * View for the Home Screen
+ * Manages the view between the following fragments: MyTripFragment, ProposedTripFragment, SetTripFragment.
+ */
 public class HomeActivity extends AppCompatActivity {
     private final String TAG = "Home Activity";
     private Context context;
@@ -54,6 +57,8 @@ public class HomeActivity extends AppCompatActivity {
 
         context = this;
         userProfile = (Profile) getIntent().getSerializableExtra("profile");
+
+        // If no user profile is received as an argument to intent, load it up from internal memory
         if (userProfile == null) {
             loadProfile();
         }
@@ -64,6 +69,9 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Loads Up MyTripFragment as the default view.
+     */
     private void loadupMyTripFragmenet() {
         BottomNavigationView btv = findViewById(R.id.bottom_navigation);
         btv.setOnNavigationItemSelectedListener(lister);
@@ -75,6 +83,10 @@ public class HomeActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, frag).commit();
     }
 
+    /**
+     * Customized creation on top header
+     * @param menu - customized top header menu
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -82,6 +94,10 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Implements the logic of the customized header menu
+     * @param item MenuItem - Top_menu Item
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
@@ -89,31 +105,33 @@ public class HomeActivity extends AppCompatActivity {
                 Log.d(TAG,"Visualizing user profile.");
                 Intent intent = new Intent(context, ViewProfileActivity.class);
                 intent.putExtra("profile", userProfile);
+                intent.putExtra("isUserAlongProfile", false);
                 startActivity(intent);
                 break;
+
             case R.id.logout :
                 Log.d(TAG,"Logging out of account.");
+                //Logout facebook user
                 LoginManager.getInstance().logOut();
 
+                // Invalidating the FCM token.
                 String url = getString(R.string.logout);
-
                 JsonObject logout = new JsonObject();
                 logout.addProperty("userID",userProfile.getUserID());
                 final String logoutJson = logout.toString();
                 JSONObject logoutJsonObject;
-
                 VolleyCommunicator communicator = VolleyCommunicator.getInstance(context.getApplicationContext());
                 VolleyCallback callback = new VolleyCallback() {
                     @Override
                     public void onSuccess(JSONObject response){
                         Log.d(TAG, "Logout Successful");
                         removeSavedFiles();
+                        //Return to main activity on successful logout.
                         Intent intent2 = new Intent(context, MainActivity.class);
                         startActivity(intent2);
                         intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         HomeActivity.this.finish();
                     }
-
                     @Override
                     public void onError(String result){
                         Log.d(TAG, "Could not logout");
@@ -130,16 +148,16 @@ public class HomeActivity extends AppCompatActivity {
                     Log.d(TAG, "JSONException: " + e.toString());
                     e.printStackTrace();
                 }
-
-
-
                 break;
+
             default :
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    // Logic for the bottom navigation view.
+    // Load the fragment based on the menu option selected.
     private BottomNavigationView.OnNavigationItemSelectedListener lister =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -181,6 +199,9 @@ public class HomeActivity extends AppCompatActivity {
                 }
             };
 
+    /**
+     * Remove the saved files from apps internal memory.
+     */
     private void removeSavedFiles(){
         context.deleteFile("Saved_Profile.txt");
         userProfile = null;
@@ -192,6 +213,9 @@ public class HomeActivity extends AppCompatActivity {
         saveUserProfile();
     }
 
+    /**
+     * Saves the user profile to apps internal memory.
+     */
     private void saveUserProfile() {
         if (userProfile != null) {
             String filename = "Saved_Profile.txt";
@@ -199,7 +223,6 @@ public class HomeActivity extends AppCompatActivity {
             String profileJson = gson.toJson(userProfile);
             String fileContents = profileJson;
             FileOutputStream outputStream;
-
             try {
                 outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                 outputStream.write(fileContents.getBytes());
@@ -214,6 +237,9 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Loads up the profile from internal memory of app.
+     */
     private void loadProfile(){
         String profileFilename = "Saved_Profile.txt";
         StringBuffer stringBuffer = new StringBuffer();
@@ -234,8 +260,8 @@ public class HomeActivity extends AppCompatActivity {
         JSONObject profileJSON;
         try {
             profileJSON = new JSONObject(contents);
-            System.out.println(profileJSON);
             this.userProfile = new Profile();
+            userProfile.setCarCapacity(profileJSON.getInt("carCapacity"));
             userProfile.setUserID(profileJSON.getString("userID"));
             userProfile.setUsername(profileJSON.getString("username"));
             userProfile.setFirstName(profileJSON.getString("firstName"));
@@ -251,7 +277,6 @@ public class HomeActivity extends AppCompatActivity {
                 interests[i] = jsonArray.getInt(i);
             }
             userProfile.setInterests(interests);
-
             FirebaseCallback firebaseCallback = new FirebaseCallback() {
                 @Override
                 public void onSuccess(@NonNull Task<InstanceIdResult> task) {
@@ -270,6 +295,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Get the FCM token from FireBase micro service
+     * @param firebaseCallback the call back functionality module for FireBase calls.
+     */
     private void getFCMToken(final FirebaseCallback firebaseCallback){
         FirebaseInstanceId.getInstance().getInstanceId()
                 .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
@@ -285,6 +314,9 @@ public class HomeActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Make a put request to update the user profile (with new FCM token).
+     */
     private void loginSavedProfile(){
         String url = getString(R.string.updateProfile);
         Gson gson = new Gson();
